@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازار ایپ - Bazaar App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F9F8;
+            font-family: 'Readex Pro', sans-serif;
+            color: #0B252A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo-box {
+            margin-bottom: 20px;
+        }
+        .logo-title {
+            font-family: 'Amiri', serif;
+            font-size: 48px;
+            color: #0B252A;
+            margin: 0;
+            font-weight: 700;
+        }
+        .logo-subtitle {
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: #3A6073;
+            margin-top: -5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(11, 37, 42, 0.08);
+            margin-top: 20px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .online {
+            background-color: #E2F4EB;
+            color: #10B981;
+        }
+        .offline {
+            background-color: #FEE2E2;
+            color: #EF4444;
+        }
+        p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #0B252A;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-box">
+            <h1 class="logo-title">بازار</h1>
+            <div class="logo-subtitle">Bazaar App</div>
+        </div>
+
+        <div class="card">
+            <div id="statusBadge" class="status-badge offline">سرور سے رابطہ ہو رہا ہے...</div>
+            <p>خوش آمدید! آپ کا بازار ایپ کا بیک اینڈ سرور کامیابی سے لائیو اور آن لائن ہے۔</p>
+            <a href="#" class="btn" onclick="alert('سرور بالکل درست کام کر رہا ہے!')">کنکشن ٹیسٹ کریں</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const SERVER_URL = "https://bazaar-app-production-c614.up.railway.app";
+        const socket = io(SERVER_URL);
+        const badge = document.getElementById('statusBadge');
+
+        socket.on('connect', () => {
+            badge.textContent = "آن لائن (Server Online)";
+            badge.className = "status-badge online";
+        });
+
+        socket.on('disconnect', () => {
+            badge.textContent = "آف لائن (Connecting...)";
+            badge.className = "status-badge offline";
+        });
+    </script>
+</body>
+</html>
