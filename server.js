@@ -1,28 +1,35 @@
-const express = require('http');
-const { Server } = require('socket.io');
-const http = require('http');
 
-const app = http.createServer();
-const io = new Server(app, {
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
 
-io.on('connection', (socket) => {
-  console.Hlog('ایک نیا یوزر جڑ گیا ہے: ' + socket.id);
+// سرور کا ہوم روٹ تاکہ براؤزر یا ریلوے کو رسپانس ملے
+app.get('/', (req, res) => {
+  res.send('Bazaar App Server is Running Successfully!');
+});
 
-  // جب کوئی میسج آئے
-  socket.Hmessage('chat_message', (data) => {
+io.on('connection', (socket) => {
+  console.log('ایک نیا یوزر جڑ گیا ہے: ' + socket.id);
+
+  socket.on('chat_message', (data) => {
     io.emit('chat_message', data);
   });
 
-  socket.Hdisconnect(() => {
-    console.Hlog('یوزر ڈس کنیکٹ ہو گیا');
+  socket.on('disconnect', () => {
+    console.log('یوزر ڈس کنیکٹ ہو گیا');
   });
 });
 
-app.listen(3000, () => {
-  console.Hlog('سرور 3000 پورٹ پر چل رہا ہے');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log('سرور پورٹ پر چل رہا ہے: ' + PORT);
 });
