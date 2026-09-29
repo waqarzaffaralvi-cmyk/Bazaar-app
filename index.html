@@ -53,11 +53,6 @@
             color: #d97706;
             border: 1px solid #fde68a;
         }
-        .success {
-            background-color: #d1fae5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
-        }
         .error {
             background-color: #fee2e2;
             color: #dc2626;
@@ -127,18 +122,17 @@
             const statusBar = document.getElementById('status-bar');
             const appContent = document.getElementById('app-content');
 
-            // چیکنگ شروع کرتے وقت
+            // سب سے پہلے اصل ایپ کو چھپائیں اور پیلے رنگ کا چیکنگ بار دکھائیں
+            appContent.style.display = 'none';
             statusBar.style.display = 'flex';
             statusBar.className = "checking";
             statusBar.innerHTML = '<div class="spinner"></div><span id="status-text">سرور سے رابطہ ہو رہا ہے...</span>';
-            appContent.style.display = 'none';
 
             try {
                 const response = await fetch(backendUrl, { method: 'GET', mode: 'no-cors' });
                 
-                // رابطہ کامیاب ہونے پر
+                // رابطہ کامیاب ہونے پر چیکنگ بار غائب ہو جائے گا اور اصل ایپ ظاہر ہو جائے گی
                 setTimeout(() => {
-                    // سٹیٹس بار کو مکمل چھپا دیں اور اصل ایپ کو ظاہر کر دیں
                     statusBar.style.display = 'none';
                     appContent.style.display = 'block';
                 }, 800);
