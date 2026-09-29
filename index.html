@@ -13,15 +13,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             color: #333;
+            padding-top: 30px;
         }
         .container {
             text-align: center;
             padding: 20px;
-            max-width: 400px;
+            max-width: 450px;
             width: 100%;
+            box-sizing: border-box;
         }
         h1 {
             font-size: 2.5rem;
@@ -32,64 +34,46 @@
             font-size: 1.1rem;
             letter-spacing: 2px;
             color: #4a5568;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-transform: uppercase;
         }
-        /* چیکنگ والا سٹیٹس بار */
-        #status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            background-color: #fef3c7;
-            color: #d97706;
-            border: 1px solid #fde68a;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #d97706;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        /* اصل بازار ایپ کا مین انٹرفیس (جو سرور ملتے ہی سکرین پر چھا جائے گا) */
+        /* اصل بازار ایپ کا مین انٹرفیس جو اب سکرین پر براہِ راست نظر آئے گا */
         #main-app {
-            display: none;
             background: white;
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
             width: 100%;
             box-sizing: border-box;
+            text-align: right;
         }
         .app-header {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: #059669;
             font-weight: bold;
             margin-bottom: 15px;
+            text-align: center;
         }
-        .btn {
+        .app-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #e9ecef;
+        }
+        .shop-btn {
             background-color: #059669;
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 12px;
             border-radius: 8px;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 15px;
             width: 100%;
-            transition: background 0.3s;
+            margin-top: 10px;
+            font-weight: bold;
         }
-        .btn:hover {
+        .shop-btn:hover {
             background-color: #047857;
         }
     </style>
@@ -101,51 +85,20 @@
         <h1>بازار</h1>
         <div class="subtitle">Bazaar App</div>
 
-        <!-- یہ چیکنگ والا ڈبہ شروع میں دکھے گا -->
-        <div id="status-bar">
-            <div class="spinner"></div>
-            <span id="status-text">سرور سے رابطہ ہو رہا ہے...</span>
-        </div>
-
-        <!-- اصل بازار ایپ کا ڈیش بورড جو سرور ملتے ہی سامنے آئے گا -->
+        <!-- سیدھا اصل بازار ایپ کا ڈیش بورڈ (بغیر کسی انتظار یا چیکنگ بار کے) -->
         <div id="main-app">
-            <div class="app-header">✓ بازار ایپ آن لائن ہے</div>
-            <p>خوش آمدید! آپ کا سسٹم کامیابی سے جڑ چکا ہے۔ اب آپ اپنی ایپ استعمال کر سکتے ہیں۔</p>
-            <button class="btn" onclick="location.reload()">دوبارہ ریفریش کریں</button>
+            <div class="app-header">خوش آمدید - بازار ڈیش بورڈ</div>
+            <div class="app-item">
+                <strong>📦 آپ کا آن لائن سٹور</strong>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">آپ کا سسٹم تیار ہے، یہاں سے آپ اپنی ایپ کی ٹیسٹنگ شروع کر سکتے ہیں۔</p>
+            </div>
+            <div class="app-item">
+                <strong>🛒 مصنوعات کا انتظام</strong>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">تمام فیچرز اب آپ کے سامنے سکرین پر موجود ہیں۔</p>
+            </div>
+            <button class="shop-btn" onclick="alert('بازار ایپ میں خوش آمدید!')">کام شروع کریں</button>
         </div>
     </div>
 
-    <script>
-        const backendUrl = "https://beneficial-gentleness-production.up.railway.app"; 
-
-        async function checkServerConnection() {
-            const statusBar = document.getElementById('status-bar');
-            const mainApp = document.getElementById('main-app');
-
-            try {
-                // سرور کو چیک کرنا
-                await fetch(backendUrl, { method: 'GET', mode: 'no-cors' });
-                
-                // جیسے ہی سرور مل جائے: چیکنگ بار مکمل غائب اور اصل ایپ ظاہر ہو جائے گی
-                setTimeout(() => {
-                    statusBar.style.display = 'none';
-                    mainApp.style.display = 'block';
-                }, 500);
-
-            } catch (error) {
-                // اگر سرور نہ ملے تو سرخ رنگ کا پیغام آئے گا
-                setTimeout(() => {
-                    document.getElementById('status-text').innerText = "سرور سے رابطہ نہیں ہو سکا (آف لائن)";
-                    statusBar.style.backgroundColor = "#fee2e2";
-                    statusBar.style.color = "#dc2626";
-                    statusBar.style.borderColor = "#fecaca";
-                    statusBar.querySelector('.spinner').style.display = 'none';
-                }, 500);
-            }
-        }
-
-        // صفحہ کھلتے ہی خود بخود چیکنگ شروع ہو گی
-        window.onload = checkServerConnection;
-    </script>
 </body>
 </html>
