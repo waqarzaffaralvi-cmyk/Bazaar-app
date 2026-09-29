@@ -3,39 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازار - کنکشن ٹیسٹر</title>
+    <title>بازار - Bazaar App</title>
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            direction: rtl;
+            background-color: #f1f5f9;
+            color: #1e293b;
         }
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
-        h1 { font-size: 1.8rem; color: #1a252c; text-align: center; }
-        .log-box {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
+        /* ایپ کا ہیڈر بار */
+        header {
+            background-color: #0f172a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        header p {
+            margin: 5px 0 0 0;
             font-size: 0.9rem;
-            height: 150px;
-            overflow-y: auto;
-            margin: 15px 0;
-            text-align: left;
-            direction: ltr;
+            color: #94a3b8;
+            letter-spacing: 1px;
         }
-        .btn {
+        /* اصل باڈی سیکشن */
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        /* پروڈکٹ کارڈ / ڈیش بورڈ خاکہ */
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .card input, .card select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .btn-primary {
             background-color: #059669;
             color: white;
             border: none;
@@ -43,62 +77,89 @@
             width: 100%;
             border-radius: 8px;
             font-size: 1rem;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-primary:active {
+            background-color: #047857;
+        }
+        /* پروڈکٹ لسٹ شو کرنے کی جگہ */
+        #product-list {
+            margin-top: 15px;
+        }
+        .product-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>بازار - سرور کنکشن چیک</h1>
-        <p style="text-align: center; color: #666;">گٹ ہب اور ریلوے سرور کے درمیان لائیو رابطہ ٹیسٹ کیا جا رہا ہے...</p>
-        
-        <!-- یہاں لائیو لاگ نظر آئیں گے کہ کیا خرابی ہے -->
-        <div id="log" class="log-box">سسٹم شروع ہو رہا ہے...</div>
+    <div class="app-container">
+        <!-- ایپ ہیڈر -->
+        <header>
+            <h1>بازار ایپ</h1>
+            <p>BAZAAR LIVE TESTING DASHBOARD</p>
+        </header>
 
-        <button class="btn" onclick="testConnectionNow()">دوبارہ کنکشن ٹیسٹ کریں</button>
+        <!-- مین ورکنگ انٹرفیس -->
+        <div class="content">
+            
+            <!-- نئی پروڈکٹ ایڈ کرنے کا پینل -->
+            <div class="section-title">📦 نئی پروڈکٹ شامل کریں</div>
+            <div class="card">
+                <label style="font-size: 0.9rem; font-weight: bold;">پروڈکٹ کا نام:</label>
+                <input type="text" id="p-name" placeholder="مثلاً: چادر، تکیہ کور، وغیرہ">
+                
+                <label style="font-size: 0.9rem; font-weight: bold;">قیمت (روپے):</label>
+                <input type="number" id="p-price" placeholder="مثلاً: 1500">
+
+                <button class="btn-primary" onclick="addProduct()">فہرست میں جوڑیں</button>
+            </div>
+
+            <!-- موجودہ اشیاء کی لسٹ -->
+            <div class="section-title" style="margin-top: 25px;">🛒 بازار کی اشیاء (لائیو ٹیسٹ)</div>
+            <div id="product-list">
+                <div class="product-item">
+                    <span>ڈیزائن بیڈ شیٹ (نمونہ)</span>
+                    <strong style="color: #059669;">Rs. 2,500</strong>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        const backendUrl = "https://beneficial-gentleness-production.up.railway.app";
+        // یہاں آپ لائیو ٹیسٹنگ کے لیے آئٹمز ایڈ کر سکتے ہیں
+        function addProduct() {
+            const nameInput = document.getElementById('p-name');
+            const priceInput = document.getElementById('p-price');
+            const listContainer = document.getElementById('product-list');
 
-        function logMessage(msg) {
-            const box = document.getElementById('log');
-            box.innerHTML += `<br>> ${msg}`;
-            box.scrollTop = box.scrollHeight;
-        }
-
-        async function testConnectionNow() {
-            logMessage("رابطے کی کوشش کی جا रही है...");
-            logMessage(`يو آر ایل: ${backendUrl}`);
-
-            try {
-                // یہاں ہم گیٹ ریکوئسٹ بھیج رہے ہیں
-                const response = await fetch(backendUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                logMessage(`رسپانس مل گیا! سٹیٹس: ${response.status}`);
-                if (response.ok) {
-                    logMessage(" کامیابی! سرور بالکل ٹھیک جواب دے رہا ہے!");
-                } else {
-                    logMessage("⚠ سرور تک رسائی ہوئی لیکن کوئی مسئلہ ہے۔");
-                }
-
-            } catch (error) {
-                logMessage(`❌ خرابی (Error): ${error.message}`);
-                logMessage("وجہ: ہو سکتا ہے CORS پالیسی یا غلط اینڈ پوائنٹ کا مسئلہ ہو۔");
+            if(nameInput.value.trim() === "" || priceInput.value.trim() === "") {
+                alert("براہ کرم نام اور قیمت دونوں درج کریں!");
+                return;
             }
-        }
 
-        // صفحہ کھلتے ہی خود بخود ٹیسٹ شروع ہو جائے گا
-        window.onload = () => {
-            testConnectionNow();
-        };
+            // نیا آئٹम سکرین پر دکھانا
+            const newItem = document.createElement('div');
+            newItem.className = 'product-item';
+            newItem.innerHTML = `<span>${nameInput.value}</span><strong style="color: #059669;">Rs. ${priceInput.value}</strong>`;
+            
+            listContainer.prepend(newItem);
+
+            // خانوں کو خالی کرنا
+            nameInput.value = "";
+            priceInput.value = "";
+            
+            alert("پروڈکٹ کامیابی سے شامل ہو گئی!");
+        }
     </script>
 </body>
 </html>
