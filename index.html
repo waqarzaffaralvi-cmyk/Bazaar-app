@@ -3,171 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازار - Bazaar App</title>
+    <title>بازار - کنکشن ٹیسٹر</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
             color: #333;
+            direction: rtl;
         }
-        
-        /* 1. تعارفی اور استقبالیہ سکرین (Splash Screen) جو پہلے سامنے آئے گی */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1a252c;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
-        }
-        .splash-logo {
-            font-size: 3.5rem;
-            color: #ffffff;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .splash-sub {
-            font-size: 1.2rem;
-            color: #059669;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        /* 2. اصل بازار ایپ کا مین ڈیش بورڈ (جو تعارف کے بعد کھل جائے گا) */
-        #main-app {
-            display: none; /* شروع میں چھپا ہوگا جب تک تعارف ختم نہ ہو */
+        .container {
             max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .app-card {
+            margin: 40px auto;
             background: white;
             padding: 25px;
-            border-radius: 16px;
+            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            text-align: right;
         }
-        .app-title {
-            font-size: 2rem;
-            color: #1a252c;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .server-status {
-            text-align: center;
-            font-size: 0.9rem;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background-color: #ecfdf5;
-            color: #059669;
-            font-weight: bold;
-        }
-        .section-box {
-            background: #f8f9fa;
+        h1 { font-size: 1.8rem; color: #1a252c; text-align: center; }
+        .log-box {
+            background: #1e293b;
+            color: #38bdf8;
             padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            height: 150px;
+            overflow-y: auto;
+            margin: 15px 0;
+            text-align: left;
+            direction: ltr;
         }
-        .action-btn {
+        .btn {
             background-color: #059669;
             color: white;
             border: none;
             padding: 12px;
+            width: 100%;
             border-radius: 8px;
             font-size: 1rem;
-            width: 100%;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s;
-        }
-        .action-btn:hover {
-            background-color: #047857;
         }
     </style>
 </head>
 <body>
 
-    <!-- تعارفی سکرین (جو صرف 1.5 سیکنڈ کے لیے آئے گی اور خود بخود ہٹ جائے گی) -->
-    <div id="splash-screen">
-        <div class="splash-logo">بازار</div>
-        <div class="splash-sub">Bazaar App</div>
-    </div>
+    <div class="container">
+        <h1>بازار - سرور کنکشن چیک</h1>
+        <p style="text-align: center; color: #666;">گٹ ہب اور ریلوے سرور کے درمیان لائیو رابطہ ٹیسٹ کیا جا رہا ہے...</p>
+        
+        <!-- یہاں لائیو لاگ نظر آئیں گے کہ کیا خرابی ہے -->
+        <div id="log" class="log-box">سسٹم شروع ہو رہا ہے...</div>
 
-    <!-- اصل بازار ایپ کا ڈیش بورڈ (تعارف ہٹنے کے بعد یہ سامنے آئے گا) -->
-    <div id="main-app">
-        <div class="app-card">
-            <div class="app-title">بازار</div>
-            <div style="text-align: center; color: #666; margin-bottom: 15px; letter-spacing: 1px;">BAZAAR APP DASHBOARD</div>
-            
-            <!-- ریلوے سرور سے کنکشن کی لائیو تصدیق -->
-            <div id="connection-badge" class="server-status">سرور سے ڈیٹا لوڈ ہو رہا ہے...</div>
-
-            <div class="section-box">
-                <strong>📦 سٹور اور مصنوعات</strong>
-                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">ریلوے بیک اینڈ سے سسٹم کامیابی سے منسلک ہے۔</p>
-            </div>
-
-            <div class="section-box">
-                <strong>⚙️ ٹیسٹنگ پینل</strong>
-                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">آپ یہاں اپنی مرضی کے مطابق ایپ کے فیچرز چلا سکتے ہیں۔</p>
-            </div>
-
-            <button class="action-btn" onclick="testBackendData()">سرور ڈیٹا چیک کریں</button>
-        </div>
+        <button class="btn" onclick="testConnectionNow()">دوبارہ کنکشن ٹیسٹ کریں</button>
     </div>
 
     <script>
-        const backendUrl = "https://beneficial-gentleness-production.up.railway.app"; 
+        const backendUrl = "https://beneficial-gentleness-production.up.railway.app";
 
-        // یہ فنکشن تعارفی سکرین کو 1.5 سیکنڈ بعد غائب کر کے اصل ایپ سامنے لے آئے گا
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                const mainApp = document.getElementById('main-app');
-                
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    mainApp.style.display = 'flex';
-                }, 400); // ہلکے فڈ آؤٹ ایفیکٹ کے بعد ہٹانا
-                
-                // بیک گراؤنڈ میں ریلوے سرور کو چیک کرنا
-                connectBackend();
-            }, 1500); // 1.5 سیکنڈ کا تعارف
-        });
+        function logMessage(msg) {
+            const box = document.getElementById('log');
+            box.innerHTML += `<br>> ${msg}`;
+            box.scrollTop = box.scrollHeight;
+        }
 
-        async function connectBackend() {
-            const badge = document.getElementById('connection-badge');
+        async function testConnectionNow() {
+            logMessage("رابطے کی کوشش کی جا रही है...");
+            logMessage(`يو آر ایل: ${backendUrl}`);
+
             try {
-                await fetch(backendUrl, { method: 'GET', mode: 'no-cors' });
-                badge.style.backgroundColor = "#ecfdf5";
-                badge.style.color = "#059669";
-                badge.innerText = "✓ ریلوے سرور آن لائن اور منسلک ہے";
-            } catch (e) {
-                badge.style.backgroundColor = "#fee2e2";
-                badge.style.color = "#dc2626";
-                badge.innerText = "⚠ سرور سے رابطہ عارضی طور پر معطل ہے";
+                // یہاں ہم گیٹ ریکوئسٹ بھیج رہے ہیں
+                const response = await fetch(backendUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                logMessage(`رسپانس مل گیا! سٹیٹس: ${response.status}`);
+                if (response.ok) {
+                    logMessage(" کامیابی! سرور بالکل ٹھیک جواب دے رہا ہے!");
+                } else {
+                    logMessage("⚠ سرور تک رسائی ہوئی لیکن کوئی مسئلہ ہے۔");
+                }
+
+            } catch (error) {
+                logMessage(`❌ خرابی (Error): ${error.message}`);
+                logMessage("وجہ: ہو سکتا ہے CORS پالیسی یا غلط اینڈ پوائنٹ کا مسئلہ ہو۔");
             }
         }
 
-        function testBackendData() {
-            alert('بازار ایپ کا ریلوے سسٹم بالکل درست کام کر رہا ہے!');
-        }
+        // صفحہ کھلتے ہی خود بخود ٹیسٹ شروع ہو جائے گا
+        window.onload = () => {
+            testConnectionNow();
+        };
     </script>
 </body>
 </html>
