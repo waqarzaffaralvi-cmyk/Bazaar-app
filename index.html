@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>बाज़ार - Bazaar App</title>
+    <title>بازار - Bazaar App</title>
     <style>
         body {
             margin: 0;
@@ -35,17 +36,16 @@
             margin-bottom: 30px;
             text-transform: uppercase;
         }
-        /* डायनेमिक स्टेटस बार / लोडर */
+        /* ڈائنامک سٹیٹس بار / لوڈر */
         #status-bar {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 30px;
             font-size: 0.95rem;
             margin-bottom: 20px;
-            transition: all 0.5s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .checking {
@@ -63,7 +63,7 @@
             color: #dc2626;
             border: 1px solid #fecaca;
         }
-        /* घूमने वाला गोल दायरा (Spinner) */
+        /* گھومنے والا گول دائرہ (Spinner) */
         .spinner {
             width: 16px;
             height: 16px;
@@ -75,7 +75,7 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        /* मेन ऐप कंटेंट जो कनेक्शन के बाद दिखेगा */
+        /* مین ایپ کنٹینٹ جو کنکشن کے بعد سامنے آئے گا */
         #app-content {
             display: none;
             background: white;
@@ -103,16 +103,17 @@
 <body>
 
     <div class="container">
-        <h1>बाज़ार</h1>
+        <!-- اردو میں درست نام -->
+        <h1>بازار</h1>
         <div class="subtitle">Bazaar App</div>
 
         <!-- متحرک سرور کنکشن سٹیٹس بار -->
         <div id="status-bar" class="checking">
             <div class="spinner"></div>
-            <span id="status-text">سرور سے رابطہ ہو رہا है...</span>
+            <span id="status-text">سرور سے رابطہ ہو رہا ہے...</span>
         </div>
 
-        <!-- اصل ایپ انٹرفیس जो कनेक्शन होने के बाद खुलेगा -->
+        <!-- اصل ایپ انٹرفیس جو کنکشن ہونے کے بعد سکرین پر ظاہر ہوگا -->
         <div id="app-content">
             <p>خوش آمدید! آپ کا بازار ایپ کا بیک اینڈ سرور کامیابی سے لائیو اور آن لائن ہے۔</p>
             <button class="btn" onclick="testConnection()">کنکشن دوبارہ ٹیسٹ کریں</button>
@@ -120,36 +121,29 @@
     </div>
 
     <script>
-        // यहाँ अपने रेलवे बैकएंड का लائیو URL डालें
         const backendUrl = "https://beneficial-gentleness-production.up.railway.app"; 
 
         async function checkServerConnection() {
             const statusBar = document.getElementById('status-bar');
-            const statusText = document.getElementById('status-text');
             const appContent = document.getElementById('app-content');
 
-            // चेक करने की शुरुआत (पीला रंग और घूमता चक्र)
+            // چیکنگ شروع کرتے وقت
+            statusBar.style.display = 'flex';
             statusBar.className = "checking";
-            statusBar.innerHTML = '<div class="spinner"></div><span id="status-text">سرور سے رابطہ ہو رہا है...</span>';
+            statusBar.innerHTML = '<div class="spinner"></div><span id="status-text">سرور سے رابطہ ہو رہا ہے...</span>';
+            appContent.style.display = 'none';
 
             try {
-                // रेलवे सर्वर को पिंग करना
                 const response = await fetch(backendUrl, { method: 'GET', mode: 'no-cors' });
                 
-                // अगर رابطہ کامیاب ہو گیا (Green Status)
+                // رابطہ کامیاب ہونے پر
                 setTimeout(() => {
-                    statusBar.className = "success";
-                    statusBar.innerHTML = '<span>✓ سرور آن لائن اور منسلک है</span>';
-                    
-                    // थोड़ी देर बाद स्टेटस बार छुप जाएगा और असली ऐप का हिस्सा सामने आ जाएगा
-                    setTimeout(() => {
-                        statusBar.style.display = 'none';
-                        appContent.style.display = 'block';
-                    }, 1000);
+                    // سٹیٹس بار کو مکمل چھپا دیں اور اصل ایپ کو ظاہر کر دیں
+                    statusBar.style.display = 'none';
+                    appContent.style.display = 'block';
                 }, 800);
 
             } catch (error) {
-                // अगर कनेक्शन में दिक्कत हो
                 setTimeout(() => {
                     statusBar.className = "error";
                     statusBar.innerHTML = '<span>✗ سرور سے رابطہ نہیں ہو سکا</span>';
@@ -158,14 +152,10 @@
         }
 
         function testConnection() {
-            const statusBar = document.getElementById('status-bar');
-            const appContent = document.getElementById('app-content');
-            statusBar.style.display = 'flex';
-            appContent.style.display = 'none';
             checkServerConnection();
         }
 
-        // पेज खुलते ही ऑटोमैटिक कनेक्शन चेक शुरू हो जाएगा
+        // صفحہ کھلتے ہی خود بخود کنکشن چیک شروع ہو جائے گا
         window.onload = checkServerConnection;
     </script>
 </body>
