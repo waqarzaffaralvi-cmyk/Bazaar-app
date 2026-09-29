@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
@@ -42,16 +41,15 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 12px 20px;
-            border-radius: 30px;
+            padding: 15px 20px;
+            border-radius: 12px;
             font-size: 0.95rem;
             margin-bottom: 20px;
             background-color: #fef3c7;
             color: #d97706;
             border: 1px solid #fde68a;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        /* گھومنے والا گول دائرہ */
         .spinner {
             width: 16px;
             height: 16px;
@@ -63,23 +61,24 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        /* اصل ایپ کا ہوم پیج (شروع میں چھپا ہو گا) */
-        #app-content {
+        /* اصل بازار ایپ کا مین انٹرفیس (جو سرور ملتے ہی سکرین پر چھا جائے گا) */
+        #main-app {
             display: none;
             background: white;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 15px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            box-sizing: border-box;
         }
-        .welcome-text {
-            font-size: 1.2rem;
+        .app-header {
+            font-size: 1.3rem;
             color: #059669;
             font-weight: bold;
             margin-bottom: 15px;
         }
         .btn {
-            background-color: #1a252c;
+            background-color: #059669;
             color: white;
             border: none;
             padding: 12px 25px;
@@ -87,10 +86,11 @@
             font-size: 1rem;
             cursor: pointer;
             margin-top: 15px;
+            width: 100%;
             transition: background 0.3s;
         }
         .btn:hover {
-            background-color: #2c3e50;
+            background-color: #047857;
         }
     </style>
 </head>
@@ -101,17 +101,17 @@
         <h1>بازار</h1>
         <div class="subtitle">Bazaar App</div>
 
-        <!-- یہ چیکنگ بار سرور کنیکٹ ہونے سے پہلے دکھے گا -->
+        <!-- یہ چیکنگ والا ڈبہ شروع میں دکھے گا -->
         <div id="status-bar">
             <div class="spinner"></div>
             <span id="status-text">سرور سے رابطہ ہو رہا ہے...</span>
         </div>
 
-        <!-- اصل ایپ انٹرفیس جو کنکشن جڑتے ہی چیکنگ بار کو ہٹا کر سامنے آئے گا -->
-        <div id="app-content">
-            <div class="welcome-text">✓ سرور آن لائن ہے!</div>
-            <p>خوش آمدید! آپ کا بازار ایپ کا سسٹم اب مکمل طور پر فعال ہے۔</p>
-            <button class="btn" onclick="checkServerConnection()">کنکشن دوبارہ چیک کریں</button>
+        <!-- اصل بازار ایپ کا ڈیش بورড جو سرور ملتے ہی سامنے آئے گا -->
+        <div id="main-app">
+            <div class="app-header">✓ بازار ایپ آن لائن ہے</div>
+            <p>خوش آمدید! آپ کا سسٹم کامیابی سے جڑ چکا ہے۔ اب آپ اپنی ایپ استعمال کر سکتے ہیں۔</p>
+            <button class="btn" onclick="location.reload()">دوبارہ ریفریش کریں</button>
         </div>
     </div>
 
@@ -120,35 +120,31 @@
 
         async function checkServerConnection() {
             const statusBar = document.getElementById('status-bar');
-            const appContent = document.getElementById('app-content');
-
-            // جب چیک شروع ہو تو بار دکھائیں اور اصل ایپ چھپائیں
-            statusBar.style.display = 'flex';
-            appContent.style.display = 'none';
-            document.getElementById('status-text').innerText = "سرور سے رابطہ ہو رہا ہے...";
+            const mainApp = document.getElementById('main-app');
 
             try {
-                // ریلوے سرور کو پنگ کرنا
+                // سرور کو چیک کرنا
                 await fetch(backendUrl, { method: 'GET', mode: 'no-cors' });
                 
-                // رابطہ جڑتے ہی چیکنگ بار غائب اور اصل ایپ ظاہر ہو جائے گی
+                // جیسے ہی سرور مل جائے: چیکنگ بار مکمل غائب اور اصل ایپ ظاہر ہو جائے گی
                 setTimeout(() => {
                     statusBar.style.display = 'none';
-                    appContent.style.display = 'block';
-                }, 600);
+                    mainApp.style.display = 'block';
+                }, 500);
 
             } catch (error) {
-                // اگر سرور آف لائن یا سست ہو
+                // اگر سرور نہ ملے تو سرخ رنگ کا پیغام آئے گا
                 setTimeout(() => {
                     document.getElementById('status-text').innerText = "سرور سے رابطہ نہیں ہو سکا (آف لائن)";
                     statusBar.style.backgroundColor = "#fee2e2";
                     statusBar.style.color = "#dc2626";
                     statusBar.style.borderColor = "#fecaca";
-                }, 600);
+                    statusBar.querySelector('.spinner').style.display = 'none';
+                }, 500);
             }
         }
 
-        // صفحہ کھلتے ہی خود بخود کنکشن چیک ہو گا
+        // صفحہ کھلتے ہی خود بخود چیکنگ شروع ہو گی
         window.onload = checkServerConnection;
     </script>
 </body>
