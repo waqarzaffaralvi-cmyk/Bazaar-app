@@ -1,332 +1,468 @@
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازار - مکمل ایپ</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f1f5f9;
-            color: #1e293b;
-        }
-        .app-container {
-            max-width: 480px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: #ffffff;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* اسکرینز کے کنٹرول کے لیے کلاسز */
-        .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-        }
-        .screen.active {
-            display: flex;
-        }
-
-        /* 1. مارکیٹنگ اور ویلکم سکرین */
-        #splash-screen {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: white;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 30px;
-            min-height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        #splash-screen h1 { font-size: 2.5rem; color: #38bdf8; margin-bottom: 10px; }
-        #splash-screen p { font-size: 1.1rem; color: #94a3b8; margin-bottom: 30px; }
-        .btn-start {
-            background-color: #059669;
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
-        }
-
-        /* 2. سائن اپ / لاگ ان سکرین */
-        .auth-container {
-            padding: 30px 20px;
-            justify-content: center;
-            flex: 1;
-            text-align: center;
-        }
-        .auth-container h2 { color: #0f172a; margin-bottom: 5px; }
-        .auth-container p { color: #64748b; margin-bottom: 25px; }
-        .form-group {
-            text-align: right;
-            margin-bottom: 15px;
-        }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: #334155; }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        .btn-primary {
-            background-color: #0284c7;
-            color: white;
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* 3. ڈیش بورڈ اور مکمل ایپ سٹرکچر */
-        header {
-            background-color: #0f172a;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header h2 { margin: 0; font-size: 1.4rem; }
-        .content { padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 80px; }
-        
-        .card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .product-item {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* نیچے والا مکمل نیویگیشن مینو بار (Bottom Navigation Bar) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-        .nav-item {
-            background: none;
-            border: none;
-            color: #64748b;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        .nav-item.active {
-            color: #0284c7;
-        }
-        .nav-item span { font-size: 1.2rem; }
-
-        /* ذیلی صفحات (Tabs) */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9 Bazaar - پروفائل اور مارکیٹ</title>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+body{background:#f4f6f9;color:#333;display:flex;flex-direction:column;min-height:100vh;padding-bottom:70px}
+.header{background:#1e4620;color:#fff;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ffc107;position:sticky;top:0;z-index:1001}
+.header h2{font-size:14px}
+.badge-server{background:#f0ad4e;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:bold}
+.badge-money{background:#ffc107;color:#000;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:bold}
+.section-container{padding:15px;width:100%;max-width:600px;margin:0 auto}
+.app-section{display:none}
+.app-section.active-section{display:block}
+.card{background:#fff;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 3px 8px rgba(0,0,0,.06);border-right:4px solid #1e4620}
+.card h3{margin-bottom:10px;color:#1e4620;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+input,textarea,select{width:100%;padding:10px;margin-top:4px;margin-bottom:10px;border:1px solid #ccc;border-radius:8px;font-size:14px;background:#fff}
+input:disabled,textarea:disabled{background:#e9ecef;color:#495057;border-color:#ced4da;font-weight:bold}
+label{font-size:13px;font-weight:bold;color:#444;display:block;margin-top:4px}
+.profile-dp-preview{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #1e4620;display:block;margin:0 auto 12px;background:#ddd;box-shadow:0 3px 6px rgba(0,0,0,.15)}
+.btn{border:none;padding:10px 15px;border-radius:25px;cursor:pointer;font-size:14px;width:100%;font-weight:bold;margin-top:8px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+.btn-green{background:#5cb85c;color:#fff}
+.btn-darkgreen{background:#1e4620;color:#fff}
+.btn-orange{background:#f0ad4e;color:#fff}
+.btn-red{background:#d9534f;color:#fff;margin-top:15px}
+.success-box{background:#dff0d8;color:#3c763d;padding:10px;border-radius:8px;margin-top:10px;font-size:13px;border-right:4px solid #5cb85c;display:none;line-height:1.5}
+.lock-badge{background:#d9534f;color:#fff;padding:3px 8px;border-radius:12px;font-size:10px}
+.unlock-badge{background:#5cb85c;color:#fff;padding:3px 8px;border-radius:12px;font-size:10px}
+.members-scroll-box{max-height:70vh;overflow-y:auto;padding-right:4px}
+.member-item{display:flex;align-items:center;background:#fafafa;border:1px solid #e0e0e0;border-radius:8px;padding:10px;margin-bottom:8px;position:relative}
+.member-dp{width:45px;height:45px;border-radius:50%;background:#1e4620;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;margin-left:12px;flex-shrink:0;overflow:hidden}
+.member-dp img{width:100%;height:100%;object-fit:cover}
+.member-info{flex-grow:1;text-align:right}
+.member-name{font-size:14px;font-weight:bold;color:#333}
+.member-role{font-size:11px;color:#666;margin-top:2px}
+.status-dot{width:12px;height:12px;border-radius:50%;display:inline-block;position:absolute;top:12px;left:12px;border:2px solid #fff}
+.dot-online{background:#27ae60}
+.dot-offline{background:#999}
+.chat-btn{width:auto;padding:5px 12px;font-size:12px;margin:0 0 0 24px}
+.product-card{background:#fdfdfd;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:12px}
+.product-card img,.product-card video{width:100%;max-height:200px;object-fit:cover;border-radius:6px;margin-top:5px}
+.condition-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;margin-bottom:5px}
+.badge-new{background:#5cb85c;color:#fff}
+.badge-used{background:#f0ad4e;color:#fff}
+.chat-line{padding:6px 10px;border-radius:6px;margin-bottom:6px;border-right:3px solid #5cb85c;background:#e2f0d9}
+.chat-line.other{background:#e8eefc;border-right-color:#4a7be0}
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:6px 0;z-index:1000;height:60px;box-shadow:0 -2px 10px rgba(0,0,0,.1)}
+.nav-item{text-align:center;color:#666;font-size:10px;flex:1;cursor:pointer;background:none;border:none;font-weight:600}
+.nav-item.active{color:#1e4620;font-weight:bold}
+.nav-item .icon-circle{display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto 2px;border-radius:50%;background:#f0f2f5;font-size:13px;transition:.2s}
+.nav-item.active .icon-circle{background:#1e4620;color:#fff}
+</style>
 </head>
 <body>
 
-    <div class="app-container">
+<div class="header">
+  <div>
+    <span class="badge-money">5,000 $</span>
+    <span class="badge-server" id="serverStatusBadge">⏳ کنیکٹنگ...</span>
+  </div>
+  <h2 id="pageTitle">🔒 پروفائل و لاگ ان</h2>
+</div>
 
-        <!-- 1. مارکیٹنگ اور ویلکم سکرین (سب سے پہلے یہ آئے گی) -->
-        <div id="splash-screen">
-            <h1>بازار ایپ</h1>
-            <p>آپ کی اپنی ڈیجیٹل مارکیٹ پلیس - جہاں خرید و فروخت ہے انتہائی آسان!</p>
-            <button class="btn-start" onclick="goToAuthScreen()">آغاز کریں (Get Started)</button>
-        </div>
+<div class="section-container">
 
-        <!-- 2. سائن اپ / لاگ ان سکرین -->
-        <div id="auth-screen" class="screen">
-            <div class="auth-container">
-                <h2>خوش آمدید!</h2>
-                <p>آگے بڑھنے کے لیے اپنی جی میل یا اکاؤنٹ کی تفصیل درج کریں</p>
-                <div class="form-group">
-                    <label>آپ کا نام</label>
-                    <input type="text" id="user-name" placeholder="پورا نام لکھیں">
-                </div>
-                <div class="form-group">
-                    <label>جی میل (Gmail) یا فون نمبر</label>
-                    <input type="text" id="user-email" placeholder="example@gmail.com">
-                </div>
-                <button class="btn-primary" onclick="completeLogin()">اکاؤنٹ بنائیں اور اندر جائیں</button>
-            </div>
-        </div>
-
-        <!-- 3. اصل مکمل ایپ اور ڈیش بورڈ (لاگ ان کے بعد کھلنے والا حصہ) -->
-        <div id="main-app-screen" class="screen">
-            <header>
-                <h2>بازار ڈیش بورڈ</h2>
-                <span id="welcome-user-tag" style="font-size: 0.85rem; color: #38bdf8;">مفید صارف</span>
-            </header>
-
-            <div class="content">
-                <!-- ہوم ٹیب -->
-                <div id="tab-home" class="tab-content active">
-                    <div class="card">
-                        <strong>📦 نئی پروڈکٹ شامل کریں</strong>
-                        <input type="text" id="p-name" placeholder="پروڈکٹ کا نام" style="width:100%; padding:10px; margin:8px 0; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
-                        <input type="number" id="p-price" placeholder="قیمت (روپے)" style="width:100%; padding:10px; margin:8px 0; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
-                        <button class="btn-primary" onclick="addProduct()" style="margin-top:5px;">فہرست میں درج کریں</button>
-                    </div>
-
-                    <div style="font-weight: bold; margin-top: 15px; margin-bottom: 10px;">🛒 بازار کی فعال اشیاء:</div>
-                    <div id="product-list">
-                        <div class="product-item">
-                            <span>کوالٹی بیڈ شیٹ سیٹ</span>
-                            <strong style="color: #059669;">Rs. 2,500</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- سرچ یا تلاش کا ٹیب -->
-                <div id="tab-search" class="tab-content">
-                    <div class="card">
-                        <strong>🔍 پروڈکٹ تلاش کریں</strong>
-                        <input type="text" placeholder="یہاں نام لکھ کر سرچ کریں..." style="width:100%; padding:10px; margin-top:10px; border:1px solid #cbd5e1; border-radius:6px; box-sizing:border-box;">
-                    </div>
-                    <p style="text-align: center; color: #64748b; margin-top: 30px;">کوئی پرانی یا محفوظ شدہ سرچ ہسٹری موجود نہیں ہے۔</p>
-                </div>
-
-                <!-- پروفائل ٹیب -->
-                <div id="tab-profile" class="tab-content">
-                    <div class="card" style="text-align: center; padding: 20px;">
-                        <h3 id="profile-display-name" style="margin: 0 0 5px 0; color: #0f172a;">Waqar Zafar</h3>
-                        <p id="profile-display-email" style="color: #64748b; margin: 0 0 15px 0; font-size: 0.9rem;">user@gmail.com</p>
-                        <button onclick="logoutApp()" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">لاگ آؤٹ کریں</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- نیچے کا مکمل نیویگیشن بار (بٹن جو مختلف پیجز پر لے کر جائیں گے) -->
-            <nav class="bottom-nav">
-                <button class="nav-item active" onclick="switchTab('home', this)">
-                    <span>🏠</span>
-                    ہوم
-                </button>
-                <button class="nav-item" onclick="switchTab('search', this)">
-                    <span>🔍</span>
-                    تلاش
-                </button>
-                <button class="nav-item" onclick="switchTab('profile', this)">
-                    <span>👤</span>
-                    پروفائل
-                </button>
-            </nav>
-        </div>
-
+  <!-- 1: لاگ ان / پروفائل -->
+  <div id="section-0" class="app-section active-section">
+    <div class="card">
+      <h3><span>صارف کی پروفائل اور ڈی پی</span><span id="lockStatusBadge" class="unlock-badge">فتح (Editable)</span></h3>
+      <img id="dpPreviewImg" src="" class="profile-dp-preview" alt="DP" style="display:none;">
+      <label>📷 پروفائل تصویر (DP) منتخب کریں:</label>
+      <input type="file" id="userDpFile" accept="image/*" onchange="previewAndCompressDp(event)">
+      <label>👤 پورا نام:</label>
+      <input type="text" id="userNameInput" placeholder="پورا نام لکھیں">
+      <label>📧 ای میل:</label>
+      <input type="email" id="userEmailInput" placeholder="example@gmail.com">
+      <label>📞 فون نمبر:</label>
+      <input type="text" id="userPhoneInput" placeholder="فون نمبر">
+      <label>📝 کاروبار کی تفصیل:</label>
+      <textarea id="userRoleInput" placeholder="مثلاً: دکاندار، خریدار..."></textarea>
+      <button id="lockBtn" class="btn btn-green" onclick="saveAndLock()">🔒 ڈیٹا لاک اور محفوظ کریں</button>
+      <button id="unlockBtn" class="btn btn-orange" style="display:none;" onclick="unlockPage()">🔓 ڈیٹا ان لاک کریں</button>
+      <div id="authStatusBox" class="success-box"><strong>🔒 ڈیٹا محفوظ ہو چکا ہے:</strong><br><span id="displaySavedInfo"></span></div>
+      <button class="btn btn-red" onclick="clearData()">اکاؤنٹ ری سیٹ کریں</button>
     </div>
+  </div>
 
-    <script>
-        // مرحلہ 1 سے سائن اپ سکرین پر جانا
-        function goToAuthScreen() {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('auth-screen').classList.add('active');
-        }
+  <!-- 2: مارکیٹ -->
+  <div id="section-1" class="app-section">
+    <div class="card">
+      <h3>🛒 بازار اور پروڈکٹ شیئرنگ</h3>
+      <label>📦 پروڈکٹ/آئٹم کا نام:</label>
+      <input type="text" id="prodTitle" placeholder="مثلاً: بیڈ شیٹ، برانڈڈ کوئٹ کور...">
+      <label>🏷️ حالت (Condition):</label>
+      <select id="prodCondition">
+        <option value="new">✨ بالکل نئی (Brand New)</option>
+        <option value="used">♻️ استعمال شدہ (Used)</option>
+      </select>
+      <label>📷 تصویر یا ویڈیو منتخب کریں:</label>
+      <input type="file" id="prodMediaFile" accept="image/*,video/*">
+      <label>📝 تفصیل (Description):</label>
+      <textarea id="prodDesc" placeholder="آئٹم کی تفصیل، قیمت یا استعمال کے بارے میں لکھیں..."></textarea>
+      <button class="btn btn-darkgreen" onclick="uploadProduct()">🚀 مارکیٹ میں پوسٹ کریں</button>
+    </div>
+    <div class="card">
+      <h3>🛍️ مارکیٹ کی تمام مصنوعات</h3>
+      <div id="marketFeedContainer" style="max-height:60vh;overflow-y:auto;"></div>
+    </div>
+  </div>
 
-        // سائن اپ مکمل کر کے مین ایپ (ڈیش بورڈ) کھولنا
-        function completeLogin() {
-            const name = document.getElementById('user-name').value;
-            const email = document.getElementById('user-email').value;
+  <!-- 3: ممبرز -->
+  <div id="section-2" class="app-section">
+    <div class="card" style="padding:10px;">
+      <h3>👥 ممبرز کی فہرست (لائیو)</h3>
+      <div class="members-scroll-box" id="membersListContainer"></div>
+    </div>
+  </div>
 
-            if(!name || !email) {
-                alert("براہ کرم اپنا نام اور جی میل درج کریں!");
-                return;
-            }
+  <!-- 4: پولنگ -->
+  <div id="section-3" class="app-section">
+    <div class="card">
+      <h3>📊 الیکشن پول اور ووٹنگ</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:10px;">رائے شماری اور پولنگ کا نظام۔</p>
+    </div>
+  </div>
 
-            // نام کو پروفাইল اور ہیڈر میں سیٹ کرنا
-            document.getElementById('welcome-user-tag').innerText = "خوش آمدید، " + name;
-            document.getElementById('profile-display-name').innerText = name;
-            document.getElementById('profile-display-email').innerText = email;
+  <!-- 5: چیٹ -->
+  <div id="section-4" class="app-section">
+    <div class="card">
+      <h3>💬 لائیو چیٹ</h3>
+      <label>👤 کس کو بھیجنا ہے:</label>
+      <select id="chatTarget"><option value="">👥 سب کو (کمیونٹی)</option></select>
+      <label>💬 پیغام درج کریں:</label>
+      <input type="text" id="chatInputMsg" placeholder="یہاں پیغام لکھیں...">
+      <button class="btn btn-darkgreen" onclick="sendChatMessage()">📤 پیغام بھیجیں</button>
+      <label style="margin-top:10px;">📜 پیغامات:</label>
+      <div style="background:#f9f9f9;border:1px solid #ddd;border-radius:8px;height:220px;overflow-y:auto;padding:8px;font-size:13px;text-align:right;" id="chatHistoryBox">
+        <div class="chat-line"><b>سسٹم:</b> خوش آمدید!</div>
+      </div>
+    </div>
+  </div>
 
-            // سکرینز کی تبدیلی
-            document.getElementById('auth-screen').classList.remove('active');
-            document.getElementById('main-app-screen').classList.add('active');
-        }
+</div>
 
-        // نیچے والے مینو سے مختلف ٹیبز / پیجز کے درمیان سوئچ کرنا
-        function switchTab(tabName, btnElement) {
-            // تمام ٹیبز کو چھپانا
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // منتخب کردہ ٹیب دکھانا
-            document.getElementById('tab-' + tabName).classList.add('active');
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="switchSection(0,'🔒 پروفائل و لاگ ان')"><div class="icon-circle">🔒</div>لاگ ان</button>
+  <button class="nav-item" onclick="switchSection(1,'🛒 مارکیٹ')"><div class="icon-circle">🛒</div>مارکیٹ</button>
+  <button class="nav-item" onclick="switchSection(2,'👥 ممبرز')"><div class="icon-circle">👥</div>ممبرز</button>
+  <button class="nav-item" onclick="switchSection(3,'📊 پولنگ')"><div class="icon-circle">📊</div>پولنگ</button>
+  <button class="nav-item" onclick="switchSection(4,'💬 چیٹ')"><div class="icon-circle">💬</div>چیٹ</button>
+</div>
 
-            // بٹنوں کی ایکٹیভ حالت تبدیل کرنا
-            document.querySelectorAll('.nav-item').forEach(nav => {
-                nav.classList.remove('active');
-            });
-            btnElement.classList.add('active');
-        }
+<script>
+const SOCKET_URL = "https://bazaar-app-production-c614.up.railway.app";
+const socket = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
+const statusBadge = document.getElementById('serverStatusBadge');
+let serverMembers = [];
 
-        // نئی پروڈکٹ لسٹ میں شامل کرنا
-        function addProduct() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const list = document.getElementById('product-list');
+// نقصان دہ حروف سے بچاؤ (دوسروں کا لکھا ہوا متن محفوظ دکھانے کے لیے)
+function esc(t) {
+  return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function myName() { return localStorage.getItem('iron_name') || ''; }
 
-            if(!name || !price) {
-                alert("پروڈکٹ کا نام اور قیمت دونوں لکھیں!");
-                return;
-            }
+// خود کو سرور پر رجسٹر کرنا
+function registerOnServer() {
+  const name = myName();
+  if (!name || !socket.connected) return;
+  socket.emit('register_user', {
+    name: name,
+    role: localStorage.getItem('iron_role') || '',
+    dp: localStorage.getItem('iron_dp') || ''
+  });
+}
 
-            const item = document.createElement('div');
-            item.className = 'product-item';
-            item.innerHTML = `<span>${name}</span><strong style="color: #059669;">Rs. ${price}</strong>`;
-            
-            list.prepend(item);
+socket.on('connect', () => {
+  statusBadge.innerText = "🟢 لائیو جڑا ہوا ہے";
+  statusBadge.style.background = "#5cb85c";
+  registerOnServer();
+});
+socket.on('disconnect', () => {
+  statusBadge.innerText = "⚠️ آف لائن";
+  statusBadge.style.background = "#dc3545";
+});
 
-            document.getElementById('p-name').value = "";
-            document.getElementById('p-price').value = "";
-            alert("پروڈکٹ کامیابی سے شامل ہو گئی!");
-        }
+// سرور سے ممبرز کی تازہ فہرست
+socket.on('update_members', (list) => {
+  serverMembers = Array.isArray(list) ? list : [];
+  loadMembersList();
+  refreshChatTargets();
+});
 
-        // لاگ آؤٹ کرنا
-        function logoutApp() {
-            document.getElementById('main-app-screen').classList.remove('active');
-            document.getElementById('auth-screen').classList.add('active');
-        }
-    </script>
+// دوسرے یوزر کا پیغام
+socket.on('receive_chat_message', (d) => {
+  if (!d) return;
+  addChatLine(esc(d.from || 'نامعلوم') + (d.to ? ' (نجی)' : '') + ' [' + esc(d.time || '') + ']', d.text, false);
+});
+
+function switchSection(index, titleText) {
+  document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active-section'));
+  document.getElementById('section-' + index).classList.add('active-section');
+  document.getElementById('pageTitle').innerText = titleText;
+  document.querySelectorAll('.nav-item').forEach((item, idx) => {
+    item.classList.toggle('active', idx === index);
+  });
+  if (index === 2) loadMembersList();
+  if (index === 1) loadMarketFeed();
+}
+
+window.onload = function () {
+  const savedName = localStorage.getItem('iron_name') || '';
+  const savedEmail = localStorage.getItem('iron_email') || '';
+  const savedPhone = localStorage.getItem('iron_phone') || '';
+  const savedRole = localStorage.getItem('iron_role') || '';
+  const savedDp = localStorage.getItem('iron_dp');
+  const isLocked = localStorage.getItem('iron_is_locked') === 'true';
+
+  document.getElementById('userNameInput').value = savedName;
+  document.getElementById('userEmailInput').value = savedEmail;
+  document.getElementById('userPhoneInput').value = savedPhone;
+  document.getElementById('userRoleInput').value = savedRole;
+
+  if (savedDp) {
+    const preview = document.getElementById('dpPreviewImg');
+    preview.src = savedDp;
+    preview.style.display = 'block';
+  }
+  if (isLocked && savedName) applyLockState(savedName, savedEmail, savedPhone, savedRole, savedDp);
+
+  loadMembersList();
+  loadMarketFeed();
+  registerOnServer();
+};
+
+function previewAndCompressDp(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      const MAX = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } }
+      else { if (h > MAX) { w *= MAX / h; h = MAX; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const data = canvas.toDataURL('image/jpeg', 0.8);
+      localStorage.setItem('iron_dp_temp', data);
+      const preview = document.getElementById('dpPreviewImg');
+      preview.src = data;
+      preview.style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveAndLock() {
+  const name = document.getElementById('userNameInput').value.trim();
+  const email = document.getElementById('userEmailInput').value.trim();
+  const phone = document.getElementById('userPhoneInput').value.trim();
+  const role = document.getElementById('userRoleInput').value.trim();
+  const finalDp = localStorage.getItem('iron_dp_temp') || localStorage.getItem('iron_dp') || '';
+
+  if (!name || !email) {
+    alert('براہ کرم نام اور ای میل درج کریں!');
+    return;
+  }
+  finishSavingAndLock(name, email, phone, role, finalDp);
+}
+
+function finishSavingAndLock(name, email, phone, role, dpData) {
+  localStorage.setItem('iron_name', name);
+  localStorage.setItem('iron_email', email);
+  localStorage.setItem('iron_phone', phone);
+  localStorage.setItem('iron_role', role);
+  localStorage.setItem('iron_is_locked', 'true');
+  if (dpData) {
+    localStorage.setItem('iron_dp', dpData);
+    const preview = document.getElementById('dpPreviewImg');
+    preview.src = dpData;
+    preview.style.display = 'block';
+  }
+  applyLockState(name, email, phone, role, dpData);
+  registerOnServer();
+  alert('پروفائل کامیابی سے محفوظ ہو گئی اور سرور پر رجسٹر ہو گئی! 🌐🔒');
+}
+
+// ممبرز کی لائیو فہرست
+function loadMembersList() {
+  const container = document.getElementById('membersListContainer');
+  if (!serverMembers.length) {
+    container.innerHTML = '<p style="font-size:13px;color:#777;text-align:center;padding:10px;">ابھی کوئی ممبر آن لائن نہیں۔ پہلے پروفائل محفوظ کریں۔</p>';
+    return;
+  }
+  const me = myName();
+  let html = '';
+  serverMembers.forEach(m => {
+    const dpHtml = m.dp ? `<img src="${esc(m.dp)}" alt="DP">` : esc((m.name || '').substring(0, 2).toUpperCase());
+    const dot = m.online ? 'dot-online' : 'dot-offline';
+    const chatBtn = (m.name !== me && m.online)
+      ? `<button class="btn btn-darkgreen chat-btn" onclick="openChatWith('${esc(m.id)}')">💬 چیٹ</button>` : '';
+    html += `
+      <div class="member-item">
+        <span class="status-dot ${dot}"></span>
+        <div class="member-dp">${dpHtml}</div>
+        <div class="member-info">
+          <div class="member-name">${esc(m.name)}${m.name === me ? ' (آپ)' : ''}</div>
+          <div class="member-role">${esc(m.role) || 'ممبر'}</div>
+        </div>
+        ${chatBtn}
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// چیٹ کے لیے وصول کنندہ کی فہرست
+function refreshChatTargets() {
+  const sel = document.getElementById('chatTarget');
+  const current = sel.value;
+  const me = myName();
+  let html = '<option value="">👥 سب کو (کمیونٹی)</option>';
+  serverMembers.forEach(m => {
+    if (m.online && m.name !== me) html += `<option value="${esc(m.id)}">${esc(m.name)}</option>`;
+  });
+  sel.innerHTML = html;
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
+}
+
+function openChatWith(id) {
+  switchSection(4, '💬 چیٹ');
+  refreshChatTargets();
+  document.getElementById('chatTarget').value = id;
+}
+
+function addChatLine(who, text, mine) {
+  const box = document.getElementById('chatHistoryBox');
+  const div = document.createElement('div');
+  div.className = 'chat-line' + (mine ? '' : ' other');
+  div.innerHTML = '<b>' + who + ':</b> ' + esc(text);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInputMsg');
+  const text = input.value.trim();
+  if (!text) return;
+  const name = myName();
+  if (!name) { alert('پہلے پروفائل محفوظ کریں!'); return; }
+  if (!socket.connected) { alert('سرور سے رابطہ نہیں ہے، تھوڑی دیر بعد کوشش کریں۔'); return; }
+
+  const sel = document.getElementById('chatTarget');
+  const to = sel.value;
+  const toName = to ? sel.options[sel.selectedIndex].text : 'سب';
+  const time = new Date().toLocaleTimeString();
+
+  socket.emit('send_chat_message', { to: to || undefined, from: name, text: text, time: time });
+  addChatLine('آپ ← ' + esc(toName) + ' [' + time + ']', text, true);
+  input.value = '';
+}
+
+// مارکیٹ (فی الحال صرف اسی فون میں محفوظ ہوتی ہے)
+function uploadProduct() {
+  const title = document.getElementById('prodTitle').value.trim();
+  const condition = document.getElementById('prodCondition').value;
+  const desc = document.getElementById('prodDesc').value.trim();
+  const fileInput = document.getElementById('prodMediaFile');
+  if (!title) { alert('براہ کرم پروڈکٹ کا نام درج کریں!'); return; }
+  const author = myName() || 'مہمان';
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => saveProductToStorage(title, condition, desc, e.target.result, fileInput.files[0].type, author);
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    saveProductToStorage(title, condition, desc, '', '', author);
+  }
+}
+
+function saveProductToStorage(title, condition, desc, mediaData, mediaType, author) {
+  let products = JSON.parse(localStorage.getItem('bazaar_market_products')) || [];
+  products.unshift({ title, condition, desc, mediaData, mediaType, author, date: new Date().toLocaleDateString() });
+  try {
+    localStorage.setItem('bazaar_market_products', JSON.stringify(products));
+  } catch (e) {
+    alert('جگہ ختم ہو گئی، چھوٹی تصویر یا ویڈیو کے بغیر کوشش کریں۔');
+    return;
+  }
+  document.getElementById('prodTitle').value = '';
+  document.getElementById('prodDesc').value = '';
+  document.getElementById('prodMediaFile').value = '';
+  loadMarketFeed();
+  alert('پروڈکٹ کامیابی سے مارکیٹ میں پوسٹ ہو گئی ہے!');
+}
+
+function loadMarketFeed() {
+  const container = document.getElementById('marketFeedContainer');
+  const products = JSON.parse(localStorage.getItem('bazaar_market_products')) || [];
+  if (!products.length) {
+    container.innerHTML = '<p style="font-size:13px;color:#777;text-align:center;padding:10px;">ابھی تک کوئی پروڈکٹ شیئر نہیں کی گئی۔</p>';
+    return;
+  }
+  let html = '';
+  products.forEach(p => {
+    const badgeClass = p.condition === 'new' ? 'badge-new' : 'badge-used';
+    const condText = p.condition === 'new' ? '✨ بالکل نئی (Brand New)' : '♻️ استعمال شدہ (Used)';
+    let media = '';
+    if (p.mediaData) {
+      media = (p.mediaType && p.mediaType.includes('video'))
+        ? `<video controls src="${p.mediaData}"></video>` : `<img src="${p.mediaData}" alt="Product">`;
+    }
+    html += `
+      <div class="product-card">
+        <span class="condition-badge ${badgeClass}">${condText}</span>
+        <h4 style="font-size:14px;color:#1e4620;margin-bottom:4px;">${esc(p.title)}</h4>
+        <p style="font-size:12px;color:#555;margin-bottom:6px;">${esc(p.desc) || 'تفصیل موجود نہیں'}</p>
+        ${media}
+        <div style="font-size:10px;color:#888;margin-top:6px;display:flex;justify-content:space-between;">
+          <span>بیچنے والا: <b>${esc(p.author)}</b></span><span>تاریخ: ${esc(p.date)}</span>
+        </div>
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function applyLockState(name, email, phone, role, dp) {
+  ['userNameInput', 'userEmailInput', 'userPhoneInput', 'userRoleInput'].forEach(id => {
+    document.getElementById(id).disabled = true;
+  });
+  document.getElementById('lockBtn').style.display = 'none';
+  document.getElementById('unlockBtn').style.display = 'block';
+  const badge = document.getElementById('lockStatusBadge');
+  badge.innerText = "آہنی لاک (Locked)";
+  badge.className = "lock-badge";
+  document.getElementById('displaySavedInfo').innerHTML =
+    `نام: <b>${esc(name)}</b><br>ای میل: <b>${esc(email)}</b><br>فون: <b>${esc(phone) || 'درج نہیں'}</b><br>تفصیل: ${esc(role)}`;
+  document.getElementById('authStatusBox').style.display = 'block';
+}
+
+function unlockPage() {
+  ['userNameInput', 'userEmailInput', 'userPhoneInput', 'userRoleInput'].forEach(id => {
+    document.getElementById(id).disabled = false;
+  });
+  document.getElementById('lockBtn').style.display = 'block';
+  document.getElementById('unlockBtn').style.display = 'none';
+  const badge = document.getElementById('lockStatusBadge');
+  badge.innerText = "فتح (Editable)";
+  badge.className = "unlock-badge";
+  document.getElementById('authStatusBox').style.display = 'none';
+  localStorage.setItem('iron_is_locked', 'false');
+  alert('ڈیٹا ان لاک ہو گیا ہے!');
+}
+
+function clearData() {
+  if (confirm('کیا آپ سارا ڈیٹا صاف کرنا چاہتے ہیں؟')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+</script>
 </body>
 </html>
