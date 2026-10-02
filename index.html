@@ -3,213 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waqar Social & Messenger</title>
+    <title>Waqar Professional Messenger & Social</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root {
             --wa-teal: #075E54;
+            --wa-teal-dark: #128C7E;
             --wa-green: #25D366;
             --wa-light-green: #DCF8C6;
             --wa-bg: #ECE5DD;
-            --wa-dark: #303030;
+            --wa-dark: #222222;
             --wa-gray: #f0f2f5;
+            --wa-border: #d1d7db;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--wa-bg); color: var(--wa-dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
+        /* ========================================== */
+        /* START: LOGIN & PROFILE MODULE */
+        /* ========================================== */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px); }
+        .login-card { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .login-card h2 { color: var(--wa-teal); margin-bottom: 16px; font-size: 20px; }
+        .login-input { width: 100%; padding: 10px 14px; margin-bottom: 12px; border: 1px solid var(--wa-border); border-radius: 20px; outline: none; font-size: 13px; background: #fafafa; }
+        .login-input:focus { border-color: var(--wa-teal); background: white; }
+        .login-btn { background: var(--wa-teal); color: white; border: none; padding: 10px 20px; width: 100%; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .login-btn:hover { background: var(--wa-teal-dark); }
+        /* ========================================== */
+        /* END: LOGIN & PROFILE MODULE */
+        /* ========================================== */
+
         /* Header */
-        header { background-color: var(--wa-teal); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
-        .app-title { font-size: 20px; font-weight: bold; }
-        .header-icons span { margin-left: 15px; cursor: pointer; font-size: 18px; }
+        header { background-color: var(--wa-teal); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.15); z-index: 10; }
+        .app-title { font-size: 18px; font-weight: bold; }
+        .header-icons { display: flex; gap: 15px; font-size: 16px; cursor: pointer; }
 
-        /* Stories / Following Top Bar */
-        .top-stories { background: white; padding: 10px; display: flex; overflow-x: auto; gap: 12px; border-bottom: 1px solid #ddd; white-space: nowrap; }
-        .story-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
-        .story-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 2px; object-fit: cover; }
-        .story-name { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; width: 60px; text-align: center; }
+        /* ========================================== */
+        /* START: FOLLOWING & STORIES MODULE */
+        /* ========================================== */
+        .top-stories-bar { background: white; padding: 8px 12px; display: flex; overflow-x: auto; gap: 12px; border-bottom: 1px solid var(--wa-border); white-space: nowrap; min-height: 75px; align-items: center; }
+        .story-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 50px; }
+        .story-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 1px; object-fit: cover; }
+        .story-lbl { font-size: 10px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; width: 55px; text-align: center; color: #555; }
+        /* ========================================== */
+        /* END: FOLLOWING & STORIES MODULE */
+        /* ========================================== */
 
-        /* Main Container Layout (Messenger Style) */
-        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        /* Main Workspace Container */
+        .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* Sidebar Chat List */
-        .sidebar { width: 350px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; height: 100%; }
-        .search-box { padding: 10px; background: #f6f6f6; border-bottom: 1px solid #eee; }
-        .search-box input { width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc; outline: none; background: white; }
-        .chat-list { flex: 1; overflow-y: auto; }
-        .chat-list-item { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; }
-        .chat-list-item:hover { background: var(--wa-gray); }
-        .chat-list-avatar { width: 48px; height: 48px; border-radius: 50%; margin-left: 12px; object-fit: cover; }
-        .chat-list-info { flex: 1; overflow: hidden; }
-        .chat-list-name { font-weight: bold; font-size: 15px; color: #000; }
-        .chat-list-msg { font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
-        .chat-list-msg.unread { font-weight: bold; color: #000; }
-        .unread-badge { background: var(--wa-green); color: white; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: bold; min-width: 20px; text-align: center; }
+        /* Sidebar & Slider Layers Container */
+        .sidebar-layer { width: 330px; background: white; border-left: 1px solid var(--wa-border); display: flex; flex-direction: column; height: 100%; }
+        .search-container { padding: 8px 12px; background: #f6f6f6; border-bottom: 1px solid #eee; }
+        .search-container input { width: 100%; padding: 7px 14px; border-radius: 18px; border: 1px solid var(--wa-border); outline: none; background: white; font-size: 13px; }
 
-        /* Chat Area */
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: var(--wa-bg); height: 100%; }
-        .chat-header { background: #f0f2f5; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd; }
-        .chat-header-profile { display: flex; align-items: center; gap: 12px; }
-        .chat-header-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .chat-header-name { font-weight: bold; font-size: 16px; }
-        .call-buttons { display: flex; gap: 15px; font-size: 20px; color: var(--wa-teal); cursor: pointer; }
+        /* Slider Layer Panes */
+        .slider-pane { flex: 1; overflow-y: auto; display: none; }
+        .slider-pane.active-pane { display: block; }
 
-        .messages-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .message-bubble { max-width: 65%; padding: 8px 12px; border-radius: 8px; font-size: 14px; position: relative; word-wrap: break-word; }
-        .message-bubble.incoming { background: white; align-self: flex-start; border-top-right-radius: 0; }
-        .message-bubble.outgoing { background: var(--wa-light-green); align-self: flex-end; border-top-left-radius: 0; }
-        .msg-time { font-size: 10px; color: #999; margin-top: 4px; text-align: left; }
+        /* Chat List Items */
+        .chat-node-item { display: flex; align-items: center; padding: 10px 14px; border-bottom: 1px solid #f2f2f2; cursor: pointer; transition: background 0.15s; }
+        .chat-node-item:hover { background: var(--wa-gray); }
+        .chat-node-avatar { width: 42px; height: 42px; border-radius: 50%; margin-left: 10px; object-fit: cover; }
+        .chat-node-info { flex: 1; overflow: hidden; }
+        .chat-node-name { font-weight: bold; font-size: 14px; color: #111; }
+        .chat-node-lastmsg { font-size: 12px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .chat-badge { background: var(--wa-green); color: white; border-radius: 50%; padding: 1px 5px; font-size: 10px; font-weight: bold; min-width: 18px; text-align: center; }
 
-        /* Chat Input Bar */
-        .chat-input-bar { background: #f0f2f5; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; }
-        .chat-input-bar textarea { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #ccc; outline: none; resize: none; max-height: 100px; font-size: 14px; background: white; }
-        .send-btn { background: var(--wa-teal); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        /* ========================================== */
+        /* START: CHAT SYSTEM MODULE */
+        /* ========================================== */
+        .chat-main-area { flex: 1; display: flex; flex-direction: column; background: var(--wa-bg); height: 100%; }
+        .chat-pane-header { background: #f0f2f5; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--wa-border); }
+        .chat-active-profile { display: flex; align-items: center; gap: 10px; }
+        .chat-active-dp { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+        .chat-active-title { font-weight: bold; font-size: 15px; color: #222; }
+        .call-action-btns { display: flex; gap: 14px; font-size: 17px; color: var(--wa-teal); cursor: pointer; }
 
-        /* Bottom Navigation Bar */
-        .bottom-nav { background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 12px; cursor: pointer; text-decoration: none; position: relative; flex: 1; }
-        .nav-item.active { color: var(--wa-teal); font-weight: bold; }
-        .nav-item span.icon { font-size: 20px; margin-bottom: 2px; }
-        .nav-badge { position: absolute; top: 0; right: 30%; background: var(--wa-green); color: white; border-radius: 50%; padding: 1px 5px; font-size: 10px; font-weight: bold; }
+        .messages-scroll-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .msg-bubble { max-width: 65%; padding: 8px 12px; border-radius: 8px; font-size: 13px; position: relative; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.1); }
+        .msg-bubble.incoming { background: white; align-self: flex-start; border-top-right-radius: 0; }
+        .msg-bubble.outgoing { background: var(--wa-light-green); align-self: flex-end; border-top-left-radius: 0; }
 
-        /* Hidden utility class */
-        .hidden { display: none !important; }
+        .chat-input-toolbar { background: #f0f2f5; padding: 8px 14px; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--wa-border); }
+        .chat-input-toolbar textarea { flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid var(--wa-border); outline: none; resize: none; max-height: 80px; font-size: 13px; background: white; }
+        .send-pill-btn { background: var(--wa-teal); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background 0.2s; }
+        .send-pill-btn:hover { background: var(--wa-teal-dark); }
+        /* ========================================== */
+        /* END: CHAT SYSTEM MODULE */
+        /* ========================================== */
+
+        /* ========================================== */
+        /* START: MARKET & POLLING MODULES */
+        /* ========================================== */
+        .generic-module-view { padding: 16px; overflow-y: auto; height: 100%; background: white; }
+        .generic-module-view h3 { color: var(--wa-teal); margin-bottom: 10px; font-size: 16px; }
+        .generic-module-view p { font-size: 13px; color: #555; }
+        /* ========================================== */
+        /* END: MARKET & POLLING MODULES */
+        /* ========================================== */
+
+        /* Bottom Navigation Bar with Fine Round Buttons */
+        .bottom-navigation { background: white; border-top: 1px solid var(--wa-border); display: flex; justify-content: space-around; padding: 6px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
+        .nav-tab-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 11px; cursor: pointer; text-decoration: none; position: relative; flex: 1; transition: color 0.2s; }
+        .nav-tab-item.active { color: var(--wa-teal); font-weight: bold; }
+        .nav-tab-item span.icon { font-size: 18px; margin-bottom: 2px; }
+        .nav-badge-count { position: absolute; top: 0; right: 28%; background: var(--wa-green); color: white; border-radius: 50%; padding: 1px 4px; font-size: 9px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- ========================================== -->
+    <!-- LOGIN SCREEN OVERLAY -->
+    <!-- ========================================== -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>Waqar Messenger لاگ ان</h2>
+            <input type="text" id="inputLoginName" class="login-input" placeholder="اپنا پورا نام درج کریں...">
+            <input type="email" id="inputLoginEmail" class="login-input" placeholder="ای میل ایڈریس درج کریں...">
+            <input type="text" id="inputLoginDp" class="login-input" placeholder="پروفাইল تصویر (DP) کا لنک درج کریں...">
+            <button class="login-btn" onclick="executeLoginUser()">محفوظ کریں اور داخل ہوں</button>
+        </div>
+    </div>
+
+    <!-- App Header -->
     <header>
         <div class="app-title">Waqar Messenger</div>
         <div class="header-icons">
-            <span>📷</span>
-            <span>🔍</span>
-            <span>⋮</span>
+            <span title="پروفাইল" onclick="alert('پروفাইল سیٹنگز')">👤</span>
+            <span title="تلاش">🔍</span>
+            <span title="مزید">⋮</span>
         </div>
     </header>
 
-    <!-- Top Stories / Following Bar -->
-    <div class="top-stories" id="topStoriesBar">
-        <!-- Dynamically populated followed members -->
+    <!-- Top Following Bar -->
+    <div class="top-stories-bar" id="topFollowingBar">
+        <!-- فالو شدہ ممبرز یہاں ڈائنامک شو ہوں گے -->
     </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Sidebar Chat List -->
-        <div class="sidebar">
-            <div class="search-box">
-                <input type="text" id="searchMembers" placeholder="فالو شدہ ممبرز تلاش کریں...">
+    <!-- Main Workspace Layout -->
+    <div class="workspace">
+        
+        <!-- Sidebar & Slider Layers -->
+        <div class="sidebar-layer">
+            <div class="search-container">
+                <input type="text" id="globalSearchInput" placeholder="تلاش کریں...">
             </div>
-            <div class="chat-list" id="chatListContainer">
-                <!-- Chat items loaded here -->
-            </div>
-        </div>
 
-        <!-- Chat Area -->
-        <div class="chat-area" id="chatAreaSection">
-            <div class="chat-header">
-                <div class="chat-header-profile">
-                    <img src="https://via.placeholder.com/40" class="chat-header-avatar" id="activeChatAvatar">
-                    <div class="chat-header-name" id="activeChatName">چیٹ منتخب کریں</div>
-                </div>
-                <div class="call-buttons">
-                    <span onclick="startAudioCall()" title="آڈیو کال">📞</span>
-                    <span onclick="startVideoCall()" title="ویڈیو کال">📹</span>
+            <!-- Slider Layer 1: Chats Module -->
+            <div id="paneChats" class="slider-pane active-pane">
+                <div id="chatsListContainer">
+                    <!-- چیٹ لسٹ یہاں آئے گی -->
                 </div>
             </div>
 
-            <div class="messages-container" id="messagesContainer">
-                <!-- Messages load here -->
+            <!-- Slider Layer 2: People / Members Module -->
+            <div id="panePeople" class="slider-pane generic-module-view">
+                <h3>ممبرز اور فالو لسٹ</h3>
+                <p>تمام رجسٹرڈ ممبرز کی فہرست یہاں موجود ہے۔</p>
             </div>
 
-            <div class="chat-input-bar">
-                <textarea id="messageInput" rows="1" placeholder="پیغام لکھیں..."></textarea>
-                <button class="send-btn" onclick="sendMessage()">➤</button>
+            <!-- Slider Layer 3: Market Module -->
+            <div id="paneMarket" class="slider-pane generic-module-view">
+                <h3>مارکیٹ پلیس</h3>
+                <p>مصنوعات اور اشیاء کی خرید و فروخت کا نظام۔</p>
+            </div>
+
+            <!-- Slider Layer 4: Polling Module -->
+            <div id="panePolling" class="slider-pane generic-module-view">
+                <h3>پولنگ سسٹم</h3>
+                <p>رائے شماری اور پولز کا ماڈیول۔</p>
             </div>
         </div>
+
+        <!-- Chat Workspace Area -->
+        <div class="chat-main-area">
+            <div class="chat-pane-header">
+                <div class="chat-active-profile">
+                    <img src="https://via.placeholder.com/36" class="chat-active-dp" id="activeChatDp">
+                    <div class="chat-active-title" id="activeChatTitle">چیٹ منتخب کریں</div>
+                </div>
+                <div class="call-action-btns">
+                    <span onclick="alert('آڈیو کال جاری ہے...')" title="آڈیو کال">📞</span>
+                    <span onclick="alert('ویڈیو کال شروع ہو رہی ہے...')" title="ویڈیو کال">📹</span>
+                </div>
+            </div>
+
+            <div class="messages-scroll-box" id="messagesBoxContainer">
+                <div style="text-align: center; color: #777; margin-top: 40px; font-size: 13px;">گفتگو شروع کرنے کے لیے سائیڈ لسٹ یا اوپر سے کسی ممبر کا انتخاب کریں۔</div>
+            </div>
+
+            <div class="chat-input-toolbar">
+                <textarea id="msgInputBox" rows="1" placeholder="پیغام لکھیں..."></textarea>
+                <button class="send-pill-btn" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('chats')">
+    <!-- Bottom Fine Navigation Bar -->
+    <div class="bottom-navigation">
+        <div class="nav-tab-item active" onclick="switchSliderPane('chats', this)">
             <span class="icon">💬</span>
             <span>چٹس</span>
-            <span class="nav-badge" id="totalUnreadBadge">0</span>
+            <span class="nav-badge-count" id="totalUnreadBadge">0</span>
         </div>
-        <div class="nav-item" onclick="switchTab('people')">
+        <div class="nav-tab-item" onclick="switchSliderPane('people', this)">
             <span class="icon">👥</span>
-            <span>ممبرز / لوگ</span>
+            <span>ممبرز</span>
         </div>
-        <div class="nav-item" onclick="openGroupModal()">
+        <div class="nav-tab-item" onclick="switchSliderPane('market', this)">
+            <span class="icon">🛒</span>
+            <span>مارکیٹ</span>
+        </div>
+        <div class="nav-tab-item" onclick="switchSliderPane('polling', this)">
+            <span class="icon">📊</span>
+            <span>پولنگ</span>
+        </div>
+        <div class="nav-tab-item" onclick="alert('نیا گروپ بنانے کا فیچر')">
             <span class="icon">➕</span>
-            <span>گروپ بنائیں</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('notifications')">
-            <span class="icon">🔔</span>
-            <span>نوٹیفیکیشن</span>
+            <span>گروپ</span>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration (آپ اپنی فائر بیس کی تفصیلات یہاں درج کریں گے)
+        // Connected Firebase Database Configuration
         const firebaseConfig = {
-            databaseURL: "YOUR_FIREBASE_DATABASE_URL_HERE"
+            databaseURL: "https://bazaar---app-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const database = firebase.database();
 
-        let currentUserId = "user_waqar"; // مثال کے طور پر موجودہ یوزر کی آئی ڈی
-        let activeRecipientId = null;
+        let loggedInUserId = localStorage.getItem('waqar_messenger_user_id') || null;
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            if(tabName === 'chats') {
-                // چیٹس ویو
-            } else if(tabName === 'people') {
-                alert("فالو یا ان فالو کرنے کے لیے ممبرز لسٹ یہاں شو ہوگی۔");
+        if (loggedInUserId) {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+
+        function executeLoginUser() {
+            let name = document.getElementById('inputLoginName').value.trim();
+            let email = document.getElementById('inputLoginEmail').value.trim();
+            let dp = document.getElementById('inputLoginDp').value.trim();
+
+            if (!name || !email) {
+                alert("براہ کرم نام اور ای میل لازمی درج کریں!");
+                return;
+            }
+
+            loggedInUserId = "user_" + name.toLowerCase().replace(/\s+/g, '_');
+            localStorage.setItem('waqar_messenger_user_id', loggedInUserId);
+            localStorage.setItem('waqar_messenger_user_name', name);
+            localStorage.setItem('waqar_messenger_user_email', email);
+            if(dp) localStorage.setItem('waqar_messenger_user_dp', dp);
+
+            document.getElementById('loginOverlay').style.display = 'none';
+            alert("لاگ ان کامیاب ہو گیا!");
+        }
+
+        function switchSliderPane(paneName, clickedElement) {
+            document.querySelectorAll('.nav-tab-item').forEach(tab => tab.classList.remove('active'));
+            if(clickedElement) clickedElement.classList.add('active');
+
+            document.querySelectorAll('.slider-pane').forEach(pane => pane.classList.remove('active-pane'));
+
+            if (paneName === 'chats') {
+                document.getElementById('paneChats').classList.add('active-pane');
+            } else if (paneName === 'people') {
+                document.getElementById('panePeople').classList.add('active-pane');
+            } else if (paneName === 'market') {
+                document.getElementById('paneMarket').classList.add('active-pane');
+            } else if (paneName === 'polling') {
+                document.getElementById('panePolling').classList.add('active-pane');
             }
         }
 
-        function startAudioCall() {
-            if(!activeRecipientId) { alert("پہلے کوئی چیٹ منتخب کریں!"); return; }
-            alert("آڈیو کال ملائی جا रही ہے...");
+        function sendChatMessage() {
+            let box = document.getElementById('msgInputBox');
+            let text = box.value.trim();
+            if(!text) return;
+            box.value = '';
         }
-
-        function startVideoCall() {
-            if(!activeRecipientId) { alert("پہلے کوئی چیٹ منتخب کریں!"); return; }
-            alert("ویڈیو کال شروع کی جا رہی ہے...");
-        }
-
-        function openGroupModal() {
-            let groupName = prompt("نئے گروپ کا نام درج کریں (لامحدود ممبرز کے ساتھ):");
-            if(groupName) {
-                alert("گروپ '" + groupName + "' کامیابی سے بن گیا ہے!");
-            }
-        }
-
-        function sendMessage() {
-            let input = document.getElementById('messageInput');
-            let text = input.value.trim();
-            if(!text || !activeRecipientId) return;
-
-            let msgData = {
-                sender: currentUserId,
-                receiver: activeRecipientId,
-                message: text,
-                timestamp: Date.now()
-            };
-
-            db.ref('messages/' + getChatRoomId(currentUserId, activeRecipientId)).push(msgData);
-            input.value = '';
-        }
-
-        function getChatRoomId(id1, id2) {
-            return id1 < id2 ? id1 + "_" + id2 : id2 + "_" + id1;
-        }
-
-        // سکرین اور ڈیٹا لوڈنگ کا عمل جاری رہے گا...
     </script>
 </body>
 </html>
