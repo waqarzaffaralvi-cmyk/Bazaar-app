@@ -22,17 +22,18 @@
         body { background-color: var(--wa-bg); color: var(--wa-dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* ========================================== */
-        /* START: LOGIN & PROFILE MODULE */
+        /* START: LOGIN MODULE */
         /* ========================================== */
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px); }
-        .login-card { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
+        .login-card { background: white; padding: 26px; border-radius: 14px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .login-card h2 { color: var(--wa-teal); margin-bottom: 16px; font-size: 20px; }
         .login-input { width: 100%; padding: 10px 14px; margin-bottom: 12px; border: 1px solid var(--wa-border); border-radius: 20px; outline: none; font-size: 13px; background: #fafafa; }
         .login-input:focus { border-color: var(--wa-teal); background: white; }
         .login-btn { background: var(--wa-teal); color: white; border: none; padding: 10px 20px; width: 100%; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .login-btn:hover { background: var(--wa-teal-dark); }
+        .error-msg { color: #d9534f; font-size: 12px; margin-bottom: 10px; display: none; }
         /* ========================================== */
-        /* END: LOGIN & PROFILE MODULE */
+        /* END: LOGIN MODULE */
         /* ========================================== */
 
         /* Header */
@@ -40,16 +41,11 @@
         .app-title { font-size: 18px; font-weight: bold; }
         .header-icons { display: flex; gap: 15px; font-size: 16px; cursor: pointer; }
 
-        /* ========================================== */
-        /* START: FOLLOWING & STORIES MODULE */
-        /* ========================================== */
+        /* Top Stories / Following Bar */
         .top-stories-bar { background: white; padding: 8px 12px; display: flex; overflow-x: auto; gap: 12px; border-bottom: 1px solid var(--wa-border); white-space: nowrap; min-height: 75px; align-items: center; }
         .story-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 50px; }
         .story-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 1px; object-fit: cover; }
         .story-lbl { font-size: 10px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; width: 55px; text-align: center; color: #555; }
-        /* ========================================== */
-        /* END: FOLLOWING & STORIES MODULE */
-        /* ========================================== */
 
         /* Main Workspace Container */
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -95,15 +91,10 @@
         /* END: CHAT SYSTEM MODULE */
         /* ========================================== */
 
-        /* ========================================== */
-        /* START: MARKET & POLLING MODULES */
-        /* ========================================== */
+        /* Generic Module Views */
         .generic-module-view { padding: 16px; overflow-y: auto; height: 100%; background: white; }
         .generic-module-view h3 { color: var(--wa-teal); margin-bottom: 10px; font-size: 16px; }
         .generic-module-view p { font-size: 13px; color: #555; }
-        /* ========================================== */
-        /* END: MARKET & POLLING MODULES */
-        /* ========================================== */
 
         /* Bottom Navigation Bar with Fine Round Buttons */
         .bottom-navigation { background: white; border-top: 1px solid var(--wa-border); display: flex; justify-content: space-around; padding: 6px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
@@ -116,15 +107,15 @@
 <body>
 
     <!-- ========================================== -->
-    <!-- LOGIN SCREEN OVERLAY -->
+    <!-- LOGIN SCREEN OVERLAY (SIMPLIFIED) -->
     <!-- ========================================== -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Waqar Messenger لاگ ان</h2>
+            <div id="loginErrorMsg" class="error-msg">براہ کرم نام اور ای میل درج کریں!</div>
             <input type="text" id="inputLoginName" class="login-input" placeholder="اپنا پورا نام درج کریں...">
             <input type="email" id="inputLoginEmail" class="login-input" placeholder="ای میل ایڈریس درج کریں...">
-            <input type="text" id="inputLoginDp" class="login-input" placeholder="پروفাইল تصویر (DP) کا لنک درج کریں...">
-            <button class="login-btn" onclick="executeLoginUser()">محفوظ کریں اور داخل ہوں</button>
+            <button class="login-btn" onclick="executeLoginUser()">داخل ہوں</button>
         </div>
     </div>
 
@@ -245,21 +236,21 @@
         function executeLoginUser() {
             let name = document.getElementById('inputLoginName').value.trim();
             let email = document.getElementById('inputLoginEmail').value.trim();
-            let dp = document.getElementById('inputLoginDp').value.trim();
+            let errorBox = document.getElementById('loginErrorMsg');
 
             if (!name || !email) {
-                alert("براہ کرم نام اور ای میل لازمی درج کریں!");
+                errorBox.style.display = 'block';
                 return;
             }
+            errorBox.style.display = 'none';
 
             loggedInUserId = "user_" + name.toLowerCase().replace(/\s+/g, '_');
             localStorage.setItem('waqar_messenger_user_id', loggedInUserId);
             localStorage.setItem('waqar_messenger_user_name', name);
             localStorage.setItem('waqar_messenger_user_email', email);
-            if(dp) localStorage.setItem('waqar_messenger_user_dp', dp);
+            localStorage.setItem('waqar_messenger_user_dp', 'https://via.placeholder.com/40');
 
             document.getElementById('loginOverlay').style.display = 'none';
-            alert("لاگ ان کامیاب ہو گیا!");
         }
 
         function switchSliderPane(paneName, clickedElement) {
