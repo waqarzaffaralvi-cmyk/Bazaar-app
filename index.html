@@ -31,7 +31,8 @@ label{font-size:13px;font-weight:700;color:#37474f;display:block;margin-top:6px}
 .btn-dark{background:#112e12;color:#fff}
 .btn-danger{background:#c62828;color:#fff;margin-top:15px}
 .alert-box{background:#e8f5e9;color:#2e7d32;padding:12px;border-radius:8px;margin-top:10px;font-size:13px;border-right:4px solid #2e7d32;display:none}
-.member-card{display:flex;align-items:center;background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 2px 4px rgba(0,0,0,.02)}
+.member-card{display:flex;align-items:center;background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 2px 4px rgba(0,0,0,.02);cursor:pointer;transition:background 0.2s}
+.member-card:hover{background:#f1f8e9;}
 .member-avatar{width:50px;height:50px;border-radius:50%;background:#2e7d32;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:17px;margin-left:12px;flex-shrink:0;overflow:hidden}
 .member-avatar img{width:100%;height:100%;object-fit:cover}
 .member-details{flex-grow:1;text-align:right}
@@ -65,7 +66,7 @@ label{font-size:13px;font-weight:700;color:#37474f;display:block;margin-top:6px}
 
 <div class="header">
   <div>
-    <span style="background:#ffb300;color:#000;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:bold;">سرمایہ: $5,000</span>
+    <span style="background:#ffb300;color:#000;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:bold;">سرمایه: $5,000</span>
     <span id="connectionBadge" class="badge-status">⏳ کنیکٹنگ...</span>
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
@@ -127,7 +128,7 @@ label{font-size:13px;font-weight:700;color:#37474f;display:block;margin-top:6px}
   <!-- پینل 2: ممبرز -->
   <div id="panel-2" class="panel">
     <div class="box" style="padding:10px;">
-      <h3>👥 لائیو رجسٹرڈ ممبرز</h3>
+      <h3>👥 لائیو رجسٹرڈ ممبرز (رابطہ کرنے کے لیے کلک کریں)</h3>
       <div id="membersContainer" style="max-height:70vh;overflow-y:auto;"></div>
     </div>
   </div>
@@ -143,10 +144,10 @@ label{font-size:13px;font-weight:700;color:#37474f;display:block;margin-top:6px}
   <!-- پینل 4: چیٹ (واٹس ایپ طرز کا نیا ان باکس) -->
   <div id="panel-4" class="panel">
     <div class="box" style="padding:10px;">
-      <h3>💬 لائیو کمیونٹی و پروڈکٹ چیٹ</h3>
+      <h3 id="chatHeaderTitle">💬 لائیو کمیونٹی و پروڈکٹ چیٹ</h3>
       <div class="chat-wrapper">
         <div id="chatHistoryContainer" class="chat-messages">
-          <div class="msg-bubble other-msg"><b>سسٹم:</b> چیٹ سسٹم سے رابطہ قائم ہے۔ پروڈکٹ پر بحث شروع کریں۔</div>
+          <div class="msg-bubble other-msg"><b>سسٹم:</b> چیٹ سسٹم سے رابطہ قائم ہے۔ کسی بھی ممبر سے بات کرنے کے لیے "ممبرز" پینل سے ان پر کلک کریں۔</div>
         </div>
         
         <!-- اٹیچمنٹ پاپ اپ مینیو -->
@@ -188,7 +189,7 @@ if (!firebase.apps.length) {
 }
 const db = firebase.database();
 
-// لائیو کنکشن اسٹیٹس مانیٹر (فوری سبز سگنل)
+// لائیو کنکشن اسٹیٹس مانیٹر
 db.ref(".info/connected").on("value", (snapshot) => {
   const badge = document.getElementById('connectionBadge');
   if (snapshot.val() === true) {
@@ -219,6 +220,7 @@ function changePanel(index, titleText) {
   if (index === 1) fetchMarketProducts();
 }
 
+// صفحہ لوڈ ہوتے ہی لوکل اسٹوریج سے پرانا ڈیٹا خود بخود لوڈ ہو جائے گا
 window.onload = function() {
   const n = localStorage.getItem('bz_name') || '';
   const e = localStorage.getItem('bz_email') || '';
@@ -234,6 +236,7 @@ window.onload = function() {
     const img = document.getElementById('profileImagePreview');
     img.src = d;
     img.style.display = 'block';
+    base64DpString = d;
   }
 
   fetchMembers();
@@ -283,6 +286,7 @@ function saveUserToCloud() {
     return;
   }
 
+  // ڈیٹا کو مستقل طور پر لوکل اسٹوریج میں محفوظ کرنا
   localStorage.setItem('bz_name', name);
   localStorage.setItem('bz_email', email);
   localStorage.setItem('bz_phone', phone);
@@ -298,7 +302,7 @@ function saveUserToCloud() {
     timestamp: Date.now()
   }).then(() => {
     document.getElementById('successMessageBox').style.display = 'block';
-    alert('آپ کا ڈیٹا کامیابی کے ساتھ فائر بیس پر رجسٹر ہو گیا ہے! 🔥');
+    alert('آپ کا ڈیٹا کامیابی کے ساتھ محفوظ اور رجسٹر ہو گیا ہے! 🔥');
     fetchMembers();
   }).catch(err => {
     alert('خرابی: ' + err.message);
@@ -315,17 +319,27 @@ function fetchMembers() {
     Object.keys(data).forEach(key => {
       const item = data[key];
       const avatarHtml = item.dp ? `<img src="${sanitize(item.dp)}" alt="DP">` : sanitize((item.name || '').substring(0, 2).toUpperCase());
+      
+      // ہر ممبر کے کارڈ پر کلک کرنے سے اس کے ساتھ چیٹ شروع کرنے کا فنکشن
       htmlContent += `
-        <div class="member-card">
+        <div class="member-card" onclick="startChatWithMember('${sanitize(item.name)}')">
           <div class="member-avatar">${avatarHtml}</div>
           <div class="member-details">
             <div style="font-size:14px;font-weight:bold;color:#112e12;">${sanitize(item.name)}${item.name === currentUserName ? ' (آپ)' : ''}</div>
-            <div style="font-size:11px;color:#555;margin-top:2px;">${sanitize(item.role) || 'ممبر'} | ${sanitize(item.email)}</div>
+            <div style="font-size:11px;color:#555;margin-top:2px;">${sanitize(item.role) || 'ممبر'} | گفتگو کے لیے کلک کریں 💬</div>
           </div>
         </div>`;
     });
     container.innerHTML = htmlContent || '<p style="font-size:13px;color:#777;text-align:center;padding:15px;">کوئی ممبر موجود نہیں۔</p>';
   });
+}
+
+// کسی خاص ممبر پر کلک کرنے پر چیٹ پینل کھولنا
+let selectedTargetMember = "";
+function startChatWithMember(memberName) {
+  selectedTargetMember = memberName;
+  document.getElementById('chatHeaderTitle').innerText = `💬 چیٹ: ${memberName} کے ساتھ`;
+  changePanel(4, '💬 چیٹ');
 }
 
 /* واٹس ایپ طرز کے چیٹ فیچرز */
@@ -366,7 +380,7 @@ function handleChatFileSelected(event) {
 }
 
 function triggerVoiceNote() {
-  alert('🎤 وائس نوٹ ریکارڈنگ فیچر فعال ہے۔ (جلد لائیو اپ ڈیٹ ہوگا)');
+  alert('🎤 وائس نوٹ ریکارڈنگ فیچر فعال ہے۔');
 }
 
 function triggerAudioCall() {
@@ -402,6 +416,7 @@ function sendCustomChatMessage(contentHtml) {
   const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   db.ref('chats').push({
     sender: myNameVal,
+    target: selectedTargetMember || 'عام کمیونٹی',
     message: contentHtml,
     time: timeString
   }).catch(err => {
@@ -420,7 +435,7 @@ function listenLiveChats() {
       const bubble = document.createElement('div');
       bubble.className = `msg-bubble ${isMyMessage ? 'my-msg' : 'other-msg'}`;
       bubble.innerHTML = `
-        <div style="font-size:10px;font-weight:bold;color:#2e7d32;margin-bottom:2px;">${sanitize(d.sender)}</div>
+        <div style="font-size:10px;font-weight:bold;color:#2e7d32;margin-bottom:2px;">${sanitize(d.sender)} ${d.target && d.target !== 'عام کمیونٹی' ? ' ⬅️ ' + sanitize(d.target) : ''}</div>
         <div>${d.message}</div>
         <div style="font-size:9px;color:#777;text-align:left;margin-top:2px;">${sanitize(d.time)}</div>
       `;
