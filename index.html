@@ -89,7 +89,7 @@ input{font-size:15px}
 .ib .snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(255,122,24,.4)}
 .ib .snd span{display:inline-block;transform:scaleX(-1)}
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;z-index:99;max-width:90%;text-align:center}
-.mi{max-width:100%;border-radius:12px;display:block;margin-bottom:4px}
+.mi{width:220px;max-width:100%;height:auto;max-height:300px;object-fit:cover;border-radius:12px;display:block;margin-bottom:4px}
 #call,#inc{position:fixed;inset:0;z-index:90;background:linear-gradient(160deg,#0f2a12,#1e4620 55%,#134e5e);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:transparent}
 #callAv{position:relative;z-index:2}
@@ -99,6 +99,13 @@ input{font-size:15px}
 .cc button{width:64px;height:64px;border-radius:50%;font-size:26px;background:rgba(255,255,255,.25);color:#fff}
 .cc .endb{background:#e53935}.cc .yesb{background:#2ecc71}
 #inc b{font-size:24px}#inc small{font-size:15px}
+.m.gone{opacity:.8}.ph{font-size:14px;padding:4px 2px}.ph.tap{cursor:pointer;font-weight:bold}
+#viewer{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center}
+#viewer img{max-width:100%;max-height:100%}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:96;background:#fff;border-radius:20px 20px 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 -6px 24px rgba(0,0,0,.3)}
+#sheet button{padding:14px;border-radius:14px;background:#f3f5f8;font-size:15px;font-weight:bold}
+#sheet .cn{background:#e8f5e9;color:#1e4620}
+.ib .pin.on{background:#ff7a18;color:#fff}
 </style>
 </head>
 <body>
@@ -146,6 +153,7 @@ input{font-size:15px}
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
       <button id="pSave" class="big">💾 محفوظ کریں</button>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.0</div>
     </div>
   </div>
   <div id="nav">
@@ -168,6 +176,7 @@ input{font-size:15px}
   <div id="msgs"></div>
   <div class="ib">
     <button class="pin" id="cPin">📎</button>
+    <button class="pin" id="onceBtn">⏱️</button>
     <input id="cInp" placeholder="پیغام لکھیں..." autocomplete="off">
     <button class="snd" id="cSend"><span>➤</span></button>
   </div>
@@ -184,12 +193,14 @@ input{font-size:15px}
   <div class="cc"><button id="incNo" class="endb">✖</button><button id="incYes" class="yesb">📞</button></div>
 </div>
 <input type="file" id="imgF" accept="image/*" class="hide">
+<div id="viewer" class="hide"><img id="vimg" alt=""></div>
+<div id="sheet" class="hide"></div>
 <div id="toast" class="hide"></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getDatabase,ref,set,update,push,onValue,onChildAdded,onDisconnect,serverTimestamp,increment,query,limitToLast,remove,get} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {getDatabase,ref,set,update,push,onValue,onChildAdded,onChildChanged,onDisconnect,serverTimestamp,increment,query,limitToLast,remove,get} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const app=initializeApp({
   apiKey:"AIzaSyCIx55s0v8hwsVmf-QwfrF2HlMIH3TBlC4",
@@ -269,19 +280,21 @@ $('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox()};
 function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';
   $('cAv').replaceChildren(av(u,42))}
 function markRead(id){if(inbox[id]&&inbox[id].unread)update(ref(db,`userChats/${me}/${id}`),{unread:0})}
-function addMsg(m){const b=h('div','m '+(m.from===me?'me':'ot'),m.text||'');if(m.img&&String(m.img).startsWith('data:image/')){const im=h('img','mi');im.src=m.img;b.prepend(im)}b.append(h('small','',tm(m.ts||Date.now())));
-  const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
+function addMsg(m,k){if(hs().includes(k))return;const b=h('div','m '+(m.from===me?'me':'ot'));bub[k]={b,m};fill(b,m,k);lp(b,k);const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
 function openChat(id){
   closeChat();cur=id;head();$('msgs').replaceChildren();$('chat').classList.remove('hide');
-  unsubMsgs=onChildAdded(query(ref(db,`chats/${cid(me,id)}/messages`),limitToLast(100)),s=>{
-    const m=s.val();addMsg(m);if(cur===id&&m.from!==me)markRead(id)});
+  Object.keys(bub).forEach(k=>delete bub[k]);
+  const qq=query(ref(db,`chats/${cid(me,id)}/messages`),limitToLast(100));
+  const u1=onChildAdded(qq,s=>{const m=s.val();addMsg(m,s.key);if(cur===id&&m.from!==me)markRead(id)});
+  const u2=onChildChanged(qq,s=>{const o=bub[s.key];if(o){o.m=s.val();fill(o.b,o.m,s.key)}});
+  unsubMsgs=()=>{u1();u2()};
   markRead(id);setTimeout(()=>$('cInp').focus(),100);
 }
 function closeChat(){if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
-async function send(img){
+async function send(img,once){
   const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img)$('cInp').value='';
-  const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=img?'📷 تصویر':t.slice(0,60),up={};
-  up[`chats/${c}/messages/${k}`]=img?{from:me,img,ts}:{from:me,text:t,ts};
+  const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t.slice(0,60),up={};
+  up[`chats/${c}/messages/${k}`]=img?{from:me,img,once:!!once,ts}:{from:me,text:t,ts};
   up[`userChats/${me}/${cur}/last`]=l;up[`userChats/${me}/${cur}/ts`]=ts;up[`userChats/${me}/${cur}/unread`]=0;
   up[`userChats/${cur}/${me}/last`]=l;up[`userChats/${cur}/${me}/ts`]=ts;up[`userChats/${cur}/${me}/unread`]=increment(1);
   try{await update(ref(db),up)}catch(e){toast('پیغام نہیں گیا: '+e.code)}
@@ -313,7 +326,7 @@ $('pOut').onclick=async()=>{try{await set(ref(db,'users/'+me+'/online'),false)}c
 
 /* ---------- تصویر چھوٹی کرنا ---------- */
 function shrink(f,M,q,cb){const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,M/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',q))};i.src=r.result};r.readAsDataURL(f)}
-$('imgF').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f&&cur)shrink(f,800,.7,d=>send(d))};
+$('imgF').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f&&cur)shrink(f,800,.7,d=>{send(d,onceMode);onceMode=false;$('onceBtn').classList.remove('on')})};
 
 /* ---------- آڈیو / ویڈیو کال (WebRTC) ---------- */
 const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
@@ -392,6 +405,37 @@ function endCall(notify){
 $('btEnd').onclick=()=>endCall(true);
 $('btMic').onclick=()=>{const t=ls&&ls.getAudioTracks()[0];if(t){t.enabled=!t.enabled;$('btMic').textContent=t.enabled?'🎤':'🔇'}};
 $('btCam').onclick=()=>{const t=ls&&ls.getVideoTracks()[0];if(t){t.enabled=!t.enabled;$('btCam').textContent=t.enabled?'📷':'🚫'}};
+
+/* ---------- پیغام: دیکھنا، مٹانا ---------- */
+const bub={};let onceMode=false;
+const hs=()=>{try{return JSON.parse(localStorage.getItem('hid_'+cid(me,cur))||'[]')}catch(e){return[]}};
+const mref=k=>ref(db,`chats/${cid(me,cur)}/messages/${k}`);
+$('onceBtn').onclick=()=>{onceMode=!onceMode;$('onceBtn').classList.toggle('on',onceMode);toast(onceMode?'⏱️ اگلی تصویر ایک بار دیکھنے کے بعد مٹ جائے گی':'عام تصویر موڈ')};
+function fill(b,m,k){
+  b.replaceChildren();b.classList.toggle('gone',!!(m.del||m.gone));const mine=m.from===me;
+  if(m.del)b.append(h('div','ph','🚫 یہ پیغام مٹا دیا گیا'));
+  else if(m.once){
+    if(m.gone)b.append(h('div','ph','👁️ تصویر دیکھ لی گئی'));
+    else if(mine)b.append(h('div','ph','⏱️ ایک بار والی تصویر بھیجی گئی'));
+    else{const t=h('div','ph tap','👁️ ایک بار دیکھنے کے لیے ٹیپ کریں');t.onclick=()=>viewOnce(k,m);b.append(t)}
+  }else{
+    if(m.img&&String(m.img).startsWith('data:image/')){const im=h('img','mi');im.src=m.img;im.onclick=()=>openViewer(m.img);b.append(im)}
+    if(m.text)b.append(h('div','',m.text));
+  }
+  b.append(h('small','',tm(m.ts||Date.now())));
+}
+function openViewer(src){$('vimg').src=src;$('viewer').classList.remove('hide')}
+$('viewer').onclick=()=>{$('viewer').classList.add('hide');$('vimg').src=''};
+async function viewOnce(k,m){const src=m.img;if(!src)return;
+  try{await update(mref(k),{gone:true,img:null})}catch(e){toast('خرابی: '+e.code);return}openViewer(src)}
+function lp(b,k){let t=null;const st=()=>{t=setTimeout(()=>sheet(k),550)},cl=()=>clearTimeout(t);
+  b.addEventListener('touchstart',st,{passive:true});['touchend','touchmove','touchcancel'].forEach(e=>b.addEventListener(e,cl,{passive:true}));
+  b.addEventListener('contextmenu',e=>{e.preventDefault();sheet(k)})}
+function sheet(k){const o=bub[k];if(!o)return;const m=o.m,sh=$('sheet');sh.replaceChildren();
+  const add=(t,f,c)=>{const x=h('button',c||'',t);x.onclick=()=>{sh.classList.add('hide');if(f)f()};sh.append(x)};
+  if(m.from===me&&!m.del)add('🗑️ سب کے لیے مٹائیں',()=>update(mref(k),{del:true,text:null,img:null}));
+  add('🙈 صرف میرے لیے مٹائیں',()=>{const a=hs();a.push(k);localStorage.setItem('hid_'+cid(me,cur),JSON.stringify(a));o.b.remove();delete bub[k]});
+  add('بند کریں',null,'cn');sh.classList.remove('hide')}
 </script>
 </body>
 </html>
