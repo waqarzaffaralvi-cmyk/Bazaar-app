@@ -1,281 +1,293 @@
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waqar Professional Messenger & Social</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <style>
-        :root {
-            --wa-teal: #075E54;
-            --wa-teal-dark: #128C7E;
-            --wa-green: #25D366;
-            --wa-light-green: #DCF8C6;
-            --wa-bg: #ECE5DD;
-            --wa-dark: #222222;
-            --wa-gray: #f0f2f5;
-            --wa-border: #d1d7db;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--wa-bg); color: var(--wa-dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بازار ایپ</title>
+<style>
+:root{--g1:#1e4620;--g2:#2e9e4f;--gold:#ffc107;--bg:#f2f5f9;--tx:#222;--mu:#7a8594}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx)}
+.hide{display:none!important}
+button{cursor:pointer;border:none;font-family:inherit}
+input{font-size:15px}
 
-        /* ========================================== */
-        /* START: LOGIN MODULE */
-        /* ========================================== */
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
-        .login-card { background: white; padding: 26px; border-radius: 14px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .login-card h2 { color: var(--wa-teal); margin-bottom: 16px; font-size: 20px; }
-        .login-input { width: 100%; padding: 10px 14px; margin-bottom: 12px; border: 1px solid var(--wa-border); border-radius: 20px; outline: none; font-size: 13px; background: #fafafa; }
-        .login-input:focus { border-color: var(--wa-teal); background: white; }
-        .login-btn { background: var(--wa-teal); color: white; border: none; padding: 10px 20px; width: 100%; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .login-btn:hover { background: var(--wa-teal-dark); }
-        .error-msg { color: #d9534f; font-size: 12px; margin-bottom: 10px; display: none; }
-        /* ========================================== */
-        /* END: LOGIN MODULE */
-        /* ========================================== */
+/* لاگ ان */
+#auth{min-height:100%;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#0f2a12,#1e4620 45%,#2e9e4f)}
+.acard{background:#fff;width:100%;max-width:380px;border-radius:24px;padding:26px 22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.logo{width:74px;height:74px;margin:0 auto 10px;border-radius:22px;background:linear-gradient(135deg,var(--gold),#ff7a18);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 8px 20px rgba(255,122,24,.4)}
+.acard h1{text-align:center;color:var(--g1);font-size:22px}
+.acard p{text-align:center;color:var(--mu);font-size:13px;margin:4px 0 14px}
+.tabs{display:flex;background:#eef1f5;border-radius:14px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px;border-radius:11px;background:none;font-weight:bold;color:var(--mu);font-size:14px}
+.tabs button.on{background:#fff;color:var(--g1);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.fld{width:100%;padding:13px 14px;margin-bottom:10px;border:1.5px solid #dde3ea;border-radius:14px;background:#fafbfc;outline:none}
+.fld:focus{border-color:var(--g2);background:#fff}
+.big{width:100%;padding:14px;border-radius:16px;color:#fff;font-size:16px;font-weight:bold;background:linear-gradient(135deg,#11998e,#38ef7d 130%);box-shadow:0 8px 18px rgba(17,153,142,.35)}
+.big:active{transform:scale(.98)}
+#aerr{color:#d9302c;font-size:13px;text-align:center;min-height:18px;margin-bottom:8px}
 
-        /* Header */
-        header { background-color: var(--wa-teal); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.15); z-index: 10; }
-        .app-title { font-size: 18px; font-weight: bold; }
-        .header-icons { display: flex; gap: 15px; font-size: 16px; cursor: pointer; }
+/* ایپ */
+#app{height:100%;display:flex;flex-direction:column}
+.tab{flex:1;overflow-y:auto;padding-bottom:78px}
+.top{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:16px 16px 18px;border-radius:0 0 26px 26px;box-shadow:0 6px 18px rgba(30,70,32,.3)}
+.top h2{font-size:20px;margin-bottom:10px}
+.search{width:100%;padding:11px 16px;border:none;border-radius:22px;outline:none;background:rgba(255,255,255,.95)}
+.sec{font-size:13px;font-weight:bold;color:var(--mu);margin:16px 16px 8px}
+#people{display:flex;gap:14px;overflow-x:auto;padding:4px 16px 8px}
+#people::-webkit-scrollbar{display:none}
+.pp{flex:0 0 auto;width:66px;text-align:center;cursor:pointer}
+.pp span{display:block;font-size:12px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ring{position:relative;width:62px;height:62px;padding:3px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107,#2e9e4f,#2196f3);margin:0 auto}
+.ring .av{border:2px solid #fff}
+.dot{position:absolute;bottom:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#2ecc71;border:2.5px solid #fff}
+.av{border-radius:50%;background:linear-gradient(135deg,#2e9e4f,#1e4620);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden;flex-shrink:0}
+.av img{width:100%;height:100%;object-fit:cover}
+.row{display:flex;align-items:center;gap:12px;margin:0 12px 6px;padding:10px 12px;background:#fff;border-radius:16px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.row:active{background:#f0f7f1}
+.row .mid{flex:1;min-width:0}
+.row b{display:block;font-size:15px}
+.row small{display:block;color:var(--mu);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.row .meta{text-align:left;font-size:11px;color:var(--mu)}
+.bd{display:inline-block;min-width:22px;padding:2px 7px;margin-top:4px;border-radius:12px;background:linear-gradient(135deg,#ff416c,#ff4b2b);color:#fff;font-weight:bold;font-size:12px;text-align:center}
+.row.un b{color:#000}.row.un small{color:#222;font-weight:bold}
+.hint{color:var(--mu);font-size:13px;text-align:center;padding:18px 20px;line-height:1.8}
+.soon{margin:50px 24px;text-align:center;background:#fff;border-radius:24px;padding:34px 20px;box-shadow:0 6px 20px rgba(0,0,0,.07)}
+.soon .ic{font-size:56px}.soon h3{margin:10px 0 6px;color:var(--g1)}.soon p{color:var(--mu);font-size:14px;line-height:1.8}
 
-        /* Top Stories / Following Bar */
-        .top-stories-bar { background: white; padding: 8px 12px; display: flex; overflow-x: auto; gap: 12px; border-bottom: 1px solid var(--wa-border); white-space: nowrap; min-height: 75px; align-items: center; }
-        .story-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 50px; }
-        .story-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 1px; object-fit: cover; }
-        .story-lbl { font-size: 10px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; width: 55px; text-align: center; color: #555; }
+/* نیچے کی پٹی */
+#nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;display:flex;border-top:1px solid #e3e8ee;box-shadow:0 -4px 16px rgba(0,0,0,.08);z-index:20}
+#nav button{flex:1;background:none;color:var(--mu);font-size:11px;font-weight:600;position:relative}
+#nav button i{display:flex;align-items:center;justify-content:center;width:42px;height:28px;margin:0 auto 2px;border-radius:14px;font-style:normal;font-size:18px;transition:.2s}
+#nav button.on{color:var(--g1)}
+#nav button.on i{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
+#nbd{position:absolute;top:2px;right:calc(50% - 26px);min-width:18px;padding:1px 5px;border-radius:10px;background:#ff3b30;color:#fff;font-size:10px;font-weight:bold}
 
-        /* Main Workspace Container */
-        .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
+/* پروفائل */
+.pf{text-align:center;padding:20px 22px}
+.pf .av{margin:0 auto 10px;border:4px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.pf .sm{background:#e8f5e9;color:var(--g1);padding:8px 16px;border-radius:18px;font-size:13px;font-weight:bold;margin-bottom:16px}
+.pf label{display:block;text-align:right;font-size:13px;font-weight:bold;color:#555;margin:2px 4px 4px}
+.red{background:linear-gradient(135deg,#ff416c,#ff4b2b);margin-top:10px}
 
-        /* Sidebar & Slider Layers Container */
-        .sidebar-layer { width: 330px; background: white; border-left: 1px solid var(--wa-border); display: flex; flex-direction: column; height: 100%; }
-        .search-container { padding: 8px 12px; background: #f6f6f6; border-bottom: 1px solid #eee; }
-        .search-container input { width: 100%; padding: 7px 14px; border-radius: 18px; border: 1px solid var(--wa-border); outline: none; background: white; font-size: 13px; }
-
-        /* Slider Layer Panes */
-        .slider-pane { flex: 1; overflow-y: auto; display: none; }
-        .slider-pane.active-pane { display: block; }
-
-        /* Chat List Items */
-        .chat-node-item { display: flex; align-items: center; padding: 10px 14px; border-bottom: 1px solid #f2f2f2; cursor: pointer; transition: background 0.15s; }
-        .chat-node-item:hover { background: var(--wa-gray); }
-        .chat-node-avatar { width: 42px; height: 42px; border-radius: 50%; margin-left: 10px; object-fit: cover; }
-        .chat-node-info { flex: 1; overflow: hidden; }
-        .chat-node-name { font-weight: bold; font-size: 14px; color: #111; }
-        .chat-node-lastmsg { font-size: 12px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-        .chat-badge { background: var(--wa-green); color: white; border-radius: 50%; padding: 1px 5px; font-size: 10px; font-weight: bold; min-width: 18px; text-align: center; }
-
-        /* ========================================== */
-        /* START: CHAT SYSTEM MODULE */
-        /* ========================================== */
-        .chat-main-area { flex: 1; display: flex; flex-direction: column; background: var(--wa-bg); height: 100%; }
-        .chat-pane-header { background: #f0f2f5; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--wa-border); }
-        .chat-active-profile { display: flex; align-items: center; gap: 10px; }
-        .chat-active-dp { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-        .chat-active-title { font-weight: bold; font-size: 15px; color: #222; }
-        .call-action-btns { display: flex; gap: 14px; font-size: 17px; color: var(--wa-teal); cursor: pointer; }
-
-        .messages-scroll-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .msg-bubble { max-width: 65%; padding: 8px 12px; border-radius: 8px; font-size: 13px; position: relative; word-wrap: break-word; box-shadow: 0 1px 0.5px rgba(0,0,0,0.1); }
-        .msg-bubble.incoming { background: white; align-self: flex-start; border-top-right-radius: 0; }
-        .msg-bubble.outgoing { background: var(--wa-light-green); align-self: flex-end; border-top-left-radius: 0; }
-
-        .chat-input-toolbar { background: #f0f2f5; padding: 8px 14px; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--wa-border); }
-        .chat-input-toolbar textarea { flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid var(--wa-border); outline: none; resize: none; max-height: 80px; font-size: 13px; background: white; }
-        .send-pill-btn { background: var(--wa-teal); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background 0.2s; }
-        .send-pill-btn:hover { background: var(--wa-teal-dark); }
-        /* ========================================== */
-        /* END: CHAT SYSTEM MODULE */
-        /* ========================================== */
-
-        /* Generic Module Views */
-        .generic-module-view { padding: 16px; overflow-y: auto; height: 100%; background: white; }
-        .generic-module-view h3 { color: var(--wa-teal); margin-bottom: 10px; font-size: 16px; }
-        .generic-module-view p { font-size: 13px; color: #555; }
-
-        /* Bottom Navigation Bar with Fine Round Buttons */
-        .bottom-navigation { background: white; border-top: 1px solid var(--wa-border); display: flex; justify-content: space-around; padding: 6px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
-        .nav-tab-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 11px; cursor: pointer; text-decoration: none; position: relative; flex: 1; transition: color 0.2s; }
-        .nav-tab-item.active { color: var(--wa-teal); font-weight: bold; }
-        .nav-tab-item span.icon { font-size: 18px; margin-bottom: 2px; }
-        .nav-badge-count { position: absolute; top: 0; right: 28%; background: var(--wa-green); color: white; border-radius: 50%; padding: 1px 4px; font-size: 9px; font-weight: bold; }
-    </style>
+/* چیٹ */
+#chat{position:fixed;inset:0;z-index:50;background:#e9eef3;display:flex;flex-direction:column}
+.ch{display:flex;align-items:center;gap:10px;padding:10px 12px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.ch .back{background:none;color:#fff;font-size:24px;padding:0 4px}
+.ch .nm{flex:1;min-width:0}.ch .nm b{display:block;font-size:16px}.ch .nm small{font-size:12px;opacity:.9}
+.cb{width:40px;height:40px;border-radius:50%;font-size:18px;background:rgba(255,255,255,.2);color:#fff}
+.cb:active{background:rgba(255,255,255,.4)}
+#msgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:7px}
+.m{max-width:78%;padding:9px 13px 5px;border-radius:18px;font-size:15px;line-height:1.7;word-wrap:break-word;white-space:pre-wrap}
+.m small{display:block;font-size:10px;opacity:.7;margin-top:1px;text-align:left}
+.m.me{align-self:flex-start;background:linear-gradient(135deg,#11998e,#2e9e4f);color:#fff;border-bottom-right-radius:5px}
+.m.ot{align-self:flex-end;background:#fff;border-bottom-left-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.ib{display:flex;align-items:center;gap:8px;padding:9px 10px;background:#fff;border-top:1px solid #dfe5ec}
+.ib .pin{width:40px;height:40px;border-radius:50%;background:#eef1f5;font-size:18px}
+.ib input{flex:1;padding:12px 16px;border:1.5px solid #dde3ea;border-radius:24px;outline:none;background:#f6f8fa}
+.ib .snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(255,122,24,.4)}
+.ib .snd span{display:inline-block;transform:scaleX(-1)}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;z-index:99;max-width:90%;text-align:center}
+</style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- LOGIN SCREEN OVERLAY (SIMPLIFIED) -->
-    <!-- ========================================== -->
-    <div id="loginOverlay">
-        <div class="login-card">
-            <h2>Waqar Messenger لاگ ان</h2>
-            <div id="loginErrorMsg" class="error-msg">براہ کرم نام اور ای میل درج کریں!</div>
-            <input type="text" id="inputLoginName" class="login-input" placeholder="اپنا پورا نام درج کریں...">
-            <input type="email" id="inputLoginEmail" class="login-input" placeholder="ای میل ایڈریس درج کریں...">
-            <button class="login-btn" onclick="executeLoginUser()">داخل ہوں</button>
-        </div>
+<!-- لاگ ان / نیا اکاؤنٹ -->
+<div id="auth" class="hide">
+  <div class="acard">
+    <div class="logo">🛍️</div>
+    <h1>بازار ایپ</h1>
+    <p>خرید و فروخت، چیٹ اور رائے شماری ایک جگہ</p>
+    <div class="tabs"><button id="tLog" class="on">لاگ ان</button><button id="tReg">نیا اکاؤنٹ</button></div>
+    <input id="aName" class="fld hide" placeholder="آپ کا پورا نام">
+    <input id="aMail" class="fld" type="email" placeholder="ای میل" dir="ltr" style="text-align:right">
+    <input id="aPass" class="fld" type="password" placeholder="پاس ورڈ (کم از کم 6 حروف)" dir="ltr" style="text-align:right">
+    <div id="aerr"></div>
+    <button id="aGo" class="big">لاگ ان کریں</button>
+  </div>
+</div>
+
+<!-- مین ایپ -->
+<div id="app" class="hide">
+  <div id="t-chat" class="tab">
+    <div class="top"><h2>💬 چیٹس</h2><input id="srch" class="search" placeholder="🔍 نام سے تلاش کریں"></div>
+    <div class="sec">ممبرز</div>
+    <div id="people"></div>
+    <div class="sec">آپ کی چیٹس</div>
+    <div id="inbox"></div>
+  </div>
+  <div id="t-market" class="tab hide">
+    <div class="top"><h2>🛒 مارکیٹ</h2></div>
+    <div class="soon"><div class="ic">🛍️</div><h3>جلد آ رہی ہے</h3><p>نئی اور استعمال شدہ چیزیں تصویر کے ساتھ بیچنا اور خریدنا اگلے مرحلے میں شامل ہو گا۔</p></div>
+  </div>
+  <div id="t-poll" class="tab hide">
+    <div class="top"><h2>📊 پولنگ</h2></div>
+    <div class="soon"><div class="ic">🗳️</div><h3>جلد آ رہی ہے</h3><p>دو امیدواروں کی تصویروں کے ساتھ ووٹنگ (ایک آدمی ایک ووٹ) اگلے مرحلے میں شامل ہو گی۔</p></div>
+  </div>
+  <div id="t-me" class="tab hide">
+    <div class="top"><h2>👤 میری پروفائل</h2></div>
+    <div class="pf">
+      <div id="meAv"></div>
+      <button class="sm" id="dpBtn">📷 تصویر بدلیں</button>
+      <input type="file" id="dpFile" accept="image/*" class="hide">
+      <label>نام</label><input id="pName" class="fld">
+      <label>تعارف / کاروبار</label><input id="pBio" class="fld" placeholder="مثلاً: دکاندار، خریدار...">
+      <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
+      <button id="pSave" class="big">💾 محفوظ کریں</button>
+      <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
     </div>
+  </div>
+  <div id="nav">
+    <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
+    <button data-t="market"><i>🛒</i>مارکیٹ</button>
+    <button data-t="poll"><i>📊</i>پولنگ</button>
+    <button data-t="me"><i>👤</i>پروفائل</button>
+  </div>
+</div>
 
-    <!-- App Header -->
-    <header>
-        <div class="app-title">Waqar Messenger</div>
-        <div class="header-icons">
-            <span title="پروفাইল" onclick="alert('پروفাইল سیٹنگز')">👤</span>
-            <span title="تلاش">🔍</span>
-            <span title="مزید">⋮</span>
-        </div>
-    </header>
+<!-- چیٹ اسکرین -->
+<div id="chat" class="hide">
+  <div class="ch">
+    <button class="back" id="cBack">➜</button>
+    <div id="cAv"></div>
+    <div class="nm"><b id="cName"></b><small id="cSt"></small></div>
+    <button class="cb" id="cCall">📞</button>
+    <button class="cb" id="cVid">🎥</button>
+  </div>
+  <div id="msgs"></div>
+  <div class="ib">
+    <button class="pin" id="cPin">📎</button>
+    <input id="cInp" placeholder="پیغام لکھیں..." autocomplete="off">
+    <button class="snd" id="cSend"><span>➤</span></button>
+  </div>
+</div>
+<div id="toast" class="hide"></div>
 
-    <!-- Top Following Bar -->
-    <div class="top-stories-bar" id="topFollowingBar">
-        <!-- فالو شدہ ممبرز یہاں ڈائنامک شو ہوں گے -->
-    </div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getDatabase,ref,set,update,push,onValue,onChildAdded,onDisconnect,serverTimestamp,increment,query,limitToLast} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    <!-- Main Workspace Layout -->
-    <div class="workspace">
-        
-        <!-- Sidebar & Slider Layers -->
-        <div class="sidebar-layer">
-            <div class="search-container">
-                <input type="text" id="globalSearchInput" placeholder="تلاش کریں...">
-            </div>
+const app=initializeApp({
+  apiKey:"AIzaSyCIx55s0v8hwsVmf-QwfrF2HlMIH3TBlC4",
+  authDomain:"bazaar---app.firebaseapp.com",
+  databaseURL:"https://bazaar---app-default-rtdb.firebaseio.com",
+  projectId:"bazaar---app",
+  storageBucket:"bazaar---app.firebasestorage.app",
+  messagingSenderId:"146107292640",
+  appId:"1:146107292640:web:2964080dad232e7ec02985"
+});
+const auth=getAuth(app), db=getDatabase(app);
 
-            <!-- Slider Layer 1: Chats Module -->
-            <div id="paneChats" class="slider-pane active-pane">
-                <div id="chatsListContainer">
-                    <!-- چیٹ لسٹ یہاں آئے گی -->
-                </div>
-            </div>
+const $=id=>document.getElementById(id);
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+let me=null,users={},inbox={},cur=null,unsubMsgs=null,subs=[],mode='log',q='';
 
-            <!-- Slider Layer 2: People / Members Module -->
-            <div id="panePeople" class="slider-pane generic-module-view">
-                <h3>ممبرز اور فالو لسٹ</h3>
-                <p>تمام رجسٹرڈ ممبرز کی فہرست یہاں موجود ہے۔</p>
-            </div>
+function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hide');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hide'),2600)}
+function av(u,s){const d=h('div','av');d.style.width=d.style.height=s+'px';d.style.fontSize=(s*.42)+'px';
+  if(u&&typeof u.dp==='string'&&u.dp.startsWith('data:image/')){const i=h('img');i.src=u.dp;d.append(i)}
+  else d.textContent=((u&&u.name)||'؟').trim().slice(0,1).toUpperCase();return d}
+const tm=t=>t?new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+const cid=(a,b)=>[a,b].sort().join('_');
 
-            <!-- Slider Layer 3: Market Module -->
-            <div id="paneMarket" class="slider-pane generic-module-view">
-                <h3>مارکیٹ پلیس</h3>
-                <p>مصنوعات اور اشیاء کی خرید و فروخت کا نظام۔</p>
-            </div>
+/* ---------- لاگ ان ---------- */
+function setMode(m){mode=m;$('tLog').classList.toggle('on',m==='log');$('tReg').classList.toggle('on',m==='reg');
+  $('aName').classList.toggle('hide',m==='log');$('aGo').textContent=m==='log'?'لاگ ان کریں':'اکاؤنٹ بنائیں';$('aerr').textContent=''}
+$('tLog').onclick=()=>setMode('log');$('tReg').onclick=()=>setMode('reg');
+const ERR={'auth/email-already-in-use':'یہ ای میل پہلے سے استعمال میں ہے۔','auth/invalid-credential':'ای میل یا پاس ورڈ غلط ہے۔','auth/invalid-email':'ای میل درست نہیں۔','auth/weak-password':'پاس ورڈ کم از کم 6 حروف کا رکھیں۔','auth/operation-not-allowed':'Firebase میں Email/Password چالو نہیں کیا گیا۔','auth/network-request-failed':'انٹرنیٹ کا مسئلہ ہے۔'};
+$('aGo').onclick=async()=>{
+  const em=$('aMail').value.trim(),pw=$('aPass').value,nm=$('aName').value.trim(),er=$('aerr');er.textContent='';
+  if(!em||!pw){er.textContent='ای میل اور پاس ورڈ لکھیں۔';return}
+  if(mode==='reg'&&!nm){er.textContent='اپنا نام لکھیں۔';return}
+  $('aGo').disabled=true;
+  try{
+    if(mode==='reg'){const c=await createUserWithEmailAndPassword(auth,em,pw);
+      await update(ref(db,'users/'+c.user.uid),{name:nm,bio:'',dp:'',email:em,joined:serverTimestamp()})}
+    else await signInWithEmailAndPassword(auth,em,pw);
+  }catch(e){er.textContent=ERR[e.code]||('خرابی: '+e.code)}
+  $('aGo').disabled=false;
+};
 
-            <!-- Slider Layer 4: Polling Module -->
-            <div id="panePolling" class="slider-pane generic-module-view">
-                <h3>پولنگ سسٹم</h3>
-                <p>رائے شماری اور پولز کا ماڈیول۔</p>
-            </div>
-        </div>
+onAuthStateChanged(auth,u=>{
+  if(u){me=u.uid;$('auth').classList.add('hide');$('app').classList.remove('hide');start(u)}
+  else{subs.forEach(f=>f());subs=[];me=null;users={};inbox={};closeChat();$('app').classList.add('hide');$('auth').classList.remove('hide')}
+});
 
-        <!-- Chat Workspace Area -->
-        <div class="chat-main-area">
-            <div class="chat-pane-header">
-                <div class="chat-active-profile">
-                    <img src="https://via.placeholder.com/36" class="chat-active-dp" id="activeChatDp">
-                    <div class="chat-active-title" id="activeChatTitle">چیٹ منتخب کریں</div>
-                </div>
-                <div class="call-action-btns">
-                    <span onclick="alert('آڈیو کال جاری ہے...')" title="آڈیو کال">📞</span>
-                    <span onclick="alert('ویڈیو کال شروع ہو رہی ہے...')" title="ویڈیو کال">📹</span>
-                </div>
-            </div>
+function start(u){
+  subs.push(onValue(ref(db,'.info/connected'),s=>{if(s.val()){const p=ref(db,'users/'+me+'/online');onDisconnect(p).set(false);set(p,true)}}));
+  subs.push(onValue(ref(db,'users'),s=>{users=s.val()||{};renderPeople();renderInbox();if(cur)head()}));
+  subs.push(onValue(ref(db,'userChats/'+me),s=>{inbox=s.val()||{};renderInbox();
+    const n=Object.values(inbox).reduce((a,x)=>a+(x.unread||0),0);const b=$('nbd');b.textContent=n;b.classList.toggle('hide',!n);
+    if(cur&&inbox[cur]&&inbox[cur].unread)markRead(cur)}));
+  $('pMail').textContent=u.email||'';
+}
 
-            <div class="messages-scroll-box" id="messagesBoxContainer">
-                <div style="text-align: center; color: #777; margin-top: 40px; font-size: 13px;">گفتگو شروع کرنے کے لیے سائیڈ لسٹ یا اوپر سے کسی ممبر کا انتخاب کریں۔</div>
-            </div>
+/* ---------- فہرستیں ---------- */
+function renderPeople(){
+  const box=$('people');box.replaceChildren();
+  Object.entries(users).filter(([id])=>id!==me).sort((a,b)=>(b[1].online?1:0)-(a[1].online?1:0)).forEach(([id,u])=>{
+    const w=h('div','pp'),r=h('div','ring');r.append(av(u,56));if(u.online)r.append(h('i','dot'));
+    w.append(r,h('span','',u.name||'صارف'));w.onclick=()=>openChat(id);box.append(w)});
+  if(!box.children.length)box.append(h('div','hint','ابھی کوئی اور ممبر نہیں۔ دوست کو لنک بھیج کر اکاؤنٹ بنوائیں!'));
+}
+function renderInbox(){
+  const box=$('inbox');box.replaceChildren();
+  Object.entries(inbox).filter(([id])=>!q||((users[id]&&users[id].name)||'').toLowerCase().includes(q))
+    .sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).forEach(([id,c])=>{
+    const u=users[id]||{},r=h('div','row'+(c.unread?' un':'')),m=h('div','mid');
+    m.append(h('b','',u.name||'صارف'),h('small','',c.last||''));
+    const mt=h('div','meta');mt.append(h('div','',tm(c.ts)));if(c.unread)mt.append(h('span','bd',String(c.unread)));
+    r.append(av(u,50),m,mt);r.onclick=()=>openChat(id);box.append(r)});
+  if(!box.children.length)box.append(h('div','hint','ابھی کوئی چیٹ نہیں۔ اوپر کسی گول تصویر پر ٹیپ کر کے بات شروع کریں۔'));
+}
+$('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox()};
 
-            <div class="chat-input-toolbar">
-                <textarea id="msgInputBox" rows="1" placeholder="پیغام لکھیں..."></textarea>
-                <button class="send-pill-btn" onclick="sendChatMessage()">➤</button>
-            </div>
-        </div>
+/* ---------- چیٹ ---------- */
+function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';
+  $('cAv').replaceChildren(av(u,42))}
+function markRead(id){if(inbox[id]&&inbox[id].unread)update(ref(db,`userChats/${me}/${id}`),{unread:0})}
+function addMsg(m){const b=h('div','m '+(m.from===me?'me':'ot'),m.text);b.append(h('small','',tm(m.ts||Date.now())));
+  const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
+function openChat(id){
+  closeChat();cur=id;head();$('msgs').replaceChildren();$('chat').classList.remove('hide');
+  unsubMsgs=onChildAdded(query(ref(db,`chats/${cid(me,id)}/messages`),limitToLast(100)),s=>{
+    const m=s.val();addMsg(m);if(cur===id&&m.from!==me)markRead(id)});
+  markRead(id);setTimeout(()=>$('cInp').focus(),100);
+}
+function closeChat(){if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
+async function send(){
+  const t=$('cInp').value.trim();if(!t||!cur)return;$('cInp').value='';
+  const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=t.slice(0,60),up={};
+  up[`chats/${c}/messages/${k}`]={from:me,text:t,ts};
+  up[`userChats/${me}/${cur}/last`]=l;up[`userChats/${me}/${cur}/ts`]=ts;up[`userChats/${me}/${cur}/unread`]=0;
+  up[`userChats/${cur}/${me}/last`]=l;up[`userChats/${cur}/${me}/ts`]=ts;up[`userChats/${cur}/${me}/unread`]=increment(1);
+  try{await update(ref(db),up)}catch(e){toast('پیغام نہیں گیا: '+e.code)}
+}
+$('cSend').onclick=send;$('cInp').onkeydown=e=>{if(e.key==='Enter')send()};
+$('cBack').onclick=closeChat;
+$('cCall').onclick=()=>toast('📞 آڈیو کال اگلے مراحل میں شامل ہو گی');
+$('cVid').onclick=()=>toast('🎥 ویڈیو کال اگلے مراحل میں شامل ہو گی');
+$('cPin').onclick=()=>toast('📎 تصویر بھیجنا اگلے مراحل میں شامل ہو گا');
 
-    </div>
+/* ---------- ٹیبز ---------- */
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hide'));$('t-'+b.dataset.t).classList.remove('hide');
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
+  if(b.dataset.t==='me')fillMe()});
 
-    <!-- Bottom Fine Navigation Bar -->
-    <div class="bottom-navigation">
-        <div class="nav-tab-item active" onclick="switchSliderPane('chats', this)">
-            <span class="icon">💬</span>
-            <span>چٹس</span>
-            <span class="nav-badge-count" id="totalUnreadBadge">0</span>
-        </div>
-        <div class="nav-tab-item" onclick="switchSliderPane('people', this)">
-            <span class="icon">👥</span>
-            <span>ممبرز</span>
-        </div>
-        <div class="nav-tab-item" onclick="switchSliderPane('market', this)">
-            <span class="icon">🛒</span>
-            <span>مارکیٹ</span>
-        </div>
-        <div class="nav-tab-item" onclick="switchSliderPane('polling', this)">
-            <span class="icon">📊</span>
-            <span>پولنگ</span>
-        </div>
-        <div class="nav-tab-item" onclick="alert('نیا گروپ بنانے کا فیچر')">
-            <span class="icon">➕</span>
-            <span>گروپ</span>
-        </div>
-    </div>
-
-    <script>
-        // Connected Firebase Database Configuration
-        const firebaseConfig = {
-            databaseURL: "https://bazaar---app-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        let loggedInUserId = localStorage.getItem('waqar_messenger_user_id') || null;
-
-        if (loggedInUserId) {
-            document.getElementById('loginOverlay').style.display = 'none';
-        }
-
-        function executeLoginUser() {
-            let name = document.getElementById('inputLoginName').value.trim();
-            let email = document.getElementById('inputLoginEmail').value.trim();
-            let errorBox = document.getElementById('loginErrorMsg');
-
-            if (!name || !email) {
-                errorBox.style.display = 'block';
-                return;
-            }
-            errorBox.style.display = 'none';
-
-            loggedInUserId = "user_" + name.toLowerCase().replace(/\s+/g, '_');
-            localStorage.setItem('waqar_messenger_user_id', loggedInUserId);
-            localStorage.setItem('waqar_messenger_user_name', name);
-            localStorage.setItem('waqar_messenger_user_email', email);
-            localStorage.setItem('waqar_messenger_user_dp', 'https://via.placeholder.com/40');
-
-            document.getElementById('loginOverlay').style.display = 'none';
-        }
-
-        function switchSliderPane(paneName, clickedElement) {
-            document.querySelectorAll('.nav-tab-item').forEach(tab => tab.classList.remove('active'));
-            if(clickedElement) clickedElement.classList.add('active');
-
-            document.querySelectorAll('.slider-pane').forEach(pane => pane.classList.remove('active-pane'));
-
-            if (paneName === 'chats') {
-                document.getElementById('paneChats').classList.add('active-pane');
-            } else if (paneName === 'people') {
-                document.getElementById('panePeople').classList.add('active-pane');
-            } else if (paneName === 'market') {
-                document.getElementById('paneMarket').classList.add('active-pane');
-            } else if (paneName === 'polling') {
-                document.getElementById('panePolling').classList.add('active-pane');
-            }
-        }
-
-        function sendChatMessage() {
-            let box = document.getElementById('msgInputBox');
-            let text = box.value.trim();
-            if(!text) return;
-            box.value = '';
-        }
-    </script>
+/* ---------- پروفائل ---------- */
+let newDp=null;
+function fillMe(){const u=users[me]||{};$('pName').value=u.name||'';$('pBio').value=u.bio||'';newDp=null;$('meAv').replaceChildren(av(u,96))}
+$('dpBtn').onclick=()=>$('dpFile').click();
+$('dpFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{const i=new Image();i.onload=()=>{const M=160,k=Math.min(1,M/Math.max(i.width,i.height)),c=document.createElement('canvas');
+    c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);
+    newDp=c.toDataURL('image/jpeg',.75);$('meAv').replaceChildren(av({name:$('pName').value,dp:newDp},96));toast('تصویر منتخب ہو گئی، اب محفوظ کریں')};i.src=r.result};r.readAsDataURL(f)};
+$('pSave').onclick=async()=>{const n=$('pName').value.trim();if(!n){toast('نام لکھیں');return}
+  const d={name:n,bio:$('pBio').value.trim()};if(newDp)d.dp=newDp;
+  try{await update(ref(db,'users/'+me),d);newDp=null;toast('✅ پروفائل محفوظ ہو گئی')}catch(e){toast('خرابی: '+e.code)}};
+$('pOut').onclick=async()=>{try{await set(ref(db,'users/'+me+'/online'),false)}catch(e){}signOut(auth)};
+</script>
 </body>
 </html>
