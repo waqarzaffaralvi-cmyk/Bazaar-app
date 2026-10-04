@@ -106,6 +106,7 @@ input{font-size:15px}
 #sheet button{padding:14px;border-radius:14px;background:#f3f5f8;font-size:15px;font-weight:bold}
 #sheet .cn{background:#e8f5e9;color:#1e4620}
 .ib .pin.on{background:#ff7a18;color:#fff}
+#dbg{position:absolute;z-index:4;bottom:125px;left:10px;right:10px;font:11px monospace;color:#9f9;white-space:pre-wrap;text-align:left;direction:ltr;max-height:26vh;overflow:hidden}
 </style>
 </head>
 <body>
@@ -153,7 +154,7 @@ input{font-size:15px}
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
       <button id="pSave" class="big">💾 محفوظ کریں</button>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.0</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.1</div>
     </div>
   </div>
   <div id="nav">
@@ -186,6 +187,7 @@ input{font-size:15px}
   <div id="callAv"></div>
   <div class="ci"><b id="callName"></b><small id="callSt"></small></div>
   <video id="lv" class="hide" autoplay playsinline muted></video>
+  <div id="dbg"></div>
   <div class="cc"><button id="btMic">🎤</button><button id="btCam" class="hide">📷</button><button id="btEnd" class="endb">📵</button></div>
 </div>
 <div id="inc" class="hide">
@@ -333,16 +335,21 @@ const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.googl
 let pc=null,ls=null,callId=null,peer=null,cType='audio',cUn=[],pend=[],ringT=null,inc=null;
 const media=t=>navigator.mediaDevices.getUserMedia({audio:true,video:t==='video'});
 function setSt(t){$('callSt').textContent=t}
-function showCall(u,st){$('call').classList.remove('hide');$('callName').textContent=u.name||'صارف';setSt(st);
+function dbg(t){const d=$('dbg');d.textContent+=t+'\n';d.scrollTop=d.scrollHeight}
+let tmI=null;
+function startTimer(){clearInterval(tmI);const t0=Date.now(),f=()=>{const x=Math.floor((Date.now()-t0)/1000);setSt('🟢 '+String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0'))};f();tmI=setInterval(f,1000)}
+$('call').onclick=()=>{$('rv').play().catch(()=>{})};
+function showCall(u,st){$('dbg').textContent='';$('call').classList.remove('hide');$('callName').textContent=u.name||'صارف';setSt(st);
   $('callAv').replaceChildren(av(u,110));$('callAv').classList.toggle('hide',cType==='video');
   $('lv').srcObject=ls;$('lv').classList.toggle('hide',cType!=='video');$('btCam').classList.toggle('hide',cType!=='video');
   $('btMic').textContent='🎤';$('btCam').textContent='📷'}
 function mkPc(){
   pc=new RTCPeerConnection(ICE);
   ls.getTracks().forEach(t=>pc.addTrack(t,ls));
-  pc.ontrack=e=>{$('rv').srcObject=e.streams[0]};
+  pc.ontrack=e=>{dbg('track: '+e.track.kind);$('rv').srcObject=e.streams[0];$('rv').play().catch(()=>toast('اسکرین پر ایک بار ٹیپ کریں'))};
+  pc.oniceconnectionstatechange=()=>dbg('ice: '+(pc&&pc.iceConnectionState));
   pc.onicecandidate=e=>{if(e.candidate)push(ref(db,`calls/${callId}/ice_${me}`),e.candidate.toJSON())};
-  pc.onconnectionstatechange=()=>{const st=pc&&pc.connectionState;if(st==='connected'){clearTimeout(ringT);setSt('🟢 کال جاری ہے')}
+  pc.onconnectionstatechange=()=>{const st=pc&&pc.connectionState;dbg('conn: '+st);if(st==='connected'){clearTimeout(ringT);startTimer()}
     if(st==='failed'){setSt('❌ رابطہ نہیں جڑ سکا');setTimeout(()=>endCall(true),1500)}}
 }
 async function flush(){while(pend.length){try{await pc.addIceCandidate(pend.shift())}catch(e){}}}
@@ -360,10 +367,10 @@ async function startCall(type){
   try{
     await set(ref(db,`calls/${callId}`),{state:'ringing',from:me,to:peer,type});
     const o=await pc.createOffer();await pc.setLocalDescription(o);
-    await update(ref(db,`calls/${callId}`),{offer:{type:o.type,sdp:o.sdp}});
+    await update(ref(db,`calls/${callId}`),{offer:{type:o.type,sdp:o.sdp}});dbg('offer bheja');
     watch(peer);
     cUn.push(onValue(ref(db,`calls/${callId}/answer`),async s=>{const a=s.val();
-      if(a&&pc&&!pc.currentRemoteDescription){await pc.setRemoteDescription(a);flush();setSt('🔗 جڑ رہا ہے...')}}));
+      if(a&&pc&&!pc.currentRemoteDescription){dbg('answer mila');try{await pc.setRemoteDescription(a);dbg('remote ok');flush();setSt('🔗 جڑ رہا ہے...')}catch(e){dbg('answer err: '+e.message)}}}));
     await set(ref(db,`incoming/${peer}`),{from:me,callId,type,ts:serverTimestamp()});
     ringT=setTimeout(()=>{if(pc&&pc.connectionState!=='connected'){toast('جواب نہیں آیا');endCall(true)}},45000);
   }catch(e){toast('کال شروع نہیں ہوئی: '+(e.code||e.message));endCall(false)}
@@ -389,12 +396,12 @@ $('incYes').onclick=async()=>{
     showCall(users[peer]||{},'🔗 جڑ رہا ہے...');mkPc();watch(peer);
     await pc.setRemoteDescription(d.offer);flush();
     const a=await pc.createAnswer();await pc.setLocalDescription(a);
-    await update(ref(db,`calls/${callId}`),{answer:{type:a.type,sdp:a.sdp},state:'active'});
+    await update(ref(db,`calls/${callId}`),{answer:{type:a.type,sdp:a.sdp},state:'active'});dbg('answer bheja');
     remove(ref(db,`incoming/${me}`));
-  }catch(e){toast('کال نہیں جڑی: '+(e.code||e.message));endCall(true)}
+  }catch(e){dbg('err: '+(e.code||e.message));toast('کال نہیں جڑی: '+(e.code||e.message));endCall(true)}
 };
 function endCall(notify){
-  clearTimeout(ringT);
+  clearTimeout(ringT);clearInterval(tmI);
   if(notify&&callId)update(ref(db,`calls/${callId}`),{state:'ended'}).catch(()=>{});
   if(peer)remove(ref(db,`incoming/${peer}`)).catch(()=>{});
   cUn.forEach(f=>f());cUn=[];pend=[];
