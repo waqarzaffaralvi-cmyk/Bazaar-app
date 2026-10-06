@@ -126,8 +126,15 @@ input{font-size:15px}
 #pform{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
 .pfh{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}.pfh button{background:none;color:#fff;font-size:20px}
 .pfb{flex:1;overflow-y:auto;padding:14px}.pfb label{display:block;font-weight:bold;font-size:13px;margin:4px 2px}
-#fPrev{display:flex;gap:6px;margin-bottom:10px}#fPrev img{width:70px;height:70px;object-fit:cover;border-radius:10px}
+#fPrev{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#fPrev img{width:70px;height:70px;object-fit:cover;border-radius:10px}
 .sm2{width:100%;padding:12px;border-radius:14px;background:#e8f5e9;color:var(--g1);font-weight:bold;margin-bottom:4px}.note{font-size:11px;color:var(--mu);margin-bottom:12px}
+.th{position:relative;margin-bottom:8px;cursor:pointer}.th img{width:100%;max-height:300px;object-fit:cover;border-radius:12px;display:block}
+.cnt{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:3px 10px;border-radius:12px}
+#gal{position:fixed;inset:0;z-index:92;background:#000;overflow-y:auto}
+#gal button{position:sticky;top:8px;float:left;margin:8px;background:rgba(255,255,255,.3);color:#fff;border-radius:50%;width:40px;height:40px;font-size:20px;z-index:2}
+#gal img{width:100%;display:block;margin-bottom:4px}
+.fbn{display:flex;justify-content:space-between;align-items:center;background:#e3f2fd;color:#0d47a1;padding:10px 14px;border-radius:14px;margin-bottom:10px;font-size:13px;font-weight:bold}
+.fbn button{background:#0d47a1;color:#fff;padding:6px 12px;border-radius:12px;font-size:12px}
 </style>
 </head>
 <body>
@@ -177,7 +184,7 @@ input{font-size:15px}
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
       <button id="pSave" class="big">💾 محفوظ کریں</button>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.2</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.3</div>
     </div>
   </div>
   <div id="nav">
@@ -227,13 +234,14 @@ input{font-size:15px}
     <label>قیمت (روپے)</label><input id="fPrice" class="fld" inputmode="numeric" maxlength="12">
     <label>شہر / علاقہ</label><input id="fCity" class="fld" maxlength="40">
     <label>تفصیل</label><textarea id="fDesc" class="fld" rows="3" maxlength="500"></textarea>
-    <label>تصویریں (زیادہ سے زیادہ 3)</label><input type="file" id="fImgs" accept="image/*" multiple class="fld">
+    <label>تصویریں (زیادہ سے زیادہ 10)</label><input type="file" id="fImgs" accept="image/*" multiple class="fld">
     <div id="fPrev"></div>
     <button class="sm2" id="fLoc">📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">لوکیشن لگانے پر یہ جگہ سب کو نظر آئے گی۔ نہ لگانا چاہیں تو چھوڑ دیں۔</div>
     <button class="big" id="fGo">🚀 پوسٹ کریں</button>
   </div>
 </div>
+<div id="gal" class="hide"></div>
 <div id="viewer" class="hide"><img id="vimg" alt=""></div>
 <div id="sheet" class="hide"></div>
 <div id="toast" class="hide"></div>
@@ -484,13 +492,16 @@ function sheet(k){const o=bub[k];if(!o)return;const m=o.m,sh=$('sheet');sh.repla
   add('بند کریں',null,'cn');sh.classList.remove('hide')}
 
 /* ---------- مارکیٹ ---------- */
-let posts={},likes={},chip='all',myLoc=null,fLoc=null,fImgs=[],sortNear=false;
+let posts={},likes={},chip='all',myLoc=null,fLoc=null,fImgs=[],sortNear=false,focusId=(/^[-\w]+$/.test(new URLSearchParams(location.search).get('post')||'')?new URLSearchParams(location.search).get('post'):null),fp=null;
 const CH=[['all','🛒 سب'],['new','✨ نئی'],['used','♻️ استعمال شدہ'],['property','🏠 پراپرٹی'],['mobile','📱 موبائل'],['near','📍 قریب ترین']];
 function listenMarket(){
   subs.push(onValue(query(ref(db,'posts'),limitToLast(30)),s=>{posts=s.val()||{};renderFeed()}));
   subs.push(onValue(ref(db,'likes'),s=>{likes=s.val()||{};renderFeed()}));
   if(localStorage.getItem('loc_on')==='1')getLoc(true);
+  if(focusId)openFocus();
 }
+async function openFocus(){document.querySelector('#nav button[data-t="market"]').click();
+  try{const x=await get(ref(db,'posts/'+focusId));fp=x.exists()?x.val():null}catch(e){fp=null}renderFeed()}
 function getLoc(quiet){
   if(!navigator.geolocation){toast('اس براؤزر میں لوکیشن نہیں');return}
   navigator.geolocation.getCurrentPosition(p=>{myLoc={lat:p.coords.latitude,lng:p.coords.longitude};renderFeed()},
@@ -505,7 +516,9 @@ function renderChips(){const b=$('chips');b.replaceChildren();
 function renderFeed(){
   renderChips();const box=$('feed');box.replaceChildren();
   let arr=Object.entries(posts).map(([id,p])=>Object.assign({id},p));
-  arr=arr.filter(p=>chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip)));
+  if(focusId){arr=fp?[Object.assign({id:focusId},fp)]:[];const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));
+    const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed()};bn.append(bt);box.append(bn)}
+  arr=arr.filter(p=>focusId||chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip)));
   const d=p=>(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null;
   arr.sort(sortNear?((a,b)=>(d(a)==null?1e9:d(a))-(d(b)==null?1e9:d(b))):((a,b)=>(b.ts||0)-(a.ts||0)));
   if(!arr.length){box.append(h('div','hint','ابھی اس زمرے میں کوئی پوسٹ نہیں۔ ➕ دبا کر پہلی پوسٹ آپ لگائیں!'));return}
@@ -515,8 +528,8 @@ function card(p,dist){
   const c=h('div','pc'+(p.hot?' hot':'')),u=users[p.uid]||{},mine=p.uid===me;
   if(p.hot)c.append(h('div','rib','🔥 OFFER'));
   const hd=h('div','ph2'),nm=h('div','');nm.append(h('b','',u.name||'صارف'),h('small','',tm(p.ts)+(p.city?' • '+p.city:'')));hd.append(av(u,36),nm);c.append(hd);
-  const im=Object.values(p.imgs||{}).filter(x=>String(x).startsWith('data:image/'));
-  if(im.length){const sl=h('div','sl');im.forEach(src=>{const i=h('img');i.src=src;i.onclick=()=>openViewer(src);sl.append(i)});c.append(sl)}
+  const legacy=Object.values(p.imgs||{}),th=p.thumb||legacy[0],cnt=p.n||legacy.length;
+  if(th&&String(th).startsWith('data:image/')){const w=h('div','th'),i=h('img');i.src=th;w.append(i);if(cnt>1)w.append(h('span','cnt','📷 '+cnt));w.onclick=()=>openGal(p);c.append(w)}
   c.append(h('div','pt',p.title||''));
   const tg=h('div','tags');tg.append(h('span','pr','Rs '+(p.price||'-')));
   if(p.cat!=='property')tg.append(h('span',p.cond==='new'?'new':'used',p.cond==='new'?'✨ نئی':'♻️ استعمال شدہ'));
@@ -525,10 +538,11 @@ function card(p,dist){
   c.append(tg);if(p.desc)c.append(h('div','pd',p.desc));
   const ac=h('div','acts'),lk=likes[p.id]||{},n=Object.keys(lk).length,liked=!!lk[me];
   const b1=h('button','ab'+(liked?' on':''),(liked?'❤️ ':'🤍 ')+n);b1.onclick=()=>set(ref(db,`likes/${p.id}/${me}`),liked?null:true);ac.append(b1);
+  const sb=h('button','ab','🔗 شیئر');sb.onclick=()=>sharePost(p);ac.append(sb);
   if(p.lat!=null){const a=h('a','ab','🗺️ راستہ');a.href=`https://www.google.com/maps?q=${p.lat},${p.lng}`;a.target='_blank';a.rel='noopener';ac.append(a)}
   if(mine){
     const hb=h('button','ab'+(p.hot?' on':''),'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
-    const dl=h('button','ab red2','✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id))}};
+    const dl=h('button','ab red2','✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
     ac.append(hb,dl);
   }else{
     const mb=h('button','ab go','💬 پیغام');mb.onclick=()=>openChat(p.uid);
@@ -541,16 +555,36 @@ $('addPost').onclick=()=>{fLoc=null;fImgs=[];$('fPrev').replaceChildren();['fTit
   $('fLoc').textContent='📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)';$('pform').classList.remove('hide')};
 $('pfX').onclick=()=>$('pform').classList.add('hide');
 $('fCat').onchange=()=>$('fCondW').classList.toggle('hide',$('fCat').value==='property');
-$('fImgs').onchange=e=>{const fs=[...e.target.files].slice(0,3);fImgs=[];$('fPrev').replaceChildren();e.target.value='';
-  fs.forEach(f=>shrink(f,600,.65,d=>{fImgs.push(d);const i=h('img');i.src=d;$('fPrev').append(i)}))};
+function drawPrev(){$('fPrev').replaceChildren();fImgs.filter(Boolean).forEach(d=>{const i=h('img');i.src=d;$('fPrev').append(i)})}
+$('fImgs').onchange=e=>{const fs=[...e.target.files].slice(0,10);fImgs=[];$('fPrev').replaceChildren();e.target.value='';
+  fs.forEach((f,ix)=>shrink(f,560,.6,d=>{fImgs[ix]=d;drawPrev()}))};
 $('fLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
   navigator.geolocation.getCurrentPosition(p=>{fLoc={lat:+p.coords.latitude.toFixed(5),lng:+p.coords.longitude.toFixed(5)};$('fLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+const shrinkURL=(src,M,q)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,M/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=src});
 $('fGo').onclick=async()=>{
   const t=$('fTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
-  const cat=$('fCat').value,o={uid:me,title:t,price:$('fPrice').value.trim(),city:$('fCity').value.trim(),desc:$('fDesc').value.trim(),
-    cat,cond:cat==='property'?'new':$('fCond').value,imgs:fImgs,hot:false,ts:serverTimestamp()};
+  $('fGo').disabled=true;const imgs=fImgs.filter(Boolean);
+  const cat=$('fCat').value,k=push(ref(db,'posts')).key,up={},o={uid:me,title:t,price:$('fPrice').value.trim(),city:$('fCity').value.trim(),desc:$('fDesc').value.trim(),
+    cat,cond:cat==='property'?'new':$('fCond').value,n:imgs.length,hot:false,ts:serverTimestamp()};
   if(fLoc){o.lat=fLoc.lat;o.lng=fLoc.lng}
-  try{await set(push(ref(db,'posts')),o);$('pform').classList.add('hide');toast('✅ پوسٹ لگ گئی')}catch(e){toast('خرابی: '+e.code)}};
+  try{
+    if(imgs.length){o.thumb=await shrinkURL(imgs[0],480,.6);up['postImgs/'+k]={uid:me,imgs:imgs}}
+    up['posts/'+k]=o;await update(ref(db),up);$('pform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
+  }catch(e){toast('خرابی: '+e.code)}
+  $('fGo').disabled=false};
+
+async function openGal(p){
+  const g=$('gal');g.replaceChildren();const x=h('button','','✖');x.onclick=()=>g.classList.add('hide');g.append(x);g.classList.remove('hide');
+  let list=Object.values(p.imgs||{});
+  if(!list.length){const w=h('div','hint','تصویریں لوڈ ہو رہی ہیں...');g.append(w);
+    try{const r=await get(ref(db,'postImgs/'+p.id));list=Object.values((r.val()||{}).imgs||{})}catch(e){toast('خرابی: '+e.code)}w.remove()}
+  list.filter(z=>String(z).startsWith('data:image/')).forEach(z=>{const i=h('img');i.src=z;g.append(i)});
+}
+async function sharePost(p){
+  const url=location.origin+location.pathname+'?post='+p.id,txt=(p.title||'پوسٹ')+(p.price?' - Rs '+p.price:'')+'\nبازار ایپ پر دیکھیں:';
+  if(navigator.share){try{await navigator.share({title:'بازار ایپ',text:txt,url:url});return}catch(e){if(e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(txt+' '+url);toast('لنک کاپی ہو گیا، واٹس ایپ میں پیسٹ کریں')}catch(e){prompt('یہ لنک کاپی کریں:',url)}
+}
 </script>
 </body>
 </html>
