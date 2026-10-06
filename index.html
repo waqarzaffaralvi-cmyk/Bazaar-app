@@ -111,7 +111,7 @@ input{font-size:15px}
 #chips{display:flex;gap:8px;overflow-x:auto;padding:14px 12px 4px}#chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;padding:9px 16px;border-radius:20px;background:#fff;color:#444;font-size:13px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .chip.on{background:linear-gradient(135deg,#1e4620,#2e9e4f);color:#fff}
-#feed{padding:8px 12px}
+#feed,#sfeed{padding:8px 12px}
 .pc{position:relative;background:#fff;border-radius:18px;padding:12px;margin-bottom:12px;box-shadow:0 3px 12px rgba(0,0,0,.07);overflow:hidden}
 .pc.hot{border:2px solid #ff416c}
 .rib{position:absolute;top:12px;left:-36px;transform:rotate(-35deg);background:linear-gradient(135deg,#ff416c,#ff4b2b);color:#fff;font-weight:bold;font-size:12px;padding:3px 40px;z-index:2}
@@ -123,10 +123,10 @@ input{font-size:15px}
 .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .ab{padding:8px 14px;border-radius:18px;background:#f0f2f5;font-size:13px;font-weight:bold;color:#333;text-decoration:none}
 .ab.on{background:#ffe3ea;color:#d81b60}.ab.go{background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff}.ab.red2{background:#fdecea;color:#c62828}
-#pform{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
+#pform,#sform{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
 .pfh{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}.pfh button{background:none;color:#fff;font-size:20px}
 .pfb{flex:1;overflow-y:auto;padding:14px}.pfb label{display:block;font-weight:bold;font-size:13px;margin:4px 2px}
-#fPrev{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#fPrev img{width:70px;height:70px;object-fit:cover;border-radius:10px}
+#fPrev,#sPrev{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#fPrev img,#sPrev img{width:70px;height:70px;object-fit:cover;border-radius:10px}
 .sm2{width:100%;padding:12px;border-radius:14px;background:#e8f5e9;color:var(--g1);font-weight:bold;margin-bottom:4px}.note{font-size:11px;color:var(--mu);margin-bottom:12px}
 .th{position:relative;margin-bottom:8px;cursor:pointer}.th img{width:100%;max-height:300px;object-fit:cover;border-radius:12px;display:block}
 .cnt{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:3px 10px;border-radius:12px}
@@ -135,6 +135,7 @@ input{font-size:15px}
 #gal img{width:100%;display:block;margin-bottom:4px}
 .fbn{display:flex;justify-content:space-between;align-items:center;background:#e3f2fd;color:#0d47a1;padding:10px 14px;border-radius:14px;margin-bottom:10px;font-size:13px;font-weight:bold}
 .fbn button{background:#0d47a1;color:#fff;padding:6px 12px;border-radius:12px;font-size:12px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 8px}.chips::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
@@ -168,6 +169,10 @@ input{font-size:15px}
     <div id="chips"></div>
     <div id="feed"></div>
   </div>
+  <div id="t-sports" class="tab hide">
+    <div class="top" style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">⚽ کھلاڑی زون</h2><button class="addp" id="addSp">➕ نئی پوسٹ</button></div>
+    <div id="sfeed"></div>
+  </div>
   <div id="t-poll" class="tab hide">
     <div class="top"><h2>📊 پولنگ</h2></div>
     <div class="soon"><div class="ic">🗳️</div><h3>جلد آ رہی ہے</h3><p>دو امیدواروں کی تصویروں کے ساتھ ووٹنگ (ایک آدمی ایک ووٹ) اگلے مرحلے میں شامل ہو گی۔</p></div>
@@ -184,12 +189,13 @@ input{font-size:15px}
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
       <button id="pSave" class="big">💾 محفوظ کریں</button>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.3</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.4</div>
     </div>
   </div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
     <button data-t="market"><i>🛒</i>مارکیٹ</button>
+    <button data-t="sports"><i>⚽</i>کھلاڑی</button>
     <button data-t="poll"><i>📊</i>پولنگ</button>
     <button data-t="me"><i>👤</i>پروفائل</button>
   </div>
@@ -239,6 +245,25 @@ input{font-size:15px}
     <button class="sm2" id="fLoc">📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">لوکیشن لگانے پر یہ جگہ سب کو نظر آئے گی۔ نہ لگانا چاہیں تو چھوڑ دیں۔</div>
     <button class="big" id="fGo">🚀 پوسٹ کریں</button>
+  </div>
+</div>
+<div id="sform" class="hide">
+  <div class="pfh"><button id="sfX">✖</button><b>⚽ کھلاڑی زون - نئی پوسٹ</b></div>
+  <div class="pfb">
+    <label>پوسٹ کی قسم</label><select id="sType" class="fld"><option value="tournament">🏆 ٹورنامنٹ کا اعلان</option><option value="team">🙋 ٹیم کو کھلاڑی چاہئیں</option><option value="player">⚽ کھلاڑی کا تعارف</option></select>
+    <label>کھیل</label><select id="sSport" class="fld"><option value="cricket">🏏 کرکٹ</option><option value="volleyball">🏐 والی بال</option><option value="other">🌍 دیگر کھیل</option></select>
+    <input id="sOther" class="fld hide" placeholder="کھیل کا نام (مثلاً کبڈی، ہاکی)" maxlength="20">
+    <label>عنوان</label><input id="sTitle" class="fld" maxlength="80" placeholder="مثلاً: عید ٹورنامنٹ">
+    <label>شہر / علاقہ</label><input id="sCity" class="fld" maxlength="40">
+    <label>گراؤنڈ کا نام</label><input id="sGround" class="fld" maxlength="60">
+    <label>تاریخ اور وقت</label><input id="sDate" class="fld" maxlength="60" placeholder="مثلاً: 25 اکتوبر، شام 4 بجے">
+    <label>انٹری فیس (اختیاری)</label><input id="sFee" class="fld" inputmode="numeric" maxlength="10">
+    <label>تفصیل</label><textarea id="sDesc" class="fld" rows="3" maxlength="500"></textarea>
+    <label>فلیکس / تصویریں (زیادہ سے زیادہ 5)</label><input type="file" id="sImgs" accept="image/*" multiple class="fld">
+    <div id="sPrev"></div>
+    <button class="sm2" id="sLoc">📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)</button>
+    <div class="note">لوکیشن لگانے پر گراؤنڈ کی جگہ سب کو نظر آئے گی۔</div>
+    <button class="big" id="sGo">🚀 پوسٹ کریں</button>
   </div>
 </div>
 <div id="gal" class="hide"></div>
@@ -495,20 +520,21 @@ function sheet(k){const o=bub[k];if(!o)return;const m=o.m,sh=$('sheet');sh.repla
 let posts={},likes={},chip='all',myLoc=null,fLoc=null,fImgs=[],sortNear=false,focusId=(/^[-\w]+$/.test(new URLSearchParams(location.search).get('post')||'')?new URLSearchParams(location.search).get('post'):null),fp=null;
 const CH=[['all','🛒 سب'],['new','✨ نئی'],['used','♻️ استعمال شدہ'],['property','🏠 پراپرٹی'],['mobile','📱 موبائل'],['near','📍 قریب ترین']];
 function listenMarket(){
-  subs.push(onValue(query(ref(db,'posts'),limitToLast(30)),s=>{posts=s.val()||{};renderFeed()}));
-  subs.push(onValue(ref(db,'likes'),s=>{likes=s.val()||{};renderFeed()}));
+  subs.push(onValue(query(ref(db,'posts'),limitToLast(50)),s=>{posts=s.val()||{};renderFeed();renderSports()}));
+  subs.push(onValue(ref(db,'likes'),s=>{likes=s.val()||{};renderFeed();renderSports()}));
   if(localStorage.getItem('loc_on')==='1')getLoc(true);
   if(focusId)openFocus();
 }
-async function openFocus(){document.querySelector('#nav button[data-t="market"]').click();
-  try{const x=await get(ref(db,'posts/'+focusId));fp=x.exists()?x.val():null}catch(e){fp=null}renderFeed()}
+async function openFocus(){
+  try{const x=await get(ref(db,'posts/'+focusId));fp=x.exists()?x.val():null}catch(e){fp=null}
+  document.querySelector('#nav button[data-t="'+(fp&&fp.cat==='sports'?'sports':'market')+'"]').click();renderFeed();renderSports()}
 function getLoc(quiet){
   if(!navigator.geolocation){toast('اس براؤزر میں لوکیشن نہیں');return}
-  navigator.geolocation.getCurrentPosition(p=>{myLoc={lat:p.coords.latitude,lng:p.coords.longitude};renderFeed()},
+  navigator.geolocation.getCurrentPosition(p=>{myLoc={lat:p.coords.latitude,lng:p.coords.longitude};renderFeed();renderSports()},
     ()=>{myLoc=null;if(!quiet)toast('لوکیشن کی اجازت نہیں ملی');$('locSw').checked=false;localStorage.setItem('loc_on','0')},{timeout:10000});
 }
 $('locSw').checked=localStorage.getItem('loc_on')==='1';
-$('locSw').onchange=e=>{if(e.target.checked){localStorage.setItem('loc_on','1');getLoc()}else{localStorage.setItem('loc_on','0');myLoc=null;sortNear=false;renderFeed();toast('لوکیشن بند ہو گئی')}};
+$('locSw').onchange=e=>{if(e.target.checked){localStorage.setItem('loc_on','1');getLoc()}else{localStorage.setItem('loc_on','0');myLoc=null;sortNear=false;renderFeed();renderSports();toast('لوکیشن بند ہو گئی')}};
 function km(a,b,c,d){const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q))}
 function renderChips(){const b=$('chips');b.replaceChildren();
   CH.forEach(([k,t])=>{const x=h('button','chip'+((k==='near'?sortNear:chip===k)?' on':''),t);
@@ -516,9 +542,9 @@ function renderChips(){const b=$('chips');b.replaceChildren();
 function renderFeed(){
   renderChips();const box=$('feed');box.replaceChildren();
   let arr=Object.entries(posts).map(([id,p])=>Object.assign({id},p));
-  if(focusId){arr=fp?[Object.assign({id:focusId},fp)]:[];const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));
-    const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed()};bn.append(bt);box.append(bn)}
-  arr=arr.filter(p=>focusId||chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip)));
+  if(mFocus()){arr=fp?[Object.assign({id:focusId},fp)]:[];const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));
+    const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed();renderSports()};bn.append(bt);box.append(bn)}
+  arr=arr.filter(p=>p.cat!=='sports'&&(mFocus()||chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip))));
   const d=p=>(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null;
   arr.sort(sortNear?((a,b)=>(d(a)==null?1e9:d(a))-(d(b)==null?1e9:d(b))):((a,b)=>(b.ts||0)-(a.ts||0)));
   if(!arr.length){box.append(h('div','hint','ابھی اس زمرے میں کوئی پوسٹ نہیں۔ ➕ دبا کر پہلی پوسٹ آپ لگائیں!'));return}
@@ -526,14 +552,17 @@ function renderFeed(){
 }
 function card(p,dist){
   const c=h('div','pc'+(p.hot?' hot':'')),u=users[p.uid]||{},mine=p.uid===me;
-  if(p.hot)c.append(h('div','rib','🔥 OFFER'));
+  if(p.hot)c.append(h('div','rib','🔥 '+(p.cat==='sports'?'FEATURED':'OFFER')));
   const hd=h('div','ph2'),nm=h('div','');nm.append(h('b','',u.name||'صارف'),h('small','',tm(p.ts)+(p.city?' • '+p.city:'')));hd.append(av(u,36),nm);c.append(hd);
   const legacy=Object.values(p.imgs||{}),th=p.thumb||legacy[0],cnt=p.n||legacy.length;
   if(th&&String(th).startsWith('data:image/')){const w=h('div','th'),i=h('img');i.src=th;w.append(i);if(cnt>1)w.append(h('span','cnt','📷 '+cnt));w.onclick=()=>openGal(p);c.append(w)}
   c.append(h('div','pt',p.title||''));
-  const tg=h('div','tags');tg.append(h('span','pr','Rs '+(p.price||'-')));
-  if(p.cat!=='property')tg.append(h('span',p.cond==='new'?'new':'used',p.cond==='new'?'✨ نئی':'♻️ استعمال شدہ'));
-  tg.append(h('span','',({general:'🛍️ عام',mobile:'📱 موبائل',property:'🏠 پراپرٹی'})[p.cat]||''));
+  const tg=h('div','tags');
+  if(p.cat==='sports'){tg.append(h('span','new',({tournament:'🏆 ٹورنامنٹ',team:'🙋 کھلاڑی چاہئیں',player:'⚽ کھلاڑی تعارف'})[p.type]||''),h('span','',sportLbl(p)));
+    if(p.price)tg.append(h('span','pr','فیس Rs '+p.price));if(p.ground)tg.append(h('span','','🏟️ '+p.ground));if(p.date)tg.append(h('span','','🗓️ '+p.date))}
+  else{tg.append(h('span','pr','Rs '+(p.price||'-')));
+    if(p.cat!=='property')tg.append(h('span',p.cond==='new'?'new':'used',p.cond==='new'?'✨ نئی':'♻️ استعمال شدہ'));
+    tg.append(h('span','',({general:'🛍️ عام',mobile:'📱 موبائل',property:'🏠 پراپرٹی'})[p.cat]||''))}
   if(dist!=null)tg.append(h('span','dist','📍 '+(dist<1?Math.round(dist*1000)+' میٹر':dist.toFixed(1)+' کلومیٹر')));
   c.append(tg);if(p.desc)c.append(h('div','pd',p.desc));
   const ac=h('div','acts'),lk=likes[p.id]||{},n=Object.keys(lk).length,liked=!!lk[me];
@@ -541,8 +570,8 @@ function card(p,dist){
   const sb=h('button','ab','🔗 شیئر');sb.onclick=()=>sharePost(p);ac.append(sb);
   if(p.lat!=null){const a=h('a','ab','🗺️ راستہ');a.href=`https://www.google.com/maps?q=${p.lat},${p.lng}`;a.target='_blank';a.rel='noopener';ac.append(a)}
   if(mine){
-    const hb=h('button','ab'+(p.hot?' on':''),'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
-    const dl=h('button','ab red2','✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
+    const hb=h('button','ab'+(p.hot?' on':''),p.cat==='sports'?'🔥 نمایاں':'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
+    const dl=h('button','ab red2',p.cat==='sports'?'🗑️ مٹائیں':'✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
     ac.append(hb,dl);
   }else{
     const mb=h('button','ab go','💬 پیغام');mb.onclick=()=>openChat(p.uid);
@@ -585,6 +614,53 @@ async function sharePost(p){
   if(navigator.share){try{await navigator.share({title:'بازار ایپ',text:txt,url:url});return}catch(e){if(e.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(txt+' '+url);toast('لنک کاپی ہو گیا، واٹس ایپ میں پیسٹ کریں')}catch(e){prompt('یہ لنک کاپی کریں:',url)}
 }
+
+/* ---------- کھلاڑی زون ---------- */
+let sp='all',st='all',oth='',sImgs=[],sLoc=null;
+const mFocus=()=>focusId&&!(fp&&fp.cat==='sports');
+const SPC=[['all','🏅 سب کھیل'],['cricket','🏏 کرکٹ'],['volleyball','🏐 والی بال'],['other','🌍 دیگر']];
+const STC=[['all','سب اقسام'],['tournament','🏆 ٹورنامنٹ'],['team','🙋 کھلاڑی چاہئیں'],['player','⚽ کھلاڑی تعارف']];
+function sportLbl(p){return ({cricket:'🏏 کرکٹ',volleyball:'🏐 والی بال'})[p.sport]||('🌍 '+(p.sportName||'دیگر'))}
+function fbanner(){const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));const bt=h('button','','سب پوسٹس دیکھیں');
+  bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed();renderSports()};bn.append(bt);return bn}
+function chipRow(list,cur,fn){const r=h('div','chips');list.forEach(([k,t])=>{const x=h('button','chip'+(cur===k?' on':''),t);x.onclick=()=>fn(k);r.append(x)});return r}
+function renderSports(){
+  const bx=$('sfeed');if(!bx)return;bx.replaceChildren();
+  const all=Object.entries(posts).map(([id,p])=>Object.assign({id},p)).filter(p=>p.cat==='sports');
+  const sf=focusId&&fp&&fp.cat==='sports';let arr;
+  if(sf){bx.append(fbanner());arr=[Object.assign({id:focusId},fp)]}
+  else{
+    bx.append(chipRow(SPC,sp,k=>{sp=k;oth='';renderSports()}));
+    if(sp==='other'){const names=[...new Set(all.filter(p=>p.sport==='other'&&p.sportName).map(p=>p.sportName))];
+      if(names.length)bx.append(chipRow([['','سب']].concat(names.map(n=>[n,n])),oth,k=>{oth=k;renderSports()}))}
+    bx.append(chipRow(STC,st,k=>{st=k;renderSports()}));
+    arr=all.filter(p=>(sp==='all'||p.sport===sp)&&(sp!=='other'||!oth||p.sportName===oth)&&(st==='all'||p.type===st)).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  }
+  if(!arr.length){bx.append(h('div','hint','ابھی کوئی پوسٹ نہیں۔ ➕ دبا کر ٹورنامنٹ یا ٹیم کی پوسٹ آپ لگائیں!'));return}
+  arr.forEach(p=>bx.append(card(p,(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null)));
+}
+$('sSport').onchange=()=>$('sOther').classList.toggle('hide',$('sSport').value!=='other');
+$('addSp').onclick=()=>{sLoc=null;sImgs=[];$('sPrev').replaceChildren();['sTitle','sCity','sGround','sDate','sFee','sDesc','sOther'].forEach(i=>$(i).value='');
+  $('sLoc').textContent='📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)';$('sform').classList.remove('hide')};
+$('sfX').onclick=()=>$('sform').classList.add('hide');
+$('sImgs').onchange=e=>{const fs=[...e.target.files].slice(0,5);sImgs=[];$('sPrev').replaceChildren();e.target.value='';
+  fs.forEach((f,ix)=>shrink(f,720,.65,d=>{sImgs[ix]=d;$('sPrev').replaceChildren();sImgs.filter(Boolean).forEach(z=>{const i=h('img');i.src=z;$('sPrev').append(i)})}))};
+$('sLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
+  navigator.geolocation.getCurrentPosition(q=>{sLoc={lat:+q.coords.latitude.toFixed(5),lng:+q.coords.longitude.toFixed(5)};$('sLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+$('sGo').onclick=async()=>{
+  const t=$('sTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
+  const sport=$('sSport').value,nm=$('sOther').value.trim().toLowerCase();
+  if(sport==='other'&&!nm){toast('کھیل کا نام لکھیں');return}
+  $('sGo').disabled=true;const imgs=sImgs.filter(Boolean),k=push(ref(db,'posts')).key,up={};
+  const o={uid:me,cat:'sports',type:$('sType').value,sport:sport,title:t,city:$('sCity').value.trim(),ground:$('sGround').value.trim(),
+    date:$('sDate').value.trim(),price:$('sFee').value.trim(),desc:$('sDesc').value.trim(),n:imgs.length,hot:false,ts:serverTimestamp()};
+  if(sport==='other')o.sportName=nm;
+  if(sLoc){o.lat=sLoc.lat;o.lng=sLoc.lng}
+  try{
+    if(imgs.length){o.thumb=await shrinkURL(imgs[0],480,.6);up['postImgs/'+k]={uid:me,imgs:imgs}}
+    up['posts/'+k]=o;await update(ref(db),up);$('sform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
+  }catch(e){toast('خرابی: '+e.code)}
+  $('sGo').disabled=false};
 </script>
 </body>
 </html>
