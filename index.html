@@ -89,12 +89,13 @@ input{font-size:15px}
 .m.me{align-self:flex-start;background:linear-gradient(135deg,#11998e,#2e9e4f);color:#fff;border-bottom-right-radius:5px}
 .m.ot{align-self:flex-end;background:#fff;border-bottom-left-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .ib{display:flex;align-items:center;gap:8px;padding:9px 10px;background:#fff;border-top:1px solid #dfe5ec}
-.ib .pin{width:40px;height:40px;border-radius:50%;background:#eef1f5;font-size:18px}
-.ib input{flex:1;padding:12px 16px;border:1.5px solid #dde3ea;border-radius:24px;outline:none;background:#f6f8fa}
-.ib .snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(255,122,24,.4)}
+.ib .pin{width:40px;height:40px;border-radius:50%;background:#eef1f5;font-size:18px;flex-shrink:0}
+.ib input{flex:1;min-width:0;padding:12px 16px;border:1.5px solid #dde3ea;border-radius:24px;outline:none;background:#f6f8fa}
+.ib .snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(255,122,24,.4);flex-shrink:0}
 .ib .snd span{display:inline-block;transform:scaleX(-1)}
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;z-index:99;max-width:90%;text-align:center}
 .mi{width:220px;max-width:100%;height:auto;max-height:300px;object-fit:cover;border-radius:12px;display:block;margin-bottom:4px}
+.va{width:210px;max-width:100%;display:block;margin-bottom:4px}
 #call,#inc{position:fixed;inset:0;z-index:90;background:linear-gradient(160deg,#0f2a12,#1e4620 55%,#134e5e);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:transparent}
 #callAv{position:relative;z-index:2}
@@ -198,7 +199,7 @@ input{font-size:15px}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.7</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.8</div>
     </div>
   </div>
   <div id="nav">
@@ -223,6 +224,7 @@ input{font-size:15px}
   <div class="ib">
     <button class="pin" id="cPin">📎</button>
     <button class="pin" id="onceBtn">⏱️</button>
+    <button class="pin" id="vnBtn">🎤</button>
     <input id="cInp" placeholder="پیغام لکھیں..." autocomplete="off">
     <button class="snd" id="cSend"><span>➤</span></button>
   </div>
@@ -252,7 +254,7 @@ input{font-size:15px}
     <label>تصویریں (زیادہ سے زیادہ 10)</label><input type="file" id="fImgs" accept="image/*" multiple class="fld">
     <div id="fPrev"></div>
     <button class="sm2" id="fLoc">📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)</button>
-    <div class="note">لوکیشن لگانے پر یہ جگہ سب کو نظر آئے گی۔ نہ لگانا چاہیں تو چھوڑ دیں۔</div>
+    <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="fGo">🚀 پوسٹ کریں</button>
   </div>
 </div>
@@ -271,7 +273,7 @@ input{font-size:15px}
     <label>فلیکس / تصویریں (زیادہ سے زیادہ 5)</label><input type="file" id="sImgs" accept="image/*" multiple class="fld">
     <div id="sPrev"></div>
     <button class="sm2" id="sLoc">📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)</button>
-    <div class="note">لوکیشن لگانے پر گراؤنڈ کی جگہ سب کو نظر آئے گی۔</div>
+    <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="sGo">🚀 پوسٹ کریں</button>
   </div>
 </div>
@@ -373,7 +375,7 @@ function openChat(id){
   unsubMsgs=()=>{u1();u2()};
   markRead(id);setTimeout(()=>$('cInp').focus(),100);
 }
-function closeChat(){if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
+function closeChat(){if(vr){vcancel=true;try{vr.stop()}catch(e){}}if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
 async function send(img,once){
   const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img)$('cInp').value='';
   const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t.slice(0,60),up={};
@@ -387,6 +389,33 @@ $('cBack').onclick=closeChat;
 $('cCall').onclick=()=>startCall('audio');
 $('cVid').onclick=()=>startCall('video');
 $('cPin').onclick=()=>$('imgF').click();
+
+/* ---------- وائس نوٹ ---------- */
+let vr=null,vch=[],vT=null,vS=0,vcancel=false;
+async function sendVoice(d,dur,to){
+  const c=cid(me,to),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l='🎤 وائس نوٹ ('+dur+' سیکنڈ)',up={};
+  up[`chats/${c}/messages/${k}`]={from:me,voice:d,dur,ts};
+  up[`userChats/${me}/${to}/last`]=l;up[`userChats/${me}/${to}/ts`]=ts;up[`userChats/${me}/${to}/unread`]=0;
+  up[`userChats/${to}/${me}/last`]=l;up[`userChats/${to}/${me}/ts`]=ts;up[`userChats/${to}/${me}/unread`]=increment(1);
+  try{await update(ref(db),up)}catch(e){toast('وائس نوٹ نہیں گیا: '+e.code)}
+}
+$('vnBtn').onclick=async()=>{
+  if(vr){vr.stop();return}
+  if(!cur||!navigator.mediaDevices||!window.MediaRecorder){toast('اس براؤزر میں وائس نوٹ ممکن نہیں');return}
+  let s;try{s=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast('مائیک کی اجازت دیں');return}
+  const to=cur;vch=[];vcancel=false;
+  vr=new MediaRecorder(s,{audioBitsPerSecond:24000});
+  vr.ondataavailable=e=>{if(e.data.size)vch.push(e.data)};
+  vr.onstop=()=>{
+    clearInterval(vT);s.getTracks().forEach(t=>t.stop());
+    const mt=vr.mimeType,dur=Math.round((Date.now()-vS)/1000),cn=vcancel;vr=null;vcancel=false;
+    $('vnBtn').textContent='🎤';$('vnBtn').classList.remove('on');$('cInp').placeholder='پیغام لکھیں...';
+    if(cn||dur<1)return;
+    const r=new FileReader();r.onload=()=>sendVoice(r.result,dur,to);r.readAsDataURL(new Blob(vch,{type:mt}));
+  };
+  vS=Date.now();vr.start();$('vnBtn').classList.add('on');$('vnBtn').textContent='⏹️';
+  vT=setInterval(()=>{const x=Math.round((Date.now()-vS)/1000);$('cInp').placeholder='🔴 ریکارڈنگ '+x+' سیکنڈ... بھیجنے کے لیے ⏹️ دبائیں';if(x>=60&&vr)vr.stop()},500);
+};
 
 /* ---------- ٹیبز ---------- */
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
@@ -516,6 +545,7 @@ function fill(b,m,k){
     else{const t=h('div','ph tap','👁️ ایک بار دیکھنے کے لیے ٹیپ کریں');t.onclick=()=>viewOnce(k,m);b.append(t)}
   }else{
     if(m.img&&String(m.img).startsWith('data:image/')){const im=h('img','mi');im.src=m.img;im.onclick=()=>openViewer(m.img);b.append(im)}
+    if(m.voice&&String(m.voice).startsWith('data:audio/')){const a=h('audio','va');a.controls=true;a.preload='metadata';a.src=m.voice;b.append(a)}
     if(m.text)b.append(h('div','',m.text));
   }
   b.append(h('small','',tm(m.ts||Date.now())));
@@ -529,13 +559,13 @@ function lp(b,k){let t=null;const st=()=>{t=setTimeout(()=>sheet(k),550)},cl=()=
   b.addEventListener('contextmenu',e=>{e.preventDefault();sheet(k)})}
 function sheet(k){const o=bub[k];if(!o)return;const m=o.m,sh=$('sheet');sh.replaceChildren();
   const add=(t,f,c)=>{const x=h('button',c||'',t);x.onclick=()=>{sh.classList.add('hide');if(f)f()};sh.append(x)};
-  if(m.from===me&&!m.del)add('🗑️ سب کے لیے مٹائیں',()=>update(mref(k),{del:true,text:null,img:null}));
+  if(m.from===me&&!m.del)add('🗑️ سب کے لیے مٹائیں',()=>update(mref(k),{del:true,text:null,img:null,voice:null}));
   add('🙈 صرف میرے لیے مٹائیں',()=>{const a=hs();a.push(k);localStorage.setItem('hid_'+cid(me,cur),JSON.stringify(a));o.b.remove();delete bub[k]});
   add('بند کریں',null,'cn');sh.classList.remove('hide')}
 
 /* ---------- مارکیٹ ---------- */
-let posts={},likes={},chip='all',myLoc=null,fLoc=null,fImgs=[],sortNear=false,focusId=(/^[-\w]+$/.test(new URLSearchParams(location.search).get('post')||'')?new URLSearchParams(location.search).get('post'):null),fp=null;
-const CH=[['all','🛒 سب'],['new','✨ نئی'],['used','♻️ استعمال شدہ'],['property','🏠 پراپرٹی'],['mobile','📱 موبائل'],['near','📍 قریب ترین']];
+let posts={},likes={},chip='all',myLoc=null,fLoc=null,fImgs=[],sortNear=false,wantNear=false,focusId=(/^[-\w]+$/.test(new URLSearchParams(location.search).get('post')||'')?new URLSearchParams(location.search).get('post'):null),fp=null;
+const CH=[['all','🛒 سب'],['new','✨ نئی'],['used','♻️ استعمال شدہ'],['property','🏠 پراپرٹی'],['mobile','📱 موبائل'],['near','📍 میرے قریب (30 کلومیٹر)']];
 function listenMarket(){
   subs.push(onValue(query(ref(db,'posts'),limitToLast(50)),s=>{posts=s.val()||{};renderFeed();renderSports()}));
   subs.push(onValue(ref(db,'likes'),s=>{likes=s.val()||{};renderFeed();renderSports()}));
@@ -547,15 +577,17 @@ async function openFocus(){
   document.querySelector('#nav button[data-t="'+(fp&&fp.cat==='sports'?'sports':'market')+'"]').click();renderFeed();renderSports()}
 function getLoc(quiet){
   if(!navigator.geolocation){toast('اس براؤزر میں لوکیشن نہیں');return}
-  navigator.geolocation.getCurrentPosition(p=>{myLoc={lat:p.coords.latitude,lng:p.coords.longitude};renderFeed();renderSports()},
-    ()=>{myLoc=null;if(!quiet)toast('لوکیشن کی اجازت نہیں ملی');$('locSw').checked=false;localStorage.setItem('loc_on','0')},{timeout:10000});
+  navigator.geolocation.getCurrentPosition(p=>{myLoc={lat:p.coords.latitude,lng:p.coords.longitude};if(wantNear){sortNear=true;wantNear=false}renderFeed();renderSports()},
+    ()=>{myLoc=null;wantNear=false;if(!quiet)toast('لوکیشن کی اجازت نہیں ملی');$('locSw').checked=false;localStorage.setItem('loc_on','0')},{timeout:10000});
 }
 $('locSw').checked=localStorage.getItem('loc_on')==='1';
 $('locSw').onchange=e=>{if(e.target.checked){localStorage.setItem('loc_on','1');getLoc()}else{localStorage.setItem('loc_on','0');myLoc=null;sortNear=false;renderFeed();renderSports();toast('لوکیشن بند ہو گئی')}};
-function km(a,b,c,d){const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q))}
+/* پرائیویسی: لوکیشن تقریباً 500 میٹر کے خانے میں دھندلی کی جاتی ہے، فاصلہ آدھے کلومیٹر کے درجوں میں دکھتا ہے */
+function bl(v){return +(Math.round(v/0.005)*0.005).toFixed(3)}
+function km(a,b,c,d){c=bl(c);d=bl(d);const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return Math.max(0.5,Math.ceil(12742*Math.asin(Math.sqrt(q))*2)/2)}
 function renderChips(){const b=$('chips');b.replaceChildren();
   CH.forEach(([k,t])=>{const x=h('button','chip'+((k==='near'?sortNear:chip===k)?' on':''),t);
-    x.onclick=()=>{if(k==='near'){if(!myLoc){toast('پروفائل میں "میری لوکیشن" چالو کریں');return}sortNear=!sortNear}else chip=k;renderFeed()};b.append(x)})}
+    x.onclick=()=>{if(k==='near'){if(!myLoc){wantNear=true;$('locSw').checked=true;localStorage.setItem('loc_on','1');getLoc();toast('لوکیشن لی جا رہی ہے...');return}sortNear=!sortNear}else chip=k;renderFeed()};b.append(x)})}
 function renderFeed(){
   renderChips();const box=$('feed');box.replaceChildren();
   let arr=Object.entries(posts).map(([id,p])=>Object.assign({id},p));
@@ -563,8 +595,9 @@ function renderFeed(){
     const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed();renderSports()};bn.append(bt);box.append(bn)}
   arr=arr.filter(p=>p.cat!=='sports'&&(mFocus()||chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip))));
   const d=p=>(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null;
+  if(sortNear)arr=arr.filter(p=>d(p)!=null&&d(p)<=30);
   arr.sort(sortNear?((a,b)=>(d(a)==null?1e9:d(a))-(d(b)==null?1e9:d(b))):((a,b)=>(b.ts||0)-(a.ts||0)));
-  if(!arr.length){box.append(h('div','hint','ابھی اس زمرے میں کوئی پوسٹ نہیں۔ ➕ دبا کر پہلی پوسٹ آپ لگائیں!'));return}
+  if(!arr.length){box.append(h('div','hint',sortNear?'30 کلومیٹر کے اندر ابھی کوئی پوسٹ نہیں۔':'ابھی اس زمرے میں کوئی پوسٹ نہیں۔ ➕ دبا کر پہلی پوسٹ آپ لگائیں!'));return}
   arr.forEach(p=>box.append(card(p,d(p))));
 }
 function card(p,dist){
@@ -580,12 +613,11 @@ function card(p,dist){
   else{tg.append(h('span','pr','Rs '+(p.price||'-')));
     if(p.cat!=='property')tg.append(h('span',p.cond==='new'?'new':'used',p.cond==='new'?'✨ نئی':'♻️ استعمال شدہ'));
     tg.append(h('span','',({general:'🛍️ عام',mobile:'📱 موبائل',property:'🏠 پراپرٹی'})[p.cat]||''))}
-  if(dist!=null)tg.append(h('span','dist','📍 '+(dist<1?Math.round(dist*1000)+' میٹر':dist.toFixed(1)+' کلومیٹر')));
+  if(dist!=null)tg.append(h('span','dist','📍 '+(dist<=0.5?'0.5 کلومیٹر کے اندر':dist+' کلومیٹر')));
   c.append(tg);if(p.desc)c.append(h('div','pd',p.desc));
   const ac=h('div','acts'),lk=likes[p.id]||{},n=Object.keys(lk).length,liked=!!lk[me];
   const b1=h('button','ab'+(liked?' on':''),(liked?'❤️ ':'🤍 ')+n);b1.onclick=()=>set(ref(db,`likes/${p.id}/${me}`),liked?null:true);ac.append(b1);
   const sb=h('button','ab','🔗 شیئر');sb.onclick=()=>sharePost(p);ac.append(sb);
-  if(p.lat!=null){const a=h('a','ab','🗺️ راستہ');a.href=`https://www.google.com/maps?q=${p.lat},${p.lng}`;a.target='_blank';a.rel='noopener';ac.append(a)}
   if(mine){
     const hb=h('button','ab'+(p.hot?' on':''),p.cat==='sports'?'🔥 نمایاں':'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
     const dl=h('button','ab red2',p.cat==='sports'?'🗑️ مٹائیں':'✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
@@ -605,7 +637,7 @@ function drawPrev(){$('fPrev').replaceChildren();fImgs.filter(Boolean).forEach(d
 $('fImgs').onchange=e=>{const fs=[...e.target.files].slice(0,10);fImgs=[];$('fPrev').replaceChildren();e.target.value='';
   fs.forEach((f,ix)=>shrink(f,560,.6,d=>{fImgs[ix]=d;drawPrev()}))};
 $('fLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
-  navigator.geolocation.getCurrentPosition(p=>{fLoc={lat:+p.coords.latitude.toFixed(5),lng:+p.coords.longitude.toFixed(5)};$('fLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+  navigator.geolocation.getCurrentPosition(p=>{fLoc={lat:bl(p.coords.latitude),lng:bl(p.coords.longitude)};$('fLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
 const shrinkURL=(src,M,q)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,M/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=src});
 $('fGo').onclick=async()=>{
   const t=$('fTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
@@ -663,7 +695,7 @@ $('sfX').onclick=()=>$('sform').classList.add('hide');
 $('sImgs').onchange=e=>{const fs=[...e.target.files].slice(0,5);sImgs=[];$('sPrev').replaceChildren();e.target.value='';
   fs.forEach((f,ix)=>shrink(f,720,.65,d=>{sImgs[ix]=d;$('sPrev').replaceChildren();sImgs.filter(Boolean).forEach(z=>{const i=h('img');i.src=z;$('sPrev').append(i)})}))};
 $('sLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
-  navigator.geolocation.getCurrentPosition(q=>{sLoc={lat:+q.coords.latitude.toFixed(5),lng:+q.coords.longitude.toFixed(5)};$('sLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+  navigator.geolocation.getCurrentPosition(q=>{sLoc={lat:bl(q.coords.latitude),lng:bl(q.coords.longitude)};$('sLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
 $('sGo').onclick=async()=>{
   const t=$('sTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
   const sport=$('sSport').value,nm=$('sOther').value.trim().toLowerCase();
@@ -685,53 +717,6 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('in
 $('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
 window.addEventListener('appinstalled',()=>{$('instBtn').classList.add('hide');toast('✅ ایپ انسٹال ہو گئی')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-</script>/* ===== بازار: وائس نوٹ + میرے قریب ===== */
-
-/* --- وائس نوٹ --- */
-if(!$('vnBtn')){
-let vr=null,vch=[],vT=null,vS=0;
-const vb=h('button','pin','🎤');vb.id='vnBtn';$('onceBtn').after(vb);
-async function sendVoice(d,dur,to){
-  const c=cid(me,to),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l='🎤 وائس نوٹ ('+dur+' سیکنڈ)',up={};
-  up[`chats/${c}/messages/${k}`]={from:me,voice:d,dur,ts};
-  up[`userChats/${me}/${to}/last`]=l;up[`userChats/${me}/${to}/ts`]=ts;up[`userChats/${me}/${to}/unread`]=0;
-  up[`userChats/${to}/${me}/last`]=l;up[`userChats/${to}/${me}/ts`]=ts;up[`userChats/${to}/${me}/unread`]=increment(1);
-  try{await update(ref(db),up)}catch(e){toast('وائس نوٹ نہیں گیا: '+e.code)}
-}
-vb.onclick=async()=>{
-  if(vr){vr.stop();return}
-  if(!cur||!navigator.mediaDevices||!window.MediaRecorder){toast('اس براؤزر میں وائس نوٹ ممکن نہیں');return}
-  let s;try{s=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast('مائیک کی اجازت دیں');return}
-  const to=cur;vch=[];
-  vr=new MediaRecorder(s,{audioBitsPerSecond:24000});
-  vr.ondataavailable=e=>{if(e.data.size)vch.push(e.data)};
-  vr.onstop=()=>{
-    clearInterval(vT);s.getTracks().forEach(t=>t.stop());
-    const mt=vr.mimeType,dur=Math.round((Date.now()-vS)/1000);vr=null;
-    vb.textContent='🎤';vb.classList.remove('on');$('cInp').placeholder='پیغام لکھیں...';
-    if(dur<1)return;
-    const r=new FileReader();r.onload=()=>sendVoice(r.result,dur,to);r.readAsDataURL(new Blob(vch,{type:mt}));
-  };
-  vS=Date.now();vr.start();vb.classList.add('on');vb.textContent='⏹️';
-  vT=setInterval(()=>{const x=Math.round((Date.now()-vS)/1000);$('cInp').placeholder='🔴 ریکارڈنگ '+x+' سیکنڈ... بھیجنے کے لیے ⏹️ دبائیں';if(x>=60&&vr)vr.stop()},500);
-};
-new MutationObserver(()=>{for(const k in bub){const o=bub[k];
-  if(o.m.voice&&!o.m.del&&String(o.m.voice).startsWith('data:audio/')&&!o.b.querySelector('audio')){
-    const a=h('audio');a.controls=true;a.src=o.m.voice;a.style.cssText='width:210px;max-width:100%';o.b.insertBefore(a,o.b.firstChild)}}
-}).observe($('msgs'),{childList:true,subtree:true});
-}
-
-/* --- میرے قریب (پرائیویسی) --- */
-function bl(v){return +(Math.round(v/0.005)*0.005).toFixed(3)}
-km=function(a,b,c,d){c=bl(c);d=bl(d);const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return Math.max(0.5,Math.ceil(12742*Math.asin(Math.sqrt(q))*2)/2)};
-const _card=card;
-card=function(p,dist){if(sortNear&&p.cat!=='sports'&&(dist==null||dist>30))return document.createDocumentFragment();return _card(p,dist)};
-$('fLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
-  navigator.geolocation.getCurrentPosition(p=>{fLoc={lat:bl(p.coords.latitude),lng:bl(p.coords.longitude)};$('fLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
-$('sLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
-  navigator.geolocation.getCurrentPosition(q=>{sLoc={lat:bl(q.coords.latitude),lng:bl(q.coords.longitude)};$('sLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
-const rmMap=()=>document.querySelectorAll('a[href*="google.com/maps"]').forEach(a=>a.remove());
-['feed','sfeed'].forEach(i=>new MutationObserver(rmMap).observe($(i),{childList:true,subtree:true}));
-document.querySelectorAll('.note').forEach(n=>{if(n.textContent.includes('نظر آئے گی'))n.textContent='اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔'});
+</script>
 </body>
 </html>
