@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>بازار ایپ</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1e4620">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--g1:#1e4620;--g2:#2e9e4f;--gold:#ffc107;--bg:#f2f5f9;--tx:#222;--mu:#7a8594}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
@@ -136,6 +141,9 @@ input{font-size:15px}
 .fbn{display:flex;justify-content:space-between;align-items:center;background:#e3f2fd;color:#0d47a1;padding:10px 14px;border-radius:14px;margin-bottom:10px;font-size:13px;font-weight:bold}
 .fbn button{background:#0d47a1;color:#fff;padding:6px 12px;border-radius:12px;font-size:12px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 8px}.chips::-webkit-scrollbar{display:none}
+.wm{text-align:center;margin-bottom:4px}.wm b{display:block;font-size:46px;line-height:1.3;color:var(--g1)}
+.wm i{display:block;width:70px;height:5px;border-radius:3px;background:linear-gradient(90deg,#ffc107,#ff7a18);margin:0 auto 6px}
+.wm small{font-size:13px;font-weight:bold;letter-spacing:5px;color:var(--g2)}
 </style>
 </head>
 <body>
@@ -143,8 +151,7 @@ input{font-size:15px}
 <!-- لاگ ان / نیا اکاؤنٹ -->
 <div id="auth" class="hide">
   <div class="acard">
-    <div class="logo">🛍️</div>
-    <h1>بازار ایپ</h1>
+    <div class="wm"><b>بازار</b><i></i><small>BAZAAR APP</small></div>
     <p>خرید و فروخت، چیٹ اور رائے شماری ایک جگہ</p>
     <div class="tabs"><button id="tLog" class="on">لاگ ان</button><button id="tReg">نیا اکاؤنٹ</button></div>
     <input id="aName" class="fld hide" placeholder="آپ کا پورا نام">
@@ -165,7 +172,7 @@ input{font-size:15px}
     <div id="inbox"></div>
   </div>
   <div id="t-market" class="tab hide">
-    <div class="top" style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">🛒 مارکیٹ</h2><button class="addp" id="addPost">➕ نئی پوسٹ</button></div>
+    <div class="top" style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;display:flex;align-items:center;gap:8px"><svg class="ci2" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 4h2.4l2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.4 8.2H6"/><circle cx="9.6" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.8" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><rect x="10.2" y="9.6" width="5.2" height="4.4" rx="1" fill="#ffc107" stroke="#ffc107"/><path d="M11.6 9.6V8.9a1.2 1.2 0 0 1 2.4 0v.7" stroke="#ffc107"/></svg>مارکیٹ</h2><button class="addp" id="addPost">➕ نئی پوسٹ</button></div>
     <div id="chips"></div>
     <div id="feed"></div>
   </div>
@@ -188,13 +195,15 @@ input{font-size:15px}
       <label style="display:flex;justify-content:space-between;align-items:center;background:#f3f5f8;padding:12px;border-radius:14px;margin-bottom:12px"><span>📍 فاصلہ دیکھنے کے لیے میری لوکیشن</span><input type="checkbox" id="locSw" style="width:22px;height:22px;margin:0"></label>
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
       <button id="pSave" class="big">💾 محفوظ کریں</button>
+      <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
+      <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.4</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.7</div>
     </div>
   </div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
-    <button data-t="market"><i>🛒</i>مارکیٹ</button>
+    <button data-t="market"><i><svg class="ci2" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 4h2.4l2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.4 8.2H6"/><circle cx="9.6" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.8" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><rect x="10.2" y="9.6" width="5.2" height="4.4" rx="1" fill="#ffc107" stroke="#ffc107"/><path d="M11.6 9.6V8.9a1.2 1.2 0 0 1 2.4 0v.7" stroke="#ffc107"/></svg></i>مارکیٹ</button>
     <button data-t="sports"><i>⚽</i>کھلاڑی</button>
     <button data-t="poll"><i>📊</i>پولنگ</button>
     <button data-t="me"><i>👤</i>پروفائل</button>
@@ -403,6 +412,14 @@ function shrink(f,M,q,cb){const r=new FileReader();r.onload=()=>{const i=new Ima
 $('imgF').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f&&cur)shrink(f,800,.7,d=>{send(d,onceMode);onceMode=false;$('onceBtn').classList.remove('on')})};
 
 /* ---------- آڈیو / ویڈیو کال (WebRTC) ---------- */
+// TURN: Metered.ca سے ملا ہوا "Credentials API" کا پورا لنک یہاں اندر لکھیں (خالی ہو تو TURN استعمال نہیں ہو گا)
+const TURN_URL='';
+let TURNS=[],turnT=0;
+async function loadTurn(){
+  if(!TURN_URL||Date.now()-turnT<1800000)return;
+  try{const r=await fetch(TURN_URL),a=await r.json();if(Array.isArray(a)&&a.length){TURNS=a;turnT=Date.now();dbg('turn ok: '+a.length)}else dbg('turn: khali')}
+  catch(e){dbg('turn err')}
+}
 const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
 let pc=null,ls=null,callId=null,peer=null,cType='audio',cUn=[],pend=[],ringT=null,inc=null;
 const media=t=>navigator.mediaDevices.getUserMedia({audio:true,video:t==='video'});
@@ -416,7 +433,7 @@ function showCall(u,st){$('dbg').textContent='';$('call').classList.remove('hide
   $('lv').srcObject=ls;$('lv').classList.toggle('hide',cType!=='video');$('btCam').classList.toggle('hide',cType!=='video');
   $('btMic').textContent='🎤';$('btCam').textContent='📷'}
 function mkPc(){
-  pc=new RTCPeerConnection(ICE);
+  pc=new RTCPeerConnection({iceServers:ICE.iceServers.concat(TURNS)});
   ls.getTracks().forEach(t=>pc.addTrack(t,ls));
   pc.ontrack=e=>{dbg('track: '+e.track.kind);$('rv').srcObject=e.streams[0];$('rv').play().catch(()=>toast('اسکرین پر ایک بار ٹیپ کریں'))};
   pc.oniceconnectionstatechange=()=>dbg('ice: '+(pc&&pc.iceConnectionState));
@@ -435,7 +452,7 @@ async function startCall(type){
   if(!navigator.mediaDevices){toast('اس براؤزر میں کال ممکن نہیں');return}
   peer=cur;cType=type;callId=cid(me,peer);
   try{ls=await media(type)}catch(e){toast('مائیک/کیمرے کی اجازت دیں');peer=null;callId=null;return}
-  showCall(users[peer]||{},'📞 گھنٹی بج رہی ہے...');mkPc();
+  showCall(users[peer]||{},'📞 گھنٹی بج رہی ہے...');await loadTurn();mkPc();
   try{
     await set(ref(db,`calls/${callId}`),{state:'ringing',from:me,to:peer,type});
     const o=await pc.createOffer();await pc.setLocalDescription(o);
@@ -444,7 +461,7 @@ async function startCall(type){
     cUn.push(onValue(ref(db,`calls/${callId}/answer`),async s=>{const a=s.val();
       if(a&&pc&&!pc.currentRemoteDescription){dbg('answer mila');try{await pc.setRemoteDescription(a);dbg('remote ok');flush();setSt('🔗 جڑ رہا ہے...')}catch(e){dbg('answer err: '+e.message)}}}));
     await set(ref(db,`incoming/${peer}`),{from:me,callId,type,ts:serverTimestamp()});
-    ringT=setTimeout(()=>{if(pc&&pc.connectionState!=='connected'){toast('جواب نہیں آیا');endCall(true)}},45000);
+    ringT=setTimeout(()=>{if(pc&&pc.connectionState!=='connected'){toast(pc.remoteDescription?'رابطہ نہیں جڑ سکا (نیٹ ورک)':'جواب نہیں آیا');endCall(true)}},45000);
   }catch(e){toast('کال شروع نہیں ہوئی: '+(e.code||e.message));endCall(false)}
 }
 function listenIncoming(){subs.push(onValue(ref(db,`incoming/${me}`),s=>{
@@ -465,7 +482,7 @@ $('incYes').onclick=async()=>{
   try{
     const d=(await get(ref(db,`calls/${callId}`))).val();
     if(!d||!d.offer||d.state!=='ringing'){toast('کال ختم ہو چکی ہے');endCall(false);remove(ref(db,`incoming/${me}`));return}
-    showCall(users[peer]||{},'🔗 جڑ رہا ہے...');mkPc();watch(peer);
+    showCall(users[peer]||{},'🔗 جڑ رہا ہے...');await loadTurn();mkPc();watch(peer);
     await pc.setRemoteDescription(d.offer);flush();
     const a=await pc.createAnswer();await pc.setLocalDescription(a);
     await update(ref(db,`calls/${callId}`),{answer:{type:a.type,sdp:a.sdp},state:'active'});dbg('answer bheja');
@@ -661,6 +678,13 @@ $('sGo').onclick=async()=>{
     up['posts/'+k]=o;await update(ref(db),up);$('sform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
   }catch(e){toast('خرابی: '+e.code)}
   $('sGo').disabled=false};
+
+/* ---------- ایپ انسٹال (PWA) ---------- */
+let dip=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('instBtn').classList.remove('hide')});
+$('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
+window.addEventListener('appinstalled',()=>{$('instBtn').classList.add('hide');toast('✅ ایپ انسٹال ہو گئی')});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
