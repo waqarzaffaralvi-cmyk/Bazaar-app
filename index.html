@@ -685,6 +685,53 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('in
 $('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
 window.addEventListener('appinstalled',()=>{$('instBtn').classList.add('hide');toast('✅ ایپ انسٹال ہو گئی')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-</script>
+</script>/* ===== بازار: وائس نوٹ + میرے قریب ===== */
+
+/* --- وائس نوٹ --- */
+if(!$('vnBtn')){
+let vr=null,vch=[],vT=null,vS=0;
+const vb=h('button','pin','🎤');vb.id='vnBtn';$('onceBtn').after(vb);
+async function sendVoice(d,dur,to){
+  const c=cid(me,to),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l='🎤 وائس نوٹ ('+dur+' سیکنڈ)',up={};
+  up[`chats/${c}/messages/${k}`]={from:me,voice:d,dur,ts};
+  up[`userChats/${me}/${to}/last`]=l;up[`userChats/${me}/${to}/ts`]=ts;up[`userChats/${me}/${to}/unread`]=0;
+  up[`userChats/${to}/${me}/last`]=l;up[`userChats/${to}/${me}/ts`]=ts;up[`userChats/${to}/${me}/unread`]=increment(1);
+  try{await update(ref(db),up)}catch(e){toast('وائس نوٹ نہیں گیا: '+e.code)}
+}
+vb.onclick=async()=>{
+  if(vr){vr.stop();return}
+  if(!cur||!navigator.mediaDevices||!window.MediaRecorder){toast('اس براؤزر میں وائس نوٹ ممکن نہیں');return}
+  let s;try{s=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast('مائیک کی اجازت دیں');return}
+  const to=cur;vch=[];
+  vr=new MediaRecorder(s,{audioBitsPerSecond:24000});
+  vr.ondataavailable=e=>{if(e.data.size)vch.push(e.data)};
+  vr.onstop=()=>{
+    clearInterval(vT);s.getTracks().forEach(t=>t.stop());
+    const mt=vr.mimeType,dur=Math.round((Date.now()-vS)/1000);vr=null;
+    vb.textContent='🎤';vb.classList.remove('on');$('cInp').placeholder='پیغام لکھیں...';
+    if(dur<1)return;
+    const r=new FileReader();r.onload=()=>sendVoice(r.result,dur,to);r.readAsDataURL(new Blob(vch,{type:mt}));
+  };
+  vS=Date.now();vr.start();vb.classList.add('on');vb.textContent='⏹️';
+  vT=setInterval(()=>{const x=Math.round((Date.now()-vS)/1000);$('cInp').placeholder='🔴 ریکارڈنگ '+x+' سیکنڈ... بھیجنے کے لیے ⏹️ دبائیں';if(x>=60&&vr)vr.stop()},500);
+};
+new MutationObserver(()=>{for(const k in bub){const o=bub[k];
+  if(o.m.voice&&!o.m.del&&String(o.m.voice).startsWith('data:audio/')&&!o.b.querySelector('audio')){
+    const a=h('audio');a.controls=true;a.src=o.m.voice;a.style.cssText='width:210px;max-width:100%';o.b.insertBefore(a,o.b.firstChild)}}
+}).observe($('msgs'),{childList:true,subtree:true});
+}
+
+/* --- میرے قریب (پرائیویسی) --- */
+function bl(v){return +(Math.round(v/0.005)*0.005).toFixed(3)}
+km=function(a,b,c,d){c=bl(c);d=bl(d);const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return Math.max(0.5,Math.ceil(12742*Math.asin(Math.sqrt(q))*2)/2)};
+const _card=card;
+card=function(p,dist){if(sortNear&&p.cat!=='sports'&&(dist==null||dist>30))return document.createDocumentFragment();return _card(p,dist)};
+$('fLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
+  navigator.geolocation.getCurrentPosition(p=>{fLoc={lat:bl(p.coords.latitude),lng:bl(p.coords.longitude)};$('fLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+$('sLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
+  navigator.geolocation.getCurrentPosition(q=>{sLoc={lat:bl(q.coords.latitude),lng:bl(q.coords.longitude)};$('sLoc').textContent='✅ لوکیشن لگ گئی'},()=>toast('لوکیشن کی اجازت نہیں ملی'),{timeout:10000})};
+const rmMap=()=>document.querySelectorAll('a[href*="google.com/maps"]').forEach(a=>a.remove());
+['feed','sfeed'].forEach(i=>new MutationObserver(rmMap).observe($(i),{childList:true,subtree:true}));
+document.querySelectorAll('.note').forEach(n=>{if(n.textContent.includes('نظر آئے گی'))n.textContent='اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔'});
 </body>
 </html>
