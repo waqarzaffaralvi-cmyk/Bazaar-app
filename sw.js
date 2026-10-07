@@ -1,5 +1,5 @@
 // بازار ایپ - سروس ورکر (نیا ورژن آئے تو V کا نام بدل دیں)
-const V = 'bazaar-v3.7';
+const V = 'bazaar-v3.8';
 const SHELL = ['./', 'index.html', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
