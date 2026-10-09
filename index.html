@@ -145,6 +145,32 @@ input{font-size:15px}
 .wm{text-align:center;margin-bottom:4px}.wm b{display:block;font-size:46px;line-height:1.3;color:var(--g1)}
 .wm i{display:block;width:70px;height:5px;border-radius:3px;background:linear-gradient(90deg,#ffc107,#ff7a18);margin:0 auto 6px}
 .wm small{font-size:13px;font-weight:bold;letter-spacing:5px;color:var(--g2)}
+
+.sech{display:flex;justify-content:space-between;align-items:center;margin:16px 16px 8px}
+.sech .sec{margin:0}
+.allb{background:#e8f5e9;color:var(--g1);padding:6px 14px;border-radius:14px;font-size:12px;font-weight:bold}
+.ring.has{background:linear-gradient(135deg,#25d366,#128c7e)}
+.ring.seen{background:#c9d1da}
+.ring.mine{background:#e3e8ee}
+.plus{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#25d366;color:#fff;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff;line-height:1;font-style:normal}
+#mem,#stForm{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
+#stPrev img{width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+#stView{position:fixed;inset:0;z-index:93;background:#000;color:#fff;display:flex;flex-direction:column}
+#svBars{display:flex;gap:4px;padding:10px 10px 4px;direction:ltr}
+#svBars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden;position:relative}
+#svBars i.done{background:#fff}
+#svBars i.cur::after{content:'';position:absolute;inset:0;background:#fff;transform-origin:left;animation:svp 6s linear forwards}
+@keyframes svp{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.svh{display:flex;align-items:center;gap:10px;padding:6px 12px}
+.svh .svn{flex:1;min-width:0}.svn b{display:block;font-size:15px}.svn small{opacity:.8;font-size:11px}
+.svh button{background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:38px;height:38px;font-size:16px}
+#svBody{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+#svBody img{max-width:100%;max-height:100%;border-radius:8px}
+.svt{font-size:26px;font-weight:bold;text-align:center;line-height:1.7;padding:24px;word-break:break-word}
+#svCap{text-align:center;padding:8px 16px;font-size:15px}
+#svViews{text-align:center;padding:8px 0 18px;font-size:13px;opacity:.85}
+#svLink{display:block;margin:0 auto 6px;background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff;padding:10px 22px;border-radius:20px;font-weight:bold;font-size:14px;text-decoration:none;width:max-content;max-width:90%;text-align:center}
+.tags .aff{background:#fff3cd;color:#8a6d00}
 </style>
 </head>
 <body>
@@ -167,7 +193,7 @@ input{font-size:15px}
 <div id="app" class="hide">
   <div id="t-chat" class="tab">
     <div class="top"><h2>💬 چیٹس</h2><input id="srch" class="search" placeholder="🔍 نام سے تلاش کریں"></div>
-    <div class="sec">ممبرز</div>
+    <div class="sech"><div class="sec">ممبرز</div><button class="allb" id="allMem">👥 سب ممبرز</button></div>
     <div id="people"></div>
     <div class="sec">آپ کی چیٹس</div>
     <div id="inbox"></div>
@@ -199,7 +225,7 @@ input{font-size:15px}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.8</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.9</div>
     </div>
   </div>
   <div id="nav">
@@ -253,6 +279,7 @@ input{font-size:15px}
     <label>تفصیل</label><textarea id="fDesc" class="fld" rows="3" maxlength="500"></textarea>
     <label>تصویریں (زیادہ سے زیادہ 10)</label><input type="file" id="fImgs" accept="image/*" multiple class="fld">
     <div id="fPrev"></div>
+    <label>🔗 ایفیلی ایٹ / خریداری کا لنک (اختیاری)</label><input id="fLink" class="fld" dir="ltr" style="text-align:left" placeholder="https://..." maxlength="300">
     <button class="sm2" id="fLoc">📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="fGo">🚀 پوسٹ کریں</button>
@@ -272,10 +299,37 @@ input{font-size:15px}
     <label>تفصیل</label><textarea id="sDesc" class="fld" rows="3" maxlength="500"></textarea>
     <label>فلیکس / تصویریں (زیادہ سے زیادہ 5)</label><input type="file" id="sImgs" accept="image/*" multiple class="fld">
     <div id="sPrev"></div>
+    <label>🔗 ایفیلی ایٹ / خریداری کا لنک (اختیاری)</label><input id="sLink" class="fld" dir="ltr" style="text-align:left" placeholder="https://..." maxlength="300">
     <button class="sm2" id="sLoc">📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="sGo">🚀 پوسٹ کریں</button>
   </div>
+</div>
+<div id="mem" class="hide">
+  <div class="pfh"><button id="memX">✖</button><b id="memT">👥 سب ممبرز</b></div>
+  <div class="pfb"><input id="memQ" class="fld" placeholder="🔍 نام سے تلاش کریں"><div id="memL"></div></div>
+</div>
+<div id="stForm" class="hide">
+  <div class="pfh"><button id="stX">✖</button><b>🟢 نیا اسٹیٹس</b></div>
+  <div class="pfb">
+    <button class="sm2" id="stPick">📷 تصویر چنیں (اختیاری)</button>
+    <input type="file" id="stFile" accept="image/*" class="hide">
+    <div id="stPrev"></div>
+    <label>لکھائی / اشتہار کی عبارت</label>
+    <textarea id="stTxt" class="fld" rows="3" maxlength="200" placeholder="اسٹیٹس یا اشتہار لکھیں..."></textarea>
+    <label>🔗 ایفیلی ایٹ / خریداری کا لنک (اختیاری)</label><input id="stLink" class="fld" dir="ltr" style="text-align:left" placeholder="https://..." maxlength="300">
+    <div class="note" id="stNote"></div>
+    <button class="big" id="stGo">🚀 اسٹیٹس لگائیں</button>
+  </div>
+</div>
+<div id="stView" class="hide">
+  <div id="svBars"></div>
+  <div class="svh"><div id="svAv"></div><div class="svn"><b id="svName"></b><small id="svTime"></small></div>
+    <button id="svChat" class="hide">💬</button><button id="svAdd" class="hide">➕</button><button id="svDel" class="hide">🗑️</button><button id="svX">✖</button></div>
+  <div id="svBody"></div>
+  <div id="svCap"></div>
+  <a id="svLink" class="hide" target="_blank" rel="noopener noreferrer sponsored"></a>
+  <div id="svViews"></div>
 </div>
 <div id="gal" class="hide"></div>
 <div id="viewer" class="hide"><img id="vimg" alt=""></div>
@@ -329,7 +383,7 @@ $('aGo').onclick=async()=>{
 
 onAuthStateChanged(auth,u=>{
   if(u){me=u.uid;$('auth').classList.add('hide');$('app').classList.remove('hide');start(u)}
-  else{subs.forEach(f=>f());subs=[];me=null;users={};inbox={};closeChat();$('app').classList.add('hide');$('auth').classList.remove('hide')}
+  else{subs.forEach(f=>f());subs=[];me=null;users={};inbox={};stData={};closeChat();$('app').classList.add('hide');$('auth').classList.remove('hide')}
 });
 
 function start(u){
@@ -338,16 +392,24 @@ function start(u){
   subs.push(onValue(ref(db,'userChats/'+me),s=>{inbox=s.val()||{};renderInbox();
     const n=Object.values(inbox).reduce((a,x)=>a+(x.unread||0),0);const b=$('nbd');b.textContent=n;b.classList.toggle('hide',!n);
     if(cur&&inbox[cur]&&inbox[cur].unread)markRead(cur)}));
-  $('pMail').textContent=u.email||'';listenIncoming();listenMarket();
+  $('pMail').textContent=u.email||'';listenIncoming();listenMarket();listenStatus();
 }
 
 /* ---------- فہرستیں ---------- */
 function renderPeople(){
   const box=$('people');box.replaceChildren();
-  Object.entries(users).filter(([id])=>id!==me).sort((a,b)=>(b[1].online?1:0)-(a[1].online?1:0)).forEach(([id,u])=>{
-    const w=h('div','pp'),r=h('div','ring');r.append(av(u,56));if(u.online)r.append(h('i','dot'));
-    w.append(r,h('span','',u.name||'صارف'));w.onclick=()=>openChat(id);box.append(w)});
-  if(!box.children.length)box.append(h('div','hint','ابھی کوئی اور ممبر نہیں۔ دوست کو لنک بھیج کر اکاؤنٹ بنوائیں!'));
+  if(!q){
+    const mine=stList(me),w=h('div','pp'),r=h('div','ring '+(mine.length?(stSeen(me)?'seen':'has'):'mine'));
+    r.append(av(users[me]||{name:'میں'},56));if(!mine.length)r.append(h('i','plus','+'));
+    w.append(r,h('span','','میرا اسٹیٹس'));w.onclick=()=>mine.length?openStatus(me):openStForm();box.append(w);
+  }
+  const arr=Object.entries(users).filter(([id,u])=>id!==me&&(!q||(u.name||'').toLowerCase().includes(q)))
+    .sort((a,b)=>((stList(b[0]).length?1:0)-(stList(a[0]).length?1:0))||((b[1].online?1:0)-(a[1].online?1:0)));
+  arr.forEach(([id,u])=>{
+    const sl=stList(id),w=h('div','pp'),r=h('div','ring'+(sl.length?(stSeen(id)?' seen':' has'):''));r.append(av(u,56));if(u.online)r.append(h('i','dot'));
+    w.append(r,h('span','',u.name||'صارف'));w.onclick=()=>sl.length?openStatus(id):openChat(id);box.append(w)});
+  if(!arr.length)box.append(h('div','hint',q?'کوئی ممبر نہیں ملا۔':'ابھی کوئی اور ممبر نہیں۔ دوست کو لنک بھیج کر اکاؤنٹ بنوائیں!'));
+  if($('mem')&&!$('mem').classList.contains('hide'))renderMem();
 }
 function renderInbox(){
   const box=$('inbox');box.replaceChildren();
@@ -359,7 +421,7 @@ function renderInbox(){
     r.append(av(u,50),m,mt);r.onclick=()=>openChat(id);box.append(r)});
   if(!box.children.length)box.append(h('div','hint','ابھی کوئی چیٹ نہیں۔ اوپر کسی گول تصویر پر ٹیپ کر کے بات شروع کریں۔'));
 }
-$('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox()};
+$('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox();renderPeople()};
 
 /* ---------- چیٹ ---------- */
 function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';
@@ -583,6 +645,7 @@ function getLoc(quiet){
 $('locSw').checked=localStorage.getItem('loc_on')==='1';
 $('locSw').onchange=e=>{if(e.target.checked){localStorage.setItem('loc_on','1');getLoc()}else{localStorage.setItem('loc_on','0');myLoc=null;sortNear=false;renderFeed();renderSports();toast('لوکیشن بند ہو گئی')}};
 /* پرائیویسی: لوکیشن تقریباً 500 میٹر کے خانے میں دھندلی کی جاتی ہے، فاصلہ آدھے کلومیٹر کے درجوں میں دکھتا ہے */
+function okLink(u){u=(u||'').trim();if(!u||u.length>300||!/^https?:\/\/\S+$/i.test(u))return '';try{const x=new URL(u);return(x.protocol==='https:'||x.protocol==='http:')?x.href:''}catch(e){return ''}}
 function bl(v){return +(Math.round(v/0.005)*0.005).toFixed(3)}
 function km(a,b,c,d){c=bl(c);d=bl(d);const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return Math.max(0.5,Math.ceil(12742*Math.asin(Math.sqrt(q))*2)/2)}
 function renderChips(){const b=$('chips');b.replaceChildren();
@@ -614,10 +677,12 @@ function card(p,dist){
     if(p.cat!=='property')tg.append(h('span',p.cond==='new'?'new':'used',p.cond==='new'?'✨ نئی':'♻️ استعمال شدہ'));
     tg.append(h('span','',({general:'🛍️ عام',mobile:'📱 موبائل',property:'🏠 پراپرٹی'})[p.cat]||''))}
   if(dist!=null)tg.append(h('span','dist','📍 '+(dist<=0.5?'0.5 کلومیٹر کے اندر':dist+' کلومیٹر')));
+  if(okLink(p.link))tg.append(h('span','aff','🔗 ایفیلی ایٹ لنک'));
   c.append(tg);if(p.desc)c.append(h('div','pd',p.desc));
   const ac=h('div','acts'),lk=likes[p.id]||{},n=Object.keys(lk).length,liked=!!lk[me];
   const b1=h('button','ab'+(liked?' on':''),(liked?'❤️ ':'🤍 ')+n);b1.onclick=()=>set(ref(db,`likes/${p.id}/${me}`),liked?null:true);ac.append(b1);
   const sb=h('button','ab','🔗 شیئر');sb.onclick=()=>sharePost(p);ac.append(sb);
+  if(okLink(p.link)){const a=h('a','ab go','🛒 لنک کھولیں');a.href=okLink(p.link);a.target='_blank';a.rel='noopener noreferrer sponsored';ac.append(a)}
   if(mine){
     const hb=h('button','ab'+(p.hot?' on':''),p.cat==='sports'?'🔥 نمایاں':'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
     const dl=h('button','ab red2',p.cat==='sports'?'🗑️ مٹائیں':'✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
@@ -629,7 +694,7 @@ function card(p,dist){
   }
   c.append(ac);return c;
 }
-$('addPost').onclick=()=>{fLoc=null;fImgs=[];$('fPrev').replaceChildren();['fTitle','fPrice','fCity','fDesc'].forEach(i=>$(i).value='');
+$('addPost').onclick=()=>{fLoc=null;fImgs=[];$('fPrev').replaceChildren();['fTitle','fPrice','fCity','fDesc','fLink'].forEach(i=>$(i).value='');
   $('fLoc').textContent='📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)';$('pform').classList.remove('hide')};
 $('pfX').onclick=()=>$('pform').classList.add('hide');
 $('fCat').onchange=()=>$('fCondW').classList.toggle('hide',$('fCat').value==='property');
@@ -641,10 +706,12 @@ $('fLoc').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیا
 const shrinkURL=(src,M,q)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,M/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=src});
 $('fGo').onclick=async()=>{
   const t=$('fTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
+  const lk=okLink($('fLink').value);if($('fLink').value.trim()&&!lk){toast('لنک درست نہیں، https:// سے شروع ہونا چاہیے');return}
   $('fGo').disabled=true;const imgs=fImgs.filter(Boolean);
   const cat=$('fCat').value,k=push(ref(db,'posts')).key,up={},o={uid:me,title:t,price:$('fPrice').value.trim(),city:$('fCity').value.trim(),desc:$('fDesc').value.trim(),
     cat,cond:cat==='property'?'new':$('fCond').value,n:imgs.length,hot:false,ts:serverTimestamp()};
   if(fLoc){o.lat=fLoc.lat;o.lng=fLoc.lng}
+  if(lk)o.link=lk;
   try{
     if(imgs.length){o.thumb=await shrinkURL(imgs[0],480,.6);up['postImgs/'+k]={uid:me,imgs:imgs}}
     up['posts/'+k]=o;await update(ref(db),up);$('pform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
@@ -689,7 +756,7 @@ function renderSports(){
   arr.forEach(p=>bx.append(card(p,(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null)));
 }
 $('sSport').onchange=()=>$('sOther').classList.toggle('hide',$('sSport').value!=='other');
-$('addSp').onclick=()=>{sLoc=null;sImgs=[];$('sPrev').replaceChildren();['sTitle','sCity','sGround','sDate','sFee','sDesc','sOther'].forEach(i=>$(i).value='');
+$('addSp').onclick=()=>{sLoc=null;sImgs=[];$('sPrev').replaceChildren();['sTitle','sCity','sGround','sDate','sFee','sDesc','sOther','sLink'].forEach(i=>$(i).value='');
   $('sLoc').textContent='📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)';$('sform').classList.remove('hide')};
 $('sfX').onclick=()=>$('sform').classList.add('hide');
 $('sImgs').onchange=e=>{const fs=[...e.target.files].slice(0,5);sImgs=[];$('sPrev').replaceChildren();e.target.value='';
@@ -700,16 +767,114 @@ $('sGo').onclick=async()=>{
   const t=$('sTitle').value.trim();if(!t){toast('عنوان لکھیں');return}
   const sport=$('sSport').value,nm=$('sOther').value.trim().toLowerCase();
   if(sport==='other'&&!nm){toast('کھیل کا نام لکھیں');return}
+  const lk=okLink($('sLink').value);if($('sLink').value.trim()&&!lk){toast('لنک درست نہیں، https:// سے شروع ہونا چاہیے');return}
   $('sGo').disabled=true;const imgs=sImgs.filter(Boolean),k=push(ref(db,'posts')).key,up={};
   const o={uid:me,cat:'sports',type:$('sType').value,sport:sport,title:t,city:$('sCity').value.trim(),ground:$('sGround').value.trim(),
     date:$('sDate').value.trim(),price:$('sFee').value.trim(),desc:$('sDesc').value.trim(),n:imgs.length,hot:false,ts:serverTimestamp()};
   if(sport==='other')o.sportName=nm;
   if(sLoc){o.lat=sLoc.lat;o.lng=sLoc.lng}
+  if(lk)o.link=lk;
   try{
     if(imgs.length){o.thumb=await shrinkURL(imgs[0],480,.6);up['postImgs/'+k]={uid:me,imgs:imgs}}
     up['posts/'+k]=o;await update(ref(db),up);$('sform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
   }catch(e){toast('خرابی: '+e.code)}
   $('sGo').disabled=false};
+
+/* ---------- سب ممبرز ---------- */
+function renderMem(){
+  const L=$('memL');L.replaceChildren();const t=$('memQ').value.trim().toLowerCase();
+  const arr=Object.entries(users).filter(([id,u])=>id!==me&&(!t||(u.name||'').toLowerCase().includes(t)))
+    .sort((a,b)=>((b[1].online?1:0)-(a[1].online?1:0))||(a[1].name||'').localeCompare(b[1].name||''));
+  $('memT').textContent='👥 سب ممبرز ('+arr.length+')';
+  arr.forEach(([id,u])=>{
+    const r=h('div','row'),m=h('div','mid');r.style.margin='0 0 6px';
+    m.append(h('b','',u.name||'صارف'),h('small','',u.online?'🟢 آن لائن':(u.bio||'آف لائن')));
+    r.append(av(u,46),m);
+    if(stList(id).length){const sb=h('span','bd','🟢 اسٹیٹس');sb.onclick=ev=>{ev.stopPropagation();$('mem').classList.add('hide');openStatus(id)};r.append(sb)}
+    r.onclick=()=>{$('mem').classList.add('hide');openChat(id)};L.append(r)});
+  if(!arr.length)L.append(h('div','hint','کوئی ممبر نہیں ملا۔'));
+}
+$('allMem').onclick=()=>{$('memQ').value='';renderMem();$('mem').classList.remove('hide')};
+$('memX').onclick=()=>$('mem').classList.add('hide');
+$('memQ').oninput=renderMem;
+
+/* ---------- اسٹیٹس ---------- */
+const ST_HOURS=24;
+let stData={},svList=[],svIdx=0,svT=null,svOwner=null,stImg=null;
+const STBG=['linear-gradient(135deg,#11998e,#38ef7d)','linear-gradient(135deg,#ff7a18,#ffc107)','linear-gradient(135deg,#2193b0,#6dd5ed)','linear-gradient(135deg,#8e2de2,#4a00e0)','linear-gradient(135deg,#ff416c,#ff4b2b)'];
+function listenStatus(){
+  stData={};
+  subs.push(onValue(ref(db,'status'),s=>{stData=s.val()||{};renderPeople();cleanMine()}));
+}
+function stList(uid){
+  const o=stData[uid]||{},now=Date.now();
+  return Object.entries(o).map(([id,v])=>Object.assign({id,uid},v)).filter(v=>v.exp>now).sort((a,b)=>(a.ts||0)-(b.ts||0));
+}
+function stSeen(uid){const l=stList(uid);return l.length>0&&l.every(v=>localStorage.getItem('seen_'+v.id))}
+function cleanMine(){
+  const o=stData[me]||{},now=Date.now();
+  Object.entries(o).forEach(([id,v])=>{if(v.exp<=now){remove(ref(db,`status/${me}/${id}`)).catch(()=>{});remove(ref(db,`statusImg/${me}/${id}`)).catch(()=>{})}});
+}
+function openStForm(){
+  stImg=null;$('stPrev').replaceChildren();$('stTxt').value='';$('stLink').value='';
+  $('stNote').textContent='یہ '+ST_HOURS+' گھنٹے بعد خود مٹ جائے گا۔';
+  $('stForm').classList.remove('hide');
+}
+$('stX').onclick=()=>$('stForm').classList.add('hide');
+$('stPick').onclick=()=>$('stFile').click();
+$('stFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  shrink(f,720,.6,d=>{stImg=d;$('stPrev').replaceChildren();const i=h('img');i.src=d;$('stPrev').append(i)})};
+$('stGo').onclick=async()=>{
+  const t=$('stTxt').value.trim();if(!t&&!stImg){toast('تصویر یا لکھائی دیں');return}
+  const lk=okLink($('stLink').value);if($('stLink').value.trim()&&!lk){toast('لنک درست نہیں، https:// سے شروع ہونا چاہیے');return}
+  $('stGo').disabled=true;
+  const k=push(ref(db,`status/${me}`)).key,up={};
+  const ob={text:t,bg:Math.floor(Math.random()*STBG.length),hasImg:!!stImg,ts:serverTimestamp(),exp:Date.now()+ST_HOURS*3600000};if(lk)ob.link=lk;up[`status/${me}/${k}`]=ob;
+  if(stImg)up[`statusImg/${me}/${k}`]=stImg;
+  try{await update(ref(db),up);$('stForm').classList.add('hide');toast('✅ اسٹیٹس لگ گیا')}catch(e){toast('خرابی: '+e.code)}
+  $('stGo').disabled=false;
+};
+function openStatus(uid){
+  const l=stList(uid);if(!l.length)return;
+  svList=l;svOwner=uid;svIdx=0;const u=users[uid]||{};
+  $('svAv').replaceChildren(av(u,38));$('svName').textContent=uid===me?'میرا اسٹیٹس':(u.name||'صارف');
+  $('svDel').classList.toggle('hide',uid!==me);$('svAdd').classList.toggle('hide',uid!==me);$('svChat').classList.toggle('hide',uid===me);
+  $('stView').classList.remove('hide');showSv();
+}
+async function showSv(){
+  clearTimeout(svT);const v=svList[svIdx];if(!v){closeSv();return}
+  const bars=$('svBars');bars.replaceChildren();
+  svList.forEach((x,i)=>bars.append(h('i',i<svIdx?'done':(i===svIdx?'cur':''))));
+  $('svTime').textContent=tm(v.ts);
+  const body=$('svBody');body.replaceChildren();body.style.background='#000';
+  localStorage.setItem('seen_'+v.id,'1');
+  $('svViews').textContent=svOwner===me?'👁️ ...':'';
+  if(svOwner!==me)set(ref(db,`statusViews/${svOwner}/${v.id}/${me}`),true).catch(()=>{});
+  else get(ref(db,`statusViews/${me}/${v.id}`)).then(r=>{if(svList[svIdx]===v)$('svViews').textContent='👁️ '+Object.keys(r.val()||{}).length+' نے دیکھا'}).catch(()=>{});
+  $('svCap').textContent=(v.text&&v.hasImg)?v.text:'';
+  {const lv=okLink(v.link),sa=$('svLink');sa.classList.toggle('hide',!lv);if(lv){sa.href=lv;sa.textContent='🛒 لنک کھولیں'}}
+  if(v.hasImg){
+    body.append(h('div','ph','لوڈ ہو رہا ہے...'));
+    try{
+      const r=await get(ref(db,`statusImg/${svOwner}/${v.id}`));if(svList[svIdx]!==v)return;
+      body.replaceChildren();const d=r.val();
+      if(d&&String(d).startsWith('data:image/')){const i=h('img');i.src=d;body.append(i)}
+    }catch(e){body.replaceChildren(h('div','ph','تصویر نہیں کھلی'))}
+  }else{body.style.background=STBG[v.bg||0];body.append(h('div','svt',v.text||''))}
+  svT=setTimeout(nextSv,6000);
+}
+function nextSv(){svIdx++;showSv()}
+function closeSv(){clearTimeout(svT);$('stView').classList.add('hide');renderPeople()}
+$('svBody').onclick=nextSv;
+$('svX').onclick=closeSv;
+$('svAdd').onclick=()=>{closeSv();openStForm()};
+$('svChat').onclick=()=>{const u=svOwner;closeSv();openChat(u)};
+$('svDel').onclick=async()=>{
+  const v=svList[svIdx];if(!v||!confirm('یہ اسٹیٹس مٹا دیں؟'))return;
+  try{await remove(ref(db,`status/${me}/${v.id}`));remove(ref(db,`statusImg/${me}/${v.id}`)).catch(()=>{})}catch(e){toast('خرابی: '+e.code);return}
+  svList.splice(svIdx,1);
+  if(!svList.length)closeSv();else{if(svIdx>=svList.length)svIdx=svList.length-1;showSv()}
+};
 
 /* ---------- ایپ انسٹال (PWA) ---------- */
 let dip=null;
