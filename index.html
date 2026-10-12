@@ -176,7 +176,7 @@ input{font-size:15px}
 .pf .sr{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f3f5f8;padding:12px;border-radius:14px;margin:0 0 10px;font-size:13px;font-weight:bold;color:#333}
 .pf .sr input{width:22px;height:22px;margin:0;flex-shrink:0}
 .pf .sr b{font-size:12px;color:var(--g1)}
-.top{padding-inline-end:58px}
+.top{padding-left:16px;padding-right:62px}
 #menuBtn{position:fixed;top:12px;right:12px;z-index:31;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;font-size:22px;font-weight:bold;display:flex;align-items:center;justify-content:center}
 #menu{position:fixed;inset:0;z-index:97;background:rgba(0,0,0,.35)}
 #menu .mbox{position:absolute;top:58px;right:12px;background:#fff;border-radius:16px;min-width:210px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
@@ -194,6 +194,7 @@ input{font-size:15px}
 #vtop .vl{display:flex;gap:8px}
 #vtop .vc{width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;text-decoration:none}
 #vtop .vsp{width:40px}
+#vtop{justify-content:space-between}
 #vtop .vseg{margin:0;gap:4px;background:rgba(0,0,0,.4);padding:3px;border-radius:18px}
 #vtop .vseg button{flex:none;padding:7px 13px;background:none;border-radius:15px;font-size:13px}
 #vtop .vseg button.on{background:#fff;color:var(--g1)}
@@ -262,7 +263,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <div id="sfeed"></div>
   </div>
   <div id="t-video" class="tab hide">
-    <div id="vtop"><div class="vl"><button class="vc" id="addVid" aria-label="ویڈیو شامل کریں">➕</button><a class="vc" href="https://www.youtube.com/@Bazaar-y1b" target="_blank" rel="noopener" aria-label="بازار چینل">📺</a></div>
+    <div id="vtop"><span class="vsp"></span>
       <div class="vseg"><button id="vsA" class="on">🎬 شارٹس</button><button id="vsB">🖼️ پوسٹس</button></div><span class="vsp"></span></div>
     <div id="vShorts">
       <div id="vScroll" class="vscroll"></div>
@@ -301,16 +302,18 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.12</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.13</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
   <div id="menu" class="hide"><div class="mbox">
+    <button id="addVid">➕ ویڈیو شامل کریں</button>
+    <button id="mCh">📺 بازار چینل</button>
     <button id="mSet">⚙️ سیٹنگ</button>
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.12</div>
+    <div class="mv">ورژن 3.13</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -1134,6 +1137,8 @@ $('pSend').onclick=async()=>{
 };
 
 /* مینو */
+$('addVid').addEventListener('click',()=>$('menu').classList.add('hide'));
+$('mCh').onclick=()=>{$('menu').classList.add('hide');window.open('https://www.youtube.com/@Bazaar-y1b','_blank','noopener')};
 $('menuBtn').onclick=()=>$('menu').classList.remove('hide');
 $('menu').onclick=e=>{if(e.target.id==='menu')$('menu').classList.add('hide')};
 $('mSet').onclick=()=>{$('menu').classList.add('hide');showTab('me')};
