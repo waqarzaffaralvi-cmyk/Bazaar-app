@@ -176,6 +176,42 @@ input{font-size:15px}
 .pf .sr{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f3f5f8;padding:12px;border-radius:14px;margin:0 0 10px;font-size:13px;font-weight:bold;color:#333}
 .pf .sr input{width:22px;height:22px;margin:0;flex-shrink:0}
 .pf .sr b{font-size:12px;color:var(--g1)}
+.top{padding-inline-end:58px}
+#menuBtn{position:fixed;top:12px;right:12px;z-index:31;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;font-size:22px;font-weight:bold;display:flex;align-items:center;justify-content:center}
+#menu{position:fixed;inset:0;z-index:97;background:rgba(0,0,0,.35)}
+#menu .mbox{position:absolute;top:58px;right:12px;background:#fff;border-radius:16px;min-width:210px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
+#menu button{display:block;width:100%;padding:14px 16px;background:#fff;text-align:right;font-size:15px;font-weight:bold;color:#222;border-bottom:1px solid #eef1f5}
+#menu .mv{padding:10px 16px;font-size:11px;color:var(--mu)}
+.vseg{display:flex;gap:8px;margin-top:2px}
+.vseg button{flex:1;padding:9px;border-radius:14px;background:rgba(255,255,255,.2);color:#fff;font-weight:bold;font-size:13px}
+.vseg button.on{background:#fff;color:var(--g1)}
+.vscroll{height:calc(100vh - 250px);min-height:380px;overflow-y:auto;scroll-snap-type:y mandatory;background:#000;margin-top:10px}
+.vscroll::-webkit-scrollbar{display:none}
+.vitem{height:100%;scroll-snap-align:start;position:relative;background:#000;overflow:hidden}
+.vframe{position:absolute;inset:0;background:#111}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vov{position:absolute;inset:0;pointer-events:none;background:linear-gradient(transparent 55%,rgba(0,0,0,.6))}
+.vinfo{position:absolute;bottom:14px;left:12px;right:76px;color:#fff;pointer-events:none}
+.vinfo b{display:block;font-size:15px;text-shadow:0 1px 4px #000}.vinfo small{opacity:.9}
+.vside{position:absolute;right:8px;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto}
+.vb{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;font-size:18px}
+.vb.on{background:#ff416c}
+.vn{color:#fff;font-size:11px;text-shadow:0 1px 3px #000}
+.pslider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px}
+.pslider::-webkit-scrollbar{display:none}
+.pslide{flex:0 0 88%;scroll-snap-align:center;background:#fff;border-radius:18px;padding:12px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.pslide img{width:100%;max-height:300px;object-fit:cover;border-radius:12px;display:block;margin-bottom:8px}
+.pslide p{font-size:14px;line-height:1.7;white-space:pre-wrap;margin-bottom:8px}
+#vcom{position:fixed;left:0;right:0;bottom:0;z-index:96;background:#fff;border-radius:20px 20px 0 0;height:62vh;display:flex;flex-direction:column;box-shadow:0 -6px 24px rgba(0,0,0,.3)}
+#vcom .vh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #eef1f5;font-weight:bold}
+#vcom .vh button{font-size:18px;background:none;color:#444}
+#vcomL{flex:1;overflow-y:auto;padding:10px 14px}
+.cmt{padding:8px 0;border-bottom:1px solid #f2f4f7;font-size:14px;line-height:1.6}
+.cmt b{font-size:13px}.cmt small{color:var(--mu);margin-inline-start:6px;font-size:11px}
+.cmt .cd{color:#c62828;font-size:12px;margin-inline-start:8px;font-weight:bold}
+#vcomBar{display:flex;gap:8px;padding:10px;border-top:1px solid #eef1f5}
+#vcomBar input{flex:1;min-width:0;padding:11px 14px;border:1.5px solid #dde3ea;border-radius:22px;outline:none}
+#vcomBar button{padding:0 16px;border-radius:22px;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-weight:bold}
 </style>
 </head>
 <body>
@@ -212,6 +248,24 @@ input{font-size:15px}
     <div class="top" style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">⚽ کھلاڑی زون</h2><button class="addp" id="addSp">➕ نئی پوسٹ</button></div>
     <div id="sfeed"></div>
   </div>
+  <div id="t-video" class="tab hide">
+    <div class="top"><h2 style="margin-bottom:6px">🎬 ویڈیو</h2>
+      <div class="vseg"><button id="vsA" class="on">🎬 شارٹس</button><button id="vsB">🖼️ پوسٹس</button></div>
+    </div>
+    <div id="vShorts">
+      <div style="display:flex;gap:8px;padding:10px 12px 0;flex-wrap:wrap"><button class="addp" id="addVid">➕ ویڈیو شامل کریں</button><a class="ab" href="https://www.youtube.com/@Bazaar-y1b" target="_blank" rel="noopener">📺 بازار چینل</a></div>
+      <div id="vScroll" class="vscroll"></div>
+    </div>
+    <div id="vPosts" class="hide" style="padding:12px">
+      <div style="background:#fff;border-radius:18px;padding:12px;box-shadow:0 3px 12px rgba(0,0,0,.07)">
+        <textarea id="pText" class="fld" rows="3" maxlength="300" placeholder="اپنی پوسٹ لکھیں..."></textarea>
+        <div id="pPrev"></div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="sm2" id="pImgBtn" style="flex:1">📷 تصویر</button><button class="big" id="pSend" style="flex:1">📤 پوسٹ کریں</button></div>
+        <input type="file" id="pFile" accept="image/*" class="hide">
+      </div>
+      <div id="pList" style="margin-top:12px"></div>
+    </div>
+  </div>
   <div id="t-poll" class="tab hide">
     <div class="top"><h2>📊 پولنگ</h2></div>
     <div class="soon"><div class="ic">🗳️</div><h3>جلد آ رہی ہے</h3><p>دو امیدواروں کی تصویروں کے ساتھ ووٹنگ (ایک آدمی ایک ووٹ) اگلے مرحلے میں شامل ہو گی۔</p></div>
@@ -236,15 +290,22 @@ input{font-size:15px}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.11</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.12</div>
     </div>
   </div>
+  <button id="menuBtn" aria-label="مینو">⋮</button>
+  <div id="menu" class="hide"><div class="mbox">
+    <button id="mSet">⚙️ سیٹنگ</button>
+    <button id="mPro">👤 میری پروفائل</button>
+    <button id="mInst">📲 ایپ انسٹال کریں</button>
+    <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
+    <div class="mv">ورژن 3.12</div>
+  </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
     <button data-t="market"><i><svg class="ci2" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 4h2.4l2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.4 8.2H6"/><circle cx="9.6" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.8" cy="19.3" r="1.3" fill="currentColor" stroke="none"/><rect x="10.2" y="9.6" width="5.2" height="4.4" rx="1" fill="#ffc107" stroke="#ffc107"/><path d="M11.6 9.6V8.9a1.2 1.2 0 0 1 2.4 0v.7" stroke="#ffc107"/></svg></i>مارکیٹ</button>
     <button data-t="sports"><i>⚽</i>کھلاڑی</button>
-    <button data-t="poll" class="hide"><i>📊</i>پولنگ</button>
-    <button data-t="me"><i>⚙️</i>سیٹنگ</button>
+    <button data-t="video"><i>▶️</i>ویڈیو</button>
   </div>
 </div>
 
@@ -342,6 +403,23 @@ input{font-size:15px}
   <a id="svLink" class="hide" target="_blank" rel="noopener noreferrer sponsored"></a>
   <div id="svViews"></div>
 </div>
+<div id="vForm" class="hide">
+  <div class="pfh"><button id="vfX">✖</button><b>➕ ویڈیو شامل کریں</b></div>
+  <div class="pfb">
+    <label>یوٹیوب لنک</label>
+    <input id="vLink" class="fld" dir="ltr" style="text-align:left" placeholder="https://youtube.com/shorts/..." maxlength="300">
+    <label>عنوان</label>
+    <input id="vTitle" class="fld" maxlength="80">
+    <label id="vChW" class="hide" style="display:flex;align-items:center;gap:8px;margin:6px 2px"><input type="checkbox" id="vCh" style="width:20px;height:20px"> 🏷️ بازار چینل کی ویڈیو</label>
+    <div class="note">ویڈیو آپ کے یوٹیوب پر ہی رہے گی۔ ایپ صرف اس کا پلیئر دکھاتی ہے۔</div>
+    <button class="big" id="vGo">🚀 شامل کریں</button>
+  </div>
+</div>
+<div id="vcom" class="hide">
+  <div class="vh"><span>💬 کمنٹس</span><button id="vcomX">✖</button></div>
+  <div id="vcomL"></div>
+  <div id="vcomBar"><input id="vcomIn" maxlength="200" placeholder="کمنٹ لکھیں..."><button id="vcomSend">بھیجیں</button></div>
+</div>
 <div id="gal" class="hide"></div>
 <div id="viewer" class="hide"><img id="vimg" alt=""></div>
 <div id="sheet" class="hide"></div>
@@ -406,7 +484,7 @@ function start(u){prevUn={};bellReady=false;
     const n=Object.values(inbox).reduce((a,x)=>a+(x.unread||0),0);const b=$('nbd');b.textContent=n;b.classList.toggle('hide',!n);
     bellCheck();setBadge(n);
     if(cur&&inbox[cur]&&inbox[cur].unread)markRead(cur)}));
-  $('pMail').textContent=u.email||'';listenIncoming();listenMarket();listenStatus();
+  $('pMail').textContent=u.email||'';listenIncoming();listenMarket();listenStatus();listenVideo();
   setTimeout(()=>{if(window.Notification&&Notification.permission==='granted')enablePush(false).then(renderPushSt)},1500);
 }
 
@@ -495,10 +573,13 @@ $('vnBtn').onclick=async()=>{
 };
 
 /* ---------- ٹیبز ---------- */
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hide'));$('t-'+b.dataset.t).classList.remove('hide');
-  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
-  if(b.dataset.t==='me')fillMe()});
+function showTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.add('hide'));$('t-'+t).classList.remove('hide');
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+  if(t==='me')fillMe();
+  if(t==='video')mountAt(vCur<0?0:vCur);else mountAt(-1);
+}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 
 /* ---------- پروفائل ---------- */
 let newDp=null;
@@ -940,6 +1021,110 @@ function notifyPush(to,body,kind){
   push(ref(db,'push'),{from:me,to,body:String(body||'').slice(0,80),kind:kind||'msg',ts:serverTimestamp()}).catch(()=>{});
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.chat)openChat(e.data.chat)});
+
+/* ---------- ویڈیو ٹیب (ٹک ٹاک انداز) ---------- */
+const ADMIN_EMAIL='waqarzaffaralvi@gmail.com', CH_URL='https://www.youtube.com/@Bazaar-y1b';
+const isAdmin=()=>((users[me]||{}).email||'').toLowerCase()===ADMIN_EMAIL;
+let vids={},vL={},vV={},vC={},sP={},vCur=-1,pImg='',curVid=null,unsubC=null;
+const embed=id=>'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1';
+function ytId(u){const m=String(u||'').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);return m?m[1]:''}
+function listenVideo(){
+  subs.push(onValue(query(ref(db,'videos'),limitToLast(200)),s=>{vids=s.val()||{};renderShorts()}));
+  subs.push(onValue(ref(db,'vlikes'),s=>{vL=s.val()||{};refreshSides()}));
+  subs.push(onValue(ref(db,'vviews'),s=>{vV=s.val()||{};refreshSides()}));
+  subs.push(onValue(ref(db,'vcomments'),s=>{vC=s.val()||{};refreshSides()}));
+  subs.push(onValue(query(ref(db,'sposts'),limitToLast(60)),s=>{sP=s.val()||{};renderPosts()}));
+}
+function renderShorts(){
+  const box=$('vScroll');box.replaceChildren();vCur=-1;
+  const list=Object.entries(vids).map(([id,v])=>Object.assign({id},v)).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(!list.length){box.append(h('div','hint','ابھی کوئی ویڈیو نہیں۔ اوپر ➕ سے یوٹیوب لنک شامل کریں۔'));return}
+  list.forEach(v=>{const it=h('div','vitem');it._v=v;const ov=h('div','vov');ov.append(vInfo(v),vSide(v));it.append(h('div','vframe'),ov);box.append(it)});
+  mountAt(0);
+}
+function vInfo(v){const d=h('div','vinfo');d.append(h('b','',v.title||'ویڈیو'),h('small','',v.ch?'🏷️ بازار چینل':((users[v.uid]||{}).name||'صارف')));return d}
+function vSide(v){
+  const side=h('div','vside'),lk=vL[v.id]||{},liked=!!lk[me];
+  const bl=h('button','vb'+(liked?' on':''),'❤️');bl.onclick=()=>set(ref(db,`vlikes/${v.id}/${me}`),liked?null:true).catch(()=>{});
+  const bc=h('button','vb','💬');bc.onclick=()=>openCom(v.id);
+  const bs=h('button','vb','🔗');bs.onclick=()=>{const u='https://www.youtube.com/watch?v='+v.id;if(navigator.share)navigator.share({url:u,title:v.title||'ویڈیو'}).catch(()=>{});else navigator.clipboard.writeText(u).then(()=>toast('لنک کاپی ہو گیا')).catch(()=>{})};
+  const br=h('button','vb','🚩');br.onclick=()=>{if(confirm('اس ویڈیو کی رپورٹ کریں؟')){set(ref(db,`vreports/${v.id}/${me}`),true);toast('رپورٹ بھیج دی گئی')}};
+  side.append(bl,h('span','vn',String(Object.keys(lk).length)),bc,h('span','vn',String(Object.keys(vC[v.id]||{}).length)),h('span','vn','👁️ '+Object.keys(vV[v.id]||{}).length),bs,br);
+  if(v.uid===me||isAdmin()){const bd=h('button','vb','🗑️');bd.onclick=()=>{if(confirm('یہ ویڈیو ایپ سے ہٹا دیں؟'))remove(ref(db,'videos/'+v.id)).catch(()=>toast('ہٹایا نہیں جا سکا'))};side.append(bd)}
+  return side;
+}
+function refreshSides(){[...$('vScroll').children].forEach(it=>{if(!it._v)return;const old=it.querySelector('.vside'),n=vSide(it._v);if(old)old.replaceWith(n);else it.querySelector('.vov').append(n)})}
+function mountAt(i){
+  const items=[...$('vScroll').children].filter(x=>x._v);
+  items.forEach((it,k)=>{const fr=it.querySelector('.vframe');
+    if(k===i){if(!fr.firstChild){const f=h('iframe');f.src=embed(it._v.id);f.allow='autoplay; encrypted-media; picture-in-picture';f.allowFullscreen=true;f.setAttribute('frameborder','0');fr.append(f)}}
+    else fr.replaceChildren()});
+  if(i!==vCur&&items[i]){vCur=i;if(me)set(ref(db,`vviews/${items[i]._v.id}/${me}`),true).catch(()=>{})}
+}
+$('vScroll').onscroll=()=>{const b=$('vScroll');mountAt(Math.round(b.scrollTop/Math.max(1,b.clientHeight)))};
+$('vsA').onclick=()=>{$('vShorts').classList.remove('hide');$('vPosts').classList.add('hide');$('vsA').classList.add('on');$('vsB').classList.remove('on');mountAt(vCur<0?0:vCur)};
+$('vsB').onclick=()=>{$('vPosts').classList.remove('hide');$('vShorts').classList.add('hide');$('vsB').classList.add('on');$('vsA').classList.remove('on');mountAt(-1)};
+
+/* کمنٹس */
+function openCom(id){curVid=id;$('vcom').classList.remove('hide');if(unsubC)unsubC();unsubC=onValue(ref(db,'vcomments/'+id),s=>renderComs(s.val()||{}))}
+function closeCom(){$('vcom').classList.add('hide');if(unsubC){unsubC();unsubC=null}curVid=null}
+function renderComs(o){
+  const L=$('vcomL');L.replaceChildren();const v=vids[curVid]||{};
+  const arr=Object.entries(o).map(([k,c])=>Object.assign({k},c)).sort((a,b)=>(a.ts||0)-(b.ts||0));
+  if(!arr.length){L.append(h('div','hint','ابھی کوئی کمنٹ نہیں۔ پہلا کمنٹ آپ لکھیں!'));return}
+  arr.forEach(c=>{const r=h('div','cmt');r.append(h('b','',(users[c.uid]||{}).name||'صارف'),h('small','',tm(c.ts)),h('div','',c.text||''));
+    if(c.uid===me||v.uid===me||isAdmin()){const d=h('span','cd','🗑️ مٹائیں');d.onclick=()=>remove(ref(db,`vcomments/${curVid}/${c.k}`)).catch(()=>toast('مٹایا نہیں جا سکا'));r.append(d)}
+    L.append(r)});
+}
+$('vcomX').onclick=closeCom;
+$('vcomSend').onclick=async()=>{const t=$('vcomIn').value.trim().slice(0,200);if(!t||!curVid)return;$('vcomIn').value='';
+  try{await push(ref(db,'vcomments/'+curVid),{uid:me,text:t,ts:serverTimestamp()})}catch(e){toast('کمنٹ نہیں گیا: '+(e.code||''))}};
+$('vcomIn').onkeydown=e=>{if(e.key==='Enter')$('vcomSend').click()};
+
+/* ویڈیو شامل کرنا */
+$('addVid').onclick=()=>{$('vLink').value='';$('vTitle').value='';$('vCh').checked=false;$('vChW').classList.toggle('hide',!isAdmin());$('vForm').classList.remove('hide')};
+$('vfX').onclick=()=>$('vForm').classList.add('hide');
+$('vGo').onclick=async()=>{
+  const id=ytId($('vLink').value);if(!id){toast('درست یوٹیوب لنک ڈالیں');return}
+  const o={uid:me,title:$('vTitle').value.trim()||'ویڈیو',ts:serverTimestamp()};
+  if($('vCh').checked&&isAdmin())o.ch=true;
+  $('vGo').disabled=true;
+  try{await set(ref(db,'videos/'+id),o);$('vForm').classList.add('hide');toast('✅ ویڈیو شامل ہو گئی')}catch(e){toast('خرابی: '+(e.code||''))}
+  $('vGo').disabled=false;
+};
+
+/* پوسٹس */
+function renderPosts(){
+  const L=$('pList');L.replaceChildren();
+  const arr=Object.entries(sP).map(([id,p])=>Object.assign({id},p)).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(!arr.length){L.append(h('div','hint','ابھی کوئی پوسٹ نہیں۔ اوپر سے پہلی پوسٹ لگائیں!'));return}
+  const sl=h('div','pslider');
+  arr.forEach(p=>{const c=h('div','pslide');const hd=h('div','ph2'),nm=h('div','');
+    nm.append(h('b','',(users[p.uid]||{}).name||'صارف'),h('small','',tm(p.ts)));hd.append(av(users[p.uid]||{},36),nm);c.append(hd);
+    if(p.img&&String(p.img).startsWith('data:image/')){const i=h('img');i.src=p.img;c.append(i)}
+    if(p.text)c.append(h('p','',p.text));
+    if(p.uid===me||isAdmin()){const d=h('button','ab red2','🗑️ مٹائیں');d.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟'))remove(ref(db,'sposts/'+p.id)).catch(()=>toast('مٹایا نہیں جا سکا'))};c.append(d)}
+    sl.append(c)});
+  L.append(sl);
+}
+$('pImgBtn').onclick=()=>$('pFile').click();
+$('pFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  shrink(f,700,.6,d=>{pImg=d;$('pPrev').replaceChildren();const i=h('img');i.src=d;i.style.cssText='width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:8px';$('pPrev').append(i)})};
+$('pSend').onclick=async()=>{
+  const t=$('pText').value.trim();if(!t&&!pImg){toast('لکھائی یا تصویر دیں');return}
+  $('pSend').disabled=true;
+  try{await push(ref(db,'sposts'),{uid:me,text:t.slice(0,300),img:pImg||'',ts:serverTimestamp()});$('pText').value='';pImg='';$('pPrev').replaceChildren();toast('✅ پوسٹ لگ گئی')}
+  catch(e){toast('خرابی: '+(e.code||''))}
+  $('pSend').disabled=false;
+};
+
+/* مینو */
+$('menuBtn').onclick=()=>$('menu').classList.remove('hide');
+$('menu').onclick=e=>{if(e.target.id==='menu')$('menu').classList.add('hide')};
+$('mSet').onclick=()=>{$('menu').classList.add('hide');showTab('me')};
+$('mPro').onclick=()=>{$('menu').classList.add('hide');showTab('me')};
+$('mInst').onclick=()=>{$('menu').classList.add('hide');if($('instBtn').classList.contains('hide')){toast('ایپ انسٹال کا آپشن ابھی دستیاب نہیں');return}$('instBtn').click()};
+$('mOut').onclick=()=>{$('menu').classList.add('hide');$('pOut').click()};
 
 /* ---------- ایپ انسٹال (PWA) ---------- */
 let dip=null;
