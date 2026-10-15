@@ -153,7 +153,7 @@ input{font-size:15px}
 .ring.seen{background:#c9d1da}
 .ring.mine{background:#e3e8ee}
 .plus{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#25d366;color:#fff;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff;line-height:1;font-style:normal}
-#mem,#stForm{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
+#mem,#stForm,#locP{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
 #stPrev img{width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:10px}
 #stView{position:fixed;inset:0;z-index:93;background:#000;color:#fff;display:flex;flex-direction:column}
 #svBars{display:flex;gap:4px;padding:10px 10px 4px;direction:ltr}
@@ -226,6 +226,10 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
 #vcomBar{display:flex;gap:8px;padding:10px;border-top:1px solid #eef1f5}
 #vcomBar input{flex:1;min-width:0;padding:11px 14px;border:1.5px solid #dde3ea;border-radius:22px;outline:none}
 #vcomBar button{padding:0 16px;border-radius:22px;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-weight:bold}
+.dst{font-style:normal;font-size:11px;font-weight:700;color:#2e7d32;margin-inline-start:8px}.dst:empty{display:none}
+.pp .dst{display:block;font-size:10px;margin:3px 0 0;line-height:1.2}
+#cDst{color:#d7ffd9;opacity:1;margin-inline-start:8px;font-weight:700}
+.pfb label.lsw{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f3f5f8;padding:10px 12px;border-radius:12px;margin:0 0 8px;font-size:13px}.lsw small{display:block;font-weight:400;color:var(--mu);font-size:11px;margin-top:2px}.lsw input{width:22px;height:22px;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -302,18 +306,19 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.13</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.14</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
   <div id="menu" class="hide"><div class="mbox">
     <button id="addVid">➕ ویڈیو شامل کریں</button>
     <button id="mCh">📺 بازار چینل</button>
+    <button id="mLoc">📍 لوکیشن</button>
     <button id="mSet">⚙️ سیٹنگ</button>
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.13</div>
+    <div class="mv">ورژن 3.14</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -328,7 +333,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
   <div class="ch">
     <button class="back" id="cBack">➜</button>
     <div id="cAv"></div>
-    <div class="nm"><b id="cName"></b><small id="cSt"></small></div>
+    <div class="nm"><b id="cName"></b><small id="cSt"></small><small id="cDst" class="dst"></small></div>
     <button class="cb" id="cCall">📞</button>
     <button class="cb" id="cVid">🎥</button>
   </div>
@@ -389,6 +394,18 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button class="sm2" id="sLoc">📍 گراؤنڈ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="sGo">🚀 پوسٹ کریں</button>
+  </div>
+</div>
+<div id="locP" class="hide">
+  <div class="pfh"><button id="locX">✖</button><b>📍 لوکیشن</b></div>
+  <div class="pfb">
+    <label class="lsw"><span>🔴 میری لائیو لوکیشن شیئر کریں<small>چلنے پر فاصلہ ساتھ ساتھ بدلتا رہے گا</small></span><input type="checkbox" id="liveSw"></label>
+    <label class="lsw"><span>📏 دوسروں کا فاصلہ دکھائیں<small>نام کے ساتھ 0.1 سے 30 km تک</small></span><input type="checkbox" id="seeSw"></label>
+    <div class="sech2">🏪 دکان کی لوکیشن (ایک ہی جگہ ٹکی رہے گی)</div>
+    <label class="lsw"><span>🏪 دکان کی لوکیشن دکھائیں</span><input type="checkbox" id="shopSw"></label>
+    <button class="big" id="shopSet" style="padding:10px;font-size:14px">🏪 موجودہ جگہ کو دکان بنائیں</button>
+    <div id="shopSt" class="hint" style="padding:8px"></div>
+    <div class="hint" style="font-size:11px">فاصلہ تقریباً 100 میٹر کے فرق سے دکھتا ہے۔ نقشے پر درست جگہ نہیں دکھائی جاتی۔ جب چاہیں اوپر کے بٹن بند کر دیں۔</div>
   </div>
 </div>
 <div id="mem" class="hide">
@@ -490,7 +507,7 @@ onAuthStateChanged(auth,u=>{
   else{subs.forEach(f=>f());subs=[];me=null;users={};inbox={};stData={};closeChat();$('app').classList.add('hide');$('auth').classList.remove('hide')}
 });
 
-function start(u){prevUn={};bellReady=false;
+function start(u){prevUn={};bellReady=false;setTimeout(()=>syncLoc(),300);
   subs.push(onValue(ref(db,'.info/connected'),s=>{if(s.val()){const p=ref(db,'users/'+me+'/online');onDisconnect(p).set(false);set(p,true)}}));
   subs.push(onValue(ref(db,'users'),s=>{users=s.val()||{};renderPeople();renderInbox();if(cur)head();
     const ou=new URLSearchParams(location.search).get('chat');if(ou&&users[ou]){history.replaceState(null,'',location.pathname);openChat(ou)}}));
@@ -514,7 +531,7 @@ function renderPeople(){
     .sort((a,b)=>((stList(b[0]).length?1:0)-(stList(a[0]).length?1:0))||((b[1].online?1:0)-(a[1].online?1:0)));
   arr.forEach(([id,u])=>{
     const sl=stList(id),w=h('div','pp'),r=h('div','ring'+(sl.length?(stSeen(id)?' seen':' has'):''));r.append(av(u,56));if(u.online)r.append(h('i','dot'));
-    w.append(r,h('span','',u.name||'صارف'));w.onclick=()=>sl.length?openStatus(id):openChat(id);box.append(w)});
+    w.append(r,dEl(id),h('span','',u.name||'صارف'));w.onclick=()=>sl.length?openStatus(id):openChat(id);box.append(w)});
   if(!arr.length)box.append(h('div','hint',q?'کوئی ممبر نہیں ملا۔':'ابھی کوئی اور ممبر نہیں۔ دوست کو لنک بھیج کر اکاؤنٹ بنوائیں!'));
   if($('mem')&&!$('mem').classList.contains('hide'))renderMem();
 }
@@ -523,7 +540,7 @@ function renderInbox(){
   Object.entries(inbox).filter(([id])=>!q||((users[id]&&users[id].name)||'').toLowerCase().includes(q))
     .sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).forEach(([id,c])=>{
     const u=users[id]||{},r=h('div','row'+(c.unread?' un':'')),m=h('div','mid');
-    m.append(h('b','',u.name||'صارف'),h('small','',c.last||''));
+    const nb=h('b','',u.name||'صارف');nb.append(dEl(id));m.append(nb,h('small','',c.last||''));
     const mt=h('div','meta');mt.append(h('div','',tm(c.ts)));if(c.unread)mt.append(h('span','bd',String(c.unread)));
     r.append(av(u,50),m,mt);r.onclick=()=>openChat(id);box.append(r)});
   if(!box.children.length)box.append(h('div','hint','ابھی کوئی چیٹ نہیں۔ اوپر کسی گول تصویر پر ٹیپ کر کے بات شروع کریں۔'));
@@ -531,7 +548,7 @@ function renderInbox(){
 $('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox();renderPeople()};
 
 /* ---------- چیٹ ---------- */
-function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';
+function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';$('cDst').textContent=dTxt(cur);
   $('cAv').replaceChildren(av(u,42))}
 function markRead(id){if(inbox[id]&&inbox[id].unread)update(ref(db,`userChats/${me}/${id}`),{unread:0})}
 function addMsg(m,k){if(hs().includes(k))return;const b=h('div','m '+(m.from===me?'me':'ot'));bub[k]={b,m};fill(b,m,k);lp(b,k);const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
@@ -900,7 +917,7 @@ function renderMem(){
   $('memT').textContent='👥 سب ممبرز ('+arr.length+')';
   arr.forEach(([id,u])=>{
     const r=h('div','row'),m=h('div','mid');r.style.margin='0 0 6px';
-    m.append(h('b','',u.name||'صارف'),h('small','',u.online?'🟢 آن لائن':(u.bio||'آف لائن')));
+    const nb=h('b','',u.name||'صارف');nb.append(dEl(id));m.append(nb,h('small','',u.online?'🟢 آن لائن':(u.bio||'آف لائن')));
     r.append(av(u,46),m);
     if(stList(id).length){const sb=h('span','bd','🟢 اسٹیٹس');sb.onclick=ev=>{ev.stopPropagation();$('mem').classList.add('hide');openStatus(id)};r.append(sb)}
     r.onclick=()=>{$('mem').classList.add('hide');openChat(id)};L.append(r)});
@@ -1152,6 +1169,40 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('in
 $('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
 window.addEventListener('appinstalled',()=>{$('instBtn').classList.add('hide');toast('✅ ایپ انسٹال ہو گئی')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* ---------- لائیو لوکیشن اور فاصلہ ---------- */
+let myPos=null,lw=null,lastW=0,lastP=null,liveOn=localStorage.getItem('live_on')==='1',seeOn=localStorage.getItem('see_on')==='1';
+const dkm=(a,b,c,d)=>{const r=x=>x*Math.PI/180,q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q))};
+function dTxt(id){if(!seeOn||!myPos||!id||id===me)return '';const u=users[id]||{},o=[];
+  const f=(l,i)=>{const d=dkm(myPos.lat,myPos.lng,l.lat,l.lng);if(d<=30)o.push(i+' '+Math.max(0.1,Math.round(d*10)/10).toFixed(1)+' km')};
+  if(u.loc&&u.loc.lat!=null&&Date.now()-u.loc.ts<300000)f(u.loc,'📍');
+  if(u.shop&&u.shop.on!==false&&u.shop.lat!=null)f(u.shop,'🏪');
+  return o.join(' · ')}
+function dEl(id){const e=h('em','dst',dTxt(id));e.dataset.d=id;return e}
+function updDist(){document.querySelectorAll('[data-d]').forEach(e=>{e.textContent=dTxt(e.dataset.d)});const c=$('cDst');if(c)c.textContent=cur?dTxt(cur):''}
+function posOK(p){myPos={lat:p.coords.latitude,lng:p.coords.longitude};updDist();
+  if(liveOn&&me){const n=Date.now(),mv=!lastP||Math.abs(lastP.lat-myPos.lat)+Math.abs(lastP.lng-myPos.lng)>0.0003;
+    if((mv&&n-lastW>8000)||n-lastW>60000){lastW=n;lastP=myPos;set(ref(db,'users/'+me+'/loc'),{lat:+myPos.lat.toFixed(3),lng:+myPos.lng.toFixed(3),ts:n}).catch(()=>{})}}}
+function syncLoc(){
+  const need=(liveOn||seeOn)&&me;
+  if(need&&lw==null){if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}
+    lw=navigator.geolocation.watchPosition(posOK,e=>{if(e.code===1){toast('لوکیشن کی اجازت نہیں ملی');liveOn=seeOn=false;localStorage.setItem('live_on','0');localStorage.setItem('see_on','0');syncLoc();paintLP()}},{enableHighAccuracy:true,maximumAge:5000,timeout:20000})}
+  if(!need&&lw!=null){navigator.geolocation.clearWatch(lw);lw=null;myPos=null;lastP=null}
+  if(me){const r=ref(db,'users/'+me+'/loc');if(liveOn)onDisconnect(r).remove().catch(()=>{});else{remove(r).catch(()=>{});onDisconnect(r).cancel().catch(()=>{})}}
+  updDist()}
+function paintLP(){const u=users[me]||{},s=u.shop;$('liveSw').checked=liveOn;$('seeSw').checked=seeOn;
+  $('shopSw').checked=!!(s&&s.lat!=null&&s.on!==false);$('shopSt').textContent=s&&s.lat!=null?'✅ دکان کی لوکیشن محفوظ ہے':'ابھی دکان کی لوکیشن نہیں لگی۔ دکان پر پہنچ کر بٹن دبائیں۔'}
+$('mLoc').onclick=()=>{$('menu').classList.add('hide');paintLP();$('locP').classList.remove('hide')};
+$('locX').onclick=()=>$('locP').classList.add('hide');
+$('liveSw').onchange=e=>{liveOn=e.target.checked;localStorage.setItem('live_on',liveOn?'1':'0');syncLoc();toast(liveOn?'🔴 لائیو لوکیشن چالو':'لائیو لوکیشن بند')};
+$('seeSw').onchange=e=>{seeOn=e.target.checked;localStorage.setItem('see_on',seeOn?'1':'0');syncLoc();toast(seeOn?'📏 فاصلہ چالو':'فاصلہ بند')};
+$('shopSet').onclick=()=>{if(!navigator.geolocation){toast('لوکیشن دستیاب نہیں');return}toast('لوکیشن لی جا رہی ہے...');
+  navigator.geolocation.getCurrentPosition(async p=>{const o={lat:+p.coords.latitude.toFixed(4),lng:+p.coords.longitude.toFixed(4),on:true};
+    try{await set(ref(db,'users/'+me+'/shop'),o);(users[me]=users[me]||{}).shop=o;paintLP();updDist();toast('✅ دکان کی لوکیشن محفوظ')}catch(e){toast('خرابی: '+(e.code||''))}},
+    ()=>toast('لوکیشن کی اجازت نہیں ملی'),{enableHighAccuracy:true,timeout:15000})};
+$('shopSw').onchange=async e=>{const s=(users[me]||{}).shop;if(!s||s.lat==null){e.target.checked=false;toast('پہلے دکان کی لوکیشن لگائیں');return}
+  try{await update(ref(db,'users/'+me+'/shop'),{on:e.target.checked});s.on=e.target.checked;updDist()}catch(x){toast('خرابی: '+(x.code||''))}};
+$('pOut').addEventListener('click',()=>{if(me)remove(ref(db,'users/'+me+'/loc')).catch(()=>{});if(lw!=null){navigator.geolocation.clearWatch(lw);lw=null}myPos=null;lastP=null});
 </script>
 </body>
 </html>
