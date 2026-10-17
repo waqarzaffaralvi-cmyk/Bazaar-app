@@ -1047,6 +1047,10 @@ function playBell(){
   }catch(e){}
 }
 function setBadge(n){try{if(navigator.setAppBadge){if(n)navigator.setAppBadge();else navigator.clearAppBadge()}}catch(e){}}
+function clearNotifs(){try{navigator.serviceWorker.ready.then(r=>r.getNotifications().then(l=>l.forEach(n=>n.close()))).catch(()=>{})}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)clearNotifs()});
+window.addEventListener('focus',clearNotifs);
+setTimeout(clearNotifs,1500);
 document.addEventListener('click',()=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}},{once:true});
 const PUSH_URL='https://cool-union-5e86.waqarzaffaralvi.workers.dev';
 function notifyPush(to,body,kind){
