@@ -1048,9 +1048,13 @@ function playBell(){
 }
 function setBadge(n){try{if(navigator.setAppBadge){if(n)navigator.setAppBadge();else navigator.clearAppBadge()}}catch(e){}}
 document.addEventListener('click',()=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}},{once:true});
+const PUSH_URL='https://cool-union-5e86.waqarzaffaralvi.workers.dev';
 function notifyPush(to,body,kind){
   if(!to)return;
-  push(ref(db,'push'),{from:me,to,body:String(body||'').slice(0,80),kind:kind||'msg',ts:serverTimestamp()}).catch(()=>{});
+  const b=String(body||'').slice(0,80),k=kind||'msg';
+  if(PUSH_URL.startsWith('https://')){
+    auth.currentUser.getIdToken().then(t=>fetch(PUSH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t,to,body:b,kind:k}),keepalive:true})).catch(()=>{});return}
+  push(ref(db,'push'),{from:me,to,body:b,kind:k,ts:serverTimestamp()}).catch(()=>{});
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.chat)openChat(e.data.chat)});
 
