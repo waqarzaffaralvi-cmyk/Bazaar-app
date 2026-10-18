@@ -315,7 +315,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.15</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.16</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
@@ -328,7 +328,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.15</div>
+    <div class="mv">ورژن 3.16</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -809,6 +809,8 @@ function renderFeed(){
   if(mFocus()){arr=fp?[Object.assign({id:focusId},fp)]:[];const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));
     const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed();renderSports()};bn.append(bt);box.append(bn)}
   arr=arr.filter(p=>p.cat!=='sports'&&(mFocus()||chip==='all'||(chip==='property'||chip==='mobile'?p.cat===chip:(p.cat!=='property'&&p.cond===chip))));
+  if(!mFocus())arr=arr.filter(p=>!okLink(p.link));
+  try{renderAff()}catch(e){}
   const d=p=>(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null;
   if(sortNear)arr=arr.filter(p=>d(p)!=null&&d(p)<=30);
   arr.sort(sortNear?((a,b)=>(d(a)==null?1e9:d(a))-(d(b)==null?1e9:d(b))):((a,b)=>(b.ts||0)-(a.ts||0)));
@@ -1239,13 +1241,16 @@ $('pOut').addEventListener('click',()=>{if(me)remove(ref(db,'users/'+me+'/loc'))
 
 /* ---------- ایفیلی ایٹ سلائیڈر اور اشتہاری پٹی ---------- */
 let affD={},adB=null,afImg='',afTm=null;
-function renderAff(){const b=$('aff');b.replaceChildren();const a=Object.entries(affD).map(([id,p])=>Object.assign({id},p)).sort((x,y)=>(y.ts||0)-(x.ts||0));
+function renderAff(){const b=$('aff');b.replaceChildren();const a=[...Object.entries(affD).map(([id,p])=>({id,src:'a',title:p.title,price:p.price,img:p.img,link:p.link,ts:p.ts})),
+    ...Object.entries(posts).filter(([id,p])=>p.cat!=='sports'&&okLink(p.link)).map(([id,p])=>({id,src:'p',title:p.title,price:p.price?'Rs '+p.price:'',img:p.thumb||Object.values(p.imgs||{})[0],link:p.link,ts:p.ts,uid:p.uid}))].sort((x,y)=>(y.ts||0)-(x.ts||0));
   if(!a.length){b.classList.add('hide');return}b.classList.remove('hide');
   b.append(h('div','ah','🛍️ خصوصی پیشکش'));const sl=h('div','aslider');
   a.forEach(p=>{const c=h('div','acard');if(p.img&&String(p.img).startsWith('data:image/')){const i=h('img');i.src=p.img;c.append(i)}
     c.append(h('span','ad2','اشتہار'));const t=h('div','at');t.append(h('b','',p.title||''));if(p.price)t.append(h('span','ap',p.price));c.append(t);
     c.onclick=()=>{const u=okLink(p.link);if(u){update(ref(db,'affclicks'),{[p.id]:increment(1)}).catch(()=>{});window.open(u,'_blank','noopener')}};
-    if(isAdmin()){const x=h('button','ax','🗑️');x.onclick=e=>{e.stopPropagation();if(confirm('یہ پروڈکٹ ہٹا دیں؟'))remove(ref(db,'affiliate/'+p.id)).catch(()=>toast('نہیں ہٹا'))};c.append(x)}
+    if(p.src==='a'&&isAdmin()){const x=h('button','ax','🗑️');x.onclick=e=>{e.stopPropagation();if(confirm('یہ پروڈکٹ ہٹا دیں؟'))remove(ref(db,'affiliate/'+p.id)).catch(()=>toast('نہیں ہٹا'))};c.append(x)}
+    if(p.src==='p'){if(p.uid===me){const x=h('button','ax','🗑️');x.onclick=e=>{e.stopPropagation();if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};c.append(x)}
+      else{const x=h('button','ax','💬');x.onclick=e=>{e.stopPropagation();openChat(p.uid)};c.append(x)}}
     sl.append(c)});
   b.append(sl);clearInterval(afTm);
   if(a.length>2)afTm=setInterval(()=>{if(document.hidden||b.offsetParent===null)return;const w=sl.firstChild.offsetWidth+8,d=getComputedStyle(sl).direction==='rtl'?-1:1;
