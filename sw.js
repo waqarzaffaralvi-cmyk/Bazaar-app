@@ -1,5 +1,5 @@
 // بازار ایپ - سروس ورکر (نیا ورژن آئے تو V کا نام بدل دیں)
-const V = 'bazaar-v3.11';
+const V = 'bazaar-v3.15';
 const SHELL = ['./', 'index.html', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
 
 /* ---------- اطلاعات (Firebase Cloud Messaging) ---------- */
@@ -15,16 +15,17 @@ try {
   const messaging = firebase.messaging();
   messaging.onBackgroundMessage(p => {
     const d = p.data || {};
+    const who = d.chat || d.from || '';
     return self.registration.showNotification(d.title || 'بازار ایپ', {
       body: d.body || 'نیا پیغام',
       icon: 'icon-192.png',
       badge: 'icon-192.png',
-      tag: 'chat-' + (d.from || 'x'),
+      tag: 'chat-' + (who || 'x'),
       renotify: true,
       silent: d.silent === '1',
       dir: 'rtl',
       lang: 'ur',
-      data: { from: d.from || '', kind: d.kind || '' }
+      data: { from: who, kind: d.kind || '' }
     });
   });
 } catch (err) { /* اطلاع نہ چلے تو باقی ایپ پھر بھی چلتی رہے گی */ }
