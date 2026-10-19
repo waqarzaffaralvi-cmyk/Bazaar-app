@@ -88,9 +88,10 @@ input{font-size:15px}
 .m small{display:block;font-size:10px;opacity:.7;margin-top:1px;text-align:left}
 .m.me{align-self:flex-start;background:linear-gradient(135deg,#11998e,#2e9e4f);color:#fff;border-bottom-right-radius:5px}
 .m.ot{align-self:flex-end;background:#fff;border-bottom-left-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.ib{display:flex;align-items:center;gap:8px;padding:9px 10px;background:#fff;border-top:1px solid #dfe5ec}
+.ib{display:flex;align-items:flex-end;gap:8px;padding:9px 10px;background:#fff;border-top:1px solid #dfe5ec}
 .ib .pin{width:40px;height:40px;border-radius:50%;background:#eef1f5;font-size:18px;flex-shrink:0}
-.ib input{flex:1;min-width:0;padding:12px 16px;border:1.5px solid #dde3ea;border-radius:24px;outline:none;background:#f6f8fa}
+.ib input,.ib textarea{flex:1;min-width:0;padding:11px 16px;border:1.5px solid #dde3ea;border-radius:22px;outline:none;background:#f6f8fa}
+.ib textarea{resize:none;font:inherit;line-height:20px;min-height:44px;max-height:128px;overflow-y:auto;display:block}
 .ib .snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff7a18,#ffc107);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(255,122,24,.4);flex-shrink:0}
 .ib .snd span{display:inline-block;transform:scaleX(-1)}
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;z-index:99;max-width:90%;text-align:center}
@@ -315,7 +316,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.16</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.17</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
@@ -328,7 +329,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.16</div>
+    <div class="mv">ورژن 3.17</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -352,7 +353,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button class="pin" id="cPin">📎</button>
     <button class="pin" id="onceBtn">⏱️</button>
     <button class="pin" id="vnBtn">🎤</button>
-    <input id="cInp" placeholder="پیغام لکھیں..." autocomplete="off">
+    <textarea id="cInp" rows="1" placeholder="پیغام لکھیں..." autocomplete="off"></textarea>
     <button class="snd" id="cSend"><span>➤</span></button>
   </div>
 </div>
@@ -586,14 +587,15 @@ function openChat(id){
 }
 function closeChat(){if(vr){vcancel=true;try{vr.stop()}catch(e){}}if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
 async function send(img,once){
-  const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img)$('cInp').value='';const to0=cur;
+  const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img){$('cInp').value='';$('cInp').style.height='auto'}const to0=cur;
   const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t.slice(0,60),up={};
   up[`chats/${c}/messages/${k}`]=img?{from:me,img,once:!!once,ts}:{from:me,text:t,ts};
   up[`userChats/${me}/${cur}/last`]=l;up[`userChats/${me}/${cur}/ts`]=ts;up[`userChats/${me}/${cur}/unread`]=0;
   up[`userChats/${cur}/${me}/last`]=l;up[`userChats/${cur}/${me}/ts`]=ts;up[`userChats/${cur}/${me}/unread`]=increment(1);
   try{await update(ref(db),up);notifyPush(to0,img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t)}catch(e){toast('پیغام نہیں گیا: '+e.code)}
 }
-$('cSend').onclick=()=>send();$('cInp').onkeydown=e=>{if(e.key==='Enter')send()};
+$('cSend').onclick=()=>send();$('cInp').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&matchMedia('(pointer:fine)').matches){e.preventDefault();send()}};
+$('cInp').oninput=function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight+3,128)+'px'};
 $('cBack').onclick=closeChat;
 $('cCall').onclick=()=>startCall('audio');
 $('cVid').onclick=()=>startCall('video');
@@ -1252,9 +1254,7 @@ function renderAff(){const b=$('aff');b.replaceChildren();const a=[...Object.ent
     if(p.src==='p'){if(p.uid===me){const x=h('button','ax','🗑️');x.onclick=e=>{e.stopPropagation();if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};c.append(x)}
       else{const x=h('button','ax','💬');x.onclick=e=>{e.stopPropagation();openChat(p.uid)};c.append(x)}}
     sl.append(c)});
-  b.append(sl);clearInterval(afTm);
-  if(a.length>2)afTm=setInterval(()=>{if(document.hidden||b.offsetParent===null)return;const w=sl.firstChild.offsetWidth+8,d=getComputedStyle(sl).direction==='rtl'?-1:1;
-    if(Math.abs(sl.scrollLeft)+sl.clientWidth>=sl.scrollWidth-6)sl.scrollTo({left:0,behavior:'smooth'});else sl.scrollBy({left:d*w,behavior:'smooth'})},3500)}
+  b.append(sl);clearInterval(afTm)}
 function renderAd(){const e=$('adBar');if(!adB||!adB.text){e.classList.add('hide');return}e.textContent='📢 '+adB.text;e.classList.remove('hide')}
 $('adBar').onclick=()=>{const u=okLink((adB||{}).link);if(u)window.open(u,'_blank','noopener')};
 $('mAff').onclick=()=>{$('menu').classList.add('hide');afImg='';$('afPrev').replaceChildren();['afTitle','afPrice','afLink'].forEach(i=>$(i).value='');$('afForm').classList.remove('hide')};
