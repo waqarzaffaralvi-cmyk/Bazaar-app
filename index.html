@@ -253,6 +253,8 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <input id="aPass" class="fld" type="password" placeholder="پاس ورڈ (کم از کم 6 حروف)" dir="ltr" style="text-align:right">
     <div id="aerr"></div>
     <button id="aGo" class="big">لاگ ان کریں</button>
+    <button id="aInst" class="big hide" style="margin-top:8px;padding:10px;font-size:14px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
+    <div id="aInstH" style="font-size:12px;color:var(--mu);text-align:center;margin-top:6px;line-height:1.7"></div>
   </div>
 </div>
 
@@ -316,7 +318,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.17</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.18</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
@@ -329,7 +331,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.17</div>
+    <div class="mv">ورژن 3.18</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -1269,6 +1271,15 @@ $('afGo').onclick=async()=>{if(!isAdmin())return;const bar=document.querySelecto
     else{if(!afImg){toast('تصویر چنیں');return}await push(ref(db,'affiliate'),{title:t,price:$('afPrice').value.trim(),img:afImg,link:l,ts:serverTimestamp()})}
     $('afForm').classList.add('hide');toast('✅ شامل ہو گیا')}catch(e){toast('خرابی: '+(e.code||''))}};
 $('afDel').onclick=()=>{if(isAdmin()&&confirm('اوپر کی پٹی ہٹا دیں؟'))remove(ref(db,'adbar')).then(()=>{$('afForm').classList.add('hide');toast('پٹی ہٹ گئی')}).catch(()=>toast('نہیں ہٹی'))};
+
+/* ---------- لاگ ان صفحے پر انسٹال بٹن ---------- */
+(()=>{const st=matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(st)return;
+  const b=$('aInst'),H=$('aInstH'),ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua),inapp=/FBAN|FBAV|Instagram|Line\//i.test(ua);
+  const hint=()=>inapp?'⚠️ یہ لنک فیس بک کے اندر کھلا ہے، یہاں انسٹال نہیں ہوتی۔ اوپر ⋮ دبا کر "براؤزر میں کھولیں" (Open in Chrome) چنیں، پھر انسٹال کریں۔':
+    ios?'Safari میں نیچے شیئر ⬆️ دبائیں اور "Add to Home Screen" چنیں۔':'اگر انسٹال کی کھڑکی نہ آئے تو براؤزر کے ⋮ مینو میں "Install app" یا "Add to Home screen" دبائیں۔';
+  b.classList.remove('hide');if(inapp)H.textContent=hint();
+  b.onclick=async()=>{if(dip&&!inapp){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}H.textContent=hint()};
+  window.addEventListener('appinstalled',()=>{b.classList.add('hide');H.textContent=''})})();
 </script>
 </body>
 </html>
