@@ -154,7 +154,7 @@ input{font-size:15px}
 .ring.seen{background:#c9d1da}
 .ring.mine{background:#e3e8ee}
 .plus{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#25d366;color:#fff;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff;line-height:1;font-style:normal}
-#mem,#stForm,#locP,#afForm{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
+#mem,#stForm,#locP,#afForm,#grpP{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
 #stPrev img{width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:10px}
 #stView{position:fixed;inset:0;z-index:93;background:#000;color:#fff;display:flex;flex-direction:column}
 #svBars{display:flex;gap:4px;padding:10px 10px 4px;direction:ltr}
@@ -238,6 +238,10 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
 .acard .ad2{position:absolute;top:3px;inset-inline-start:3px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:1px 5px;border-radius:6px}
 .acard .ax{position:absolute;top:3px;inset-inline-end:3px;background:rgba(255,255,255,.92);border-radius:50%;width:22px;height:22px;font-size:11px}
 #adBar{position:absolute;top:54px;left:12px;right:12px;z-index:29;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:4px 10px;border-radius:10px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rl{font-style:normal;font-size:10px;background:#e8f5e9;color:#1b5e20;border-radius:8px;padding:1px 6px;margin-inline-start:6px;white-space:nowrap;font-weight:700}.rl:empty{display:none}
+.pp .rl{display:block;margin:3px auto 0;max-width:64px;overflow:hidden;text-overflow:ellipsis;padding:1px 4px}
+#cRole{margin-inline-start:8px;color:#ffe9a8}
+.gn{font-size:11px;font-weight:700;color:#2e7d32;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -305,6 +309,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button class="sm" id="dpBtn">📷 تصویر بدلیں</button>
       <input type="file" id="dpFile" accept="image/*" class="hide">
       <label>نام</label><input id="pName" class="fld">
+      <label>🛠️ پیشہ / کیٹیگری</label><input id="pRole" class="fld" maxlength="25" placeholder="مثلاً: کارپینٹر، پلمبر، دکاندار">
       <label>تعارف / کاروبار</label><input id="pBio" class="fld" placeholder="مثلاً: دکاندار، خریدار...">
       <label style="display:flex;justify-content:space-between;align-items:center;background:#f3f5f8;padding:12px;border-radius:14px;margin-bottom:12px"><span>📍 فاصلہ دیکھنے کے لیے میری لوکیشن</span><input type="checkbox" id="locSw" style="width:22px;height:22px;margin:0"></label>
       <div id="pMail" style="color:var(--mu);font-size:13px;margin-bottom:12px" dir="ltr"></div>
@@ -318,20 +323,21 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.18</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.20</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
   <div id="menu" class="hide"><div class="mbox">
     <button id="addVid">➕ ویڈیو شامل کریں</button>
     <button id="mCh">📺 بازار چینل</button>
+    <button id="mGrp">👥 نیا گروپ</button>
     <button id="mAff" class="hide">🛍️ اشتہار / ایفیلی ایٹ</button>
     <button id="mLoc">📍 لوکیشن</button>
     <button id="mSet">⚙️ سیٹنگ</button>
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.18</div>
+    <div class="mv">ورژن 3.20</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -346,7 +352,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
   <div class="ch">
     <button class="back" id="cBack">➜</button>
     <div id="cAv"></div>
-    <div class="nm"><b id="cName"></b><small id="cSt"></small><small id="cDst" class="dst"></small></div>
+    <div class="nm"><b id="cName"></b><small id="cSt"></small><small id="cDst" class="dst"></small><small id="cRole" class="dst"></small></div>
     <button class="cb" id="cCall">📞</button>
     <button class="cb" id="cVid">🎥</button>
   </div>
@@ -434,6 +440,15 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button class="sm2" id="afDel" style="width:100%;margin-top:8px">🗑️ اوپر کی پٹی ہٹائیں</button>
   </div>
 </div>
+<div id="grpP" class="hide">
+  <div class="pfh"><button id="gpX">✖</button><b>👥 نیا گروپ</b></div>
+  <div class="pfb">
+    <label>گروپ کا نام</label><input id="gpName" class="fld" maxlength="40">
+    <label>ممبرز چنیں (زیادہ سے زیادہ 30)</label>
+    <div id="gpList"></div>
+    <button class="big" id="gpGo" style="padding:10px;font-size:14px">✅ گروپ بنائیں</button>
+  </div>
+</div>
 <div id="mem" class="hide">
   <div class="pfh"><button id="memX">✖</button><b id="memT">👥 سب ممبرز</b></div>
   <div class="pfb"><input id="memQ" class="fld" placeholder="🔍 نام سے تلاش کریں"><div id="memL"></div></div>
@@ -508,7 +523,9 @@ function av(u,s){const d=h('div','av');d.style.width=d.style.height=s+'px';d.sty
   if(u&&typeof u.dp==='string'&&u.dp.startsWith('data:image/')){const i=h('img');i.src=u.dp;d.append(i)}
   else d.textContent=((u&&u.name)||'؟').trim().slice(0,1).toUpperCase();return d}
 const tm=t=>t?new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-const cid=(a,b)=>[a,b].sort().join('_');
+const isG=id=>typeof id==='string'&&id.startsWith('g_');
+const cid=(a,b)=>isG(b)?b:[a,b].sort().join('_');
+const mpath=(a,id)=>isG(id)?`groups/${id.slice(2)}/messages`:`chats/${cid(a,id)}/messages`;
 
 /* ---------- لاگ ان ---------- */
 function setMode(m){mode=m;$('tLog').classList.toggle('on',m==='log');$('tReg').classList.toggle('on',m==='reg');
@@ -553,20 +570,20 @@ function renderPeople(){
     r.append(av(users[me]||{name:'میں'},56));if(!mine.length)r.append(h('i','plus','+'));
     w.append(r,h('span','','میرا اسٹیٹس'));w.onclick=()=>mine.length?openStatus(me):openStForm();box.append(w);
   }
-  const arr=Object.entries(users).filter(([id,u])=>id!==me&&(!q||(u.name||'').toLowerCase().includes(q)))
+  const arr=Object.entries(users).filter(([id,u])=>id!==me&&(!q||((u.name||'')+' '+(u.role||'')).toLowerCase().includes(q)))
     .sort((a,b)=>((stList(b[0]).length?1:0)-(stList(a[0]).length?1:0))||((b[1].online?1:0)-(a[1].online?1:0)));
   arr.forEach(([id,u])=>{
     const sl=stList(id),w=h('div','pp'),r=h('div','ring'+(sl.length?(stSeen(id)?' seen':' has'):''));r.append(av(u,56));if(u.online)r.append(h('i','dot'));
-    w.append(r,dEl(id),h('span','',u.name||'صارف'));w.onclick=()=>sl.length?openStatus(id):openChat(id);box.append(w)});
+    w.append(r,rEl(id),dEl(id),h('span','',u.name||'صارف'));w.onclick=()=>sl.length?openStatus(id):openChat(id);box.append(w)});
   if(!arr.length)box.append(h('div','hint',q?'کوئی ممبر نہیں ملا۔':'ابھی کوئی اور ممبر نہیں۔ دوست کو لنک بھیج کر اکاؤنٹ بنوائیں!'));
   if($('mem')&&!$('mem').classList.contains('hide'))renderMem();
 }
 function renderInbox(){
   const box=$('inbox');box.replaceChildren();
-  Object.entries(inbox).filter(([id])=>!q||((users[id]&&users[id].name)||'').toLowerCase().includes(q))
+  Object.entries(inbox).filter(([id])=>!q||(isG(id)?(inbox[id].name||''):((users[id]&&users[id].name)||'')+' '+((users[id]&&users[id].role)||'')).toLowerCase().includes(q))
     .sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).forEach(([id,c])=>{
-    const u=users[id]||{},r=h('div','row'+(c.unread?' un':'')),m=h('div','mid');
-    const nb=h('b','',u.name||'صارف');nb.append(dEl(id));m.append(nb,h('small','',c.last||''));
+    const u=isG(id)?{name:'👥 '+(c.name||'گروپ')}:(users[id]||{}),r=h('div','row'+(c.unread?' un':'')),m=h('div','mid');
+    const nb=h('b','',u.name||'صارف');nb.append(rEl(id),dEl(id));m.append(nb,h('small','',c.last||''));
     const mt=h('div','meta');mt.append(h('div','',tm(c.ts)));if(c.unread)mt.append(h('span','bd',String(c.unread)));
     r.append(av(u,50),m,mt);r.onclick=()=>openChat(id);box.append(r)});
   if(!box.children.length)box.append(h('div','hint','ابھی کوئی چیٹ نہیں۔ اوپر کسی گول تصویر پر ٹیپ کر کے بات شروع کریں۔'));
@@ -574,14 +591,15 @@ function renderInbox(){
 $('srch').oninput=e=>{q=e.target.value.trim().toLowerCase();renderInbox();renderPeople()};
 
 /* ---------- چیٹ ---------- */
-function head(){const u=users[cur]||{};$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';$('cDst').textContent=dTxt(cur);
+function head(){if(isG(cur)){const c=inbox[cur]||{};$('cName').textContent='👥 '+(c.name||'گروپ');$('cSt').textContent='گروپ چیٹ';$('cDst').textContent='';$('cRole').textContent='';$('cAv').replaceChildren(av({name:c.name||'گ'},42));['cCall','cVid'].forEach(i=>$(i).classList.add('hide'));return}
+  ['cCall','cVid'].forEach(i=>$(i).classList.remove('hide'));const u=users[cur]||{};$('cRole').textContent=u.role?('🛠️ '+u.role):'';$('cName').textContent=u.name||'صارف';$('cSt').textContent=u.online?'🟢 آن لائن':'آف لائن';$('cDst').textContent=dTxt(cur);
   $('cAv').replaceChildren(av(u,42))}
 function markRead(id){if(inbox[id]&&inbox[id].unread)update(ref(db,`userChats/${me}/${id}`),{unread:0})}
-function addMsg(m,k){if(hs().includes(k))return;const b=h('div','m '+(m.from===me?'me':'ot'));bub[k]={b,m};fill(b,m,k);lp(b,k);const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
+function addMsg(m,k){if(hs().includes(k))return;const b=h('div','m '+(m.from===me?'me':'ot'));bub[k]={b,m};fill(b,m,k);lp(b,k);if(isG(cur)&&m.from!==me)b.prepend(h('div','gn',(users[m.from]||{}).name||''));const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
 function openChat(id){
-  closeChat();cur=id;head();$('msgs').replaceChildren();$('chat').classList.remove('hide');
+  closeChat();cur=id;head();if(isG(id))gMem(id);$('msgs').replaceChildren();$('chat').classList.remove('hide');
   Object.keys(bub).forEach(k=>delete bub[k]);
-  const qq=query(ref(db,`chats/${cid(me,id)}/messages`),limitToLast(100));
+  const qq=query(ref(db,mpath(me,id)),limitToLast(100));
   const u1=onChildAdded(qq,s=>{const m=s.val();addMsg(m,s.key);if(cur===id&&m.from!==me)markRead(id)});
   const u2=onChildChanged(qq,s=>{const o=bub[s.key];if(o){o.m=s.val();fill(o.b,o.m,s.key)}});
   unsubMsgs=()=>{u1();u2()};
@@ -589,12 +607,11 @@ function openChat(id){
 }
 function closeChat(){if(vr){vcancel=true;try{vr.stop()}catch(e){}}if(unsubMsgs){unsubMsgs();unsubMsgs=null}cur=null;$('chat').classList.add('hide')}
 async function send(img,once){
-  const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img){$('cInp').value='';$('cInp').style.height='auto'}const to0=cur;
-  const c=cid(me,cur),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l=img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t.slice(0,60),up={};
-  up[`chats/${c}/messages/${k}`]=img?{from:me,img,once:!!once,ts}:{from:me,text:t,ts};
-  up[`userChats/${me}/${cur}/last`]=l;up[`userChats/${me}/${cur}/ts`]=ts;up[`userChats/${me}/${cur}/unread`]=0;
-  up[`userChats/${cur}/${me}/last`]=l;up[`userChats/${cur}/${me}/ts`]=ts;up[`userChats/${cur}/${me}/unread`]=increment(1);
-  try{await update(ref(db),up);notifyPush(to0,img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t)}catch(e){toast('پیغام نہیں گیا: '+e.code)}
+  const t=img?'':$('cInp').value.trim();if((!t&&!img)||!cur)return;if(!img){$('cInp').value='';$('cInp').style.height='auto'}const to0=cur;const mem=isG(to0)?await gMem(to0):null;
+  const c=cid(me,cur),k=push(ref(db,mpath(me,cur))).key,ts=serverTimestamp(),l=img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t.slice(0,60),up={};
+  up[mpath(me,cur)+'/'+k]=img?{from:me,img,once:!!once,ts}:{from:me,text:t,ts};
+  fan(up,to0,l,ts,mem);
+  try{await update(ref(db),up);pushTo(to0,mem,img?(once?'⏱️ تصویر (ایک بار)':'📷 تصویر'):t)}catch(e){toast('پیغام نہیں گیا: '+e.code)}
 }
 $('cSend').onclick=()=>send();$('cInp').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&matchMedia('(pointer:fine)').matches){e.preventDefault();send()}};
 $('cInp').oninput=function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight+3,128)+'px'};
@@ -606,11 +623,11 @@ $('cPin').onclick=()=>$('imgF').click();
 /* ---------- وائس نوٹ ---------- */
 let vr=null,vch=[],vT=null,vS=0,vcancel=false;
 async function sendVoice(d,dur,to){
-  const c=cid(me,to),k=push(ref(db,`chats/${c}/messages`)).key,ts=serverTimestamp(),l='🎤 وائس نوٹ ('+dur+' سیکنڈ)',up={};
-  up[`chats/${c}/messages/${k}`]={from:me,voice:d,dur,ts};
-  up[`userChats/${me}/${to}/last`]=l;up[`userChats/${me}/${to}/ts`]=ts;up[`userChats/${me}/${to}/unread`]=0;
-  up[`userChats/${to}/${me}/last`]=l;up[`userChats/${to}/${me}/ts`]=ts;up[`userChats/${to}/${me}/unread`]=increment(1);
-  try{await update(ref(db),up);notifyPush(to,'🎤 وائس نوٹ')}catch(e){toast('وائس نوٹ نہیں گیا: '+e.code)}
+  const mem=isG(to)?await gMem(to):null;
+  const c=cid(me,to),k=push(ref(db,mpath(me,to))).key,ts=serverTimestamp(),l='🎤 وائس نوٹ ('+dur+' سیکنڈ)',up={};
+  up[mpath(me,to)+'/'+k]={from:me,voice:d,dur,ts};
+  fan(up,to,l,ts,mem);
+  try{await update(ref(db),up);pushTo(to,mem,'🎤 وائس نوٹ')}catch(e){toast('وائس نوٹ نہیں گیا: '+e.code)}
 }
 $('vnBtn').onclick=async()=>{
   if(vr){vr.stop();return}
@@ -642,7 +659,7 @@ document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.data
 
 /* ---------- پروفائل ---------- */
 let newDp=null;
-function fillMe(){const u=users[me]||{};$('pName').value=u.name||'';$('pBio').value=u.bio||'';newDp=null;$('meAv').replaceChildren(av(u,96));
+function fillMe(){const u=users[me]||{};$('pName').value=u.name||'';$('pBio').value=u.bio||'';$('pRole').value=u.role||'';newDp=null;$('meAv').replaceChildren(av(u,96));
   $('sndSw').checked=u.pushSound!==false;$('bellSw').checked=localStorage.getItem('bell_off')!=='1';renderPushSt()}
 $('dpBtn').onclick=()=>$('dpFile').click();
 $('dpFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
@@ -650,7 +667,7 @@ $('dpFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new File
     c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);
     newDp=c.toDataURL('image/jpeg',.75);$('meAv').replaceChildren(av({name:$('pName').value,dp:newDp},96));toast('تصویر منتخب ہو گئی، اب محفوظ کریں')};i.src=r.result};r.readAsDataURL(f)};
 $('pSave').onclick=async()=>{const n=$('pName').value.trim();if(!n){toast('نام لکھیں');return}
-  const d={name:n,bio:$('pBio').value.trim()};if(newDp)d.dp=newDp;
+  const d={name:n,bio:$('pBio').value.trim(),role:$('pRole').value.trim().slice(0,25)};if(newDp)d.dp=newDp;
   try{await update(ref(db,'users/'+me),d);newDp=null;toast('✅ پروفائل محفوظ ہو گئی')}catch(e){toast('خرابی: '+e.code)}};
 $('pOut').onclick=async()=>{try{await set(ref(db,'users/'+me+'/online'),false)}catch(e){}try{if(myTok)await remove(ref(db,`fcmTokens/${me}/${tkey(myTok)}`))}catch(e){}signOut(auth)};
 
@@ -752,7 +769,7 @@ $('btCam').onclick=()=>{const t=ls&&ls.getVideoTracks()[0];if(t){t.enabled=!t.en
 /* ---------- پیغام: دیکھنا، مٹانا ---------- */
 const bub={};let onceMode=false;
 const hs=()=>{try{return JSON.parse(localStorage.getItem('hid_'+cid(me,cur))||'[]')}catch(e){return[]}};
-const mref=k=>ref(db,`chats/${cid(me,cur)}/messages/${k}`);
+const mref=k=>ref(db,mpath(me,cur)+'/'+k);
 $('onceBtn').onclick=()=>{onceMode=!onceMode;$('onceBtn').classList.toggle('on',onceMode);toast(onceMode?'⏱️ اگلی تصویر ایک بار دیکھنے کے بعد مٹ جائے گی':'عام تصویر موڈ')};
 function fill(b,m,k){
   b.replaceChildren();b.classList.toggle('gone',!!(m.del||m.gone));const mine=m.from===me;
@@ -946,7 +963,7 @@ function renderMem(){
   $('memT').textContent='👥 سب ممبرز ('+arr.length+')';
   arr.forEach(([id,u])=>{
     const r=h('div','row'),m=h('div','mid');r.style.margin='0 0 6px';
-    const nb=h('b','',u.name||'صارف');nb.append(dEl(id));m.append(nb,h('small','',u.online?'🟢 آن لائن':(u.bio||'آف لائن')));
+    const nb=h('b','',u.name||'صارف');nb.append(rEl(id),dEl(id));m.append(nb,h('small','',u.online?'🟢 آن لائن':(u.bio||'آف لائن')));
     r.append(av(u,46),m);
     if(stList(id).length){const sb=h('span','bd','🟢 اسٹیٹس');sb.onclick=ev=>{ev.stopPropagation();$('mem').classList.add('hide');openStatus(id)};r.append(sb)}
     r.onclick=()=>{$('mem').classList.add('hide');openChat(id)};L.append(r)});
@@ -1280,6 +1297,27 @@ $('afDel').onclick=()=>{if(isAdmin()&&confirm('اوپر کی پٹی ہٹا دی�
   b.classList.remove('hide');if(inapp)H.textContent=hint();
   b.onclick=async()=>{if(dip&&!inapp){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}H.textContent=hint()};
   window.addEventListener('appinstalled',()=>{b.classList.add('hide');H.textContent=''})})();
+
+/* ---------- پیشہ / کیٹیگری اور گروپ ---------- */
+const gmem={};
+function rEl(id){const e=h('em','rl',(users[id]||{}).role||'');return e}
+async function gMem(id){if(gmem[id])return gmem[id];try{const s=await get(ref(db,'groups/'+id.slice(2)+'/members'));gmem[id]=Object.keys(s.val()||{})}catch(e){gmem[id]=[me]}return gmem[id]}
+function fan(up,to,l,ts,mem){
+  if(isG(to)){(mem||[me]).forEach(m=>{const p='userChats/'+m+'/'+to+'/';up[p+'last']=l;up[p+'ts']=ts;up[p+'unread']=m===me?0:increment(1)});return}
+  up[`userChats/${me}/${to}/last`]=l;up[`userChats/${me}/${to}/ts`]=ts;up[`userChats/${me}/${to}/unread`]=0;
+  up[`userChats/${to}/${me}/last`]=l;up[`userChats/${to}/${me}/ts`]=ts;up[`userChats/${to}/${me}/unread`]=increment(1)}
+function pushTo(to,mem,txt){if(isG(to)){(mem||[]).filter(m=>m!==me).forEach(m=>notifyPush(m,txt));return}notifyPush(to,txt)}
+$('mGrp').onclick=()=>{$('menu').classList.add('hide');$('gpName').value='';const L=$('gpList');L.replaceChildren();
+  Object.entries(users).filter(([id])=>id!==me).sort((a,b)=>(a[1].name||'').localeCompare(b[1].name||'')).forEach(([id,u])=>{
+    const l=h('label','lsw'),sp=h('span','',u.name||'صارف');if(u.role)sp.append(h('small','',u.role));const i=h('input');i.type='checkbox';i.value=id;l.append(sp,i);L.append(l)});
+  $('grpP').classList.remove('hide')};
+$('gpX').onclick=()=>$('grpP').classList.add('hide');
+$('gpGo').onclick=async()=>{const nm=$('gpName').value.trim(),ids=[...document.querySelectorAll('#gpList input:checked')].map(i=>i.value);
+  if(!nm){toast('گروپ کا نام لکھیں');return}if(!ids.length){toast('کم از کم ایک ممبر چنیں');return}if(ids.length>29){toast('زیادہ سے زیادہ 30 ممبرز');return}
+  const gid=push(ref(db,'groups')).key,all=[me,...ids],mem={},ts=serverTimestamp(),up={};all.forEach(x=>mem[x]=true);
+  up['groups/'+gid]={name:nm.slice(0,40),admin:me,members:mem,ts};
+  all.forEach(x=>{const p='userChats/'+x+'/g_'+gid+'/';up[p+'name']=nm.slice(0,40);up[p+'g']=1;up[p+'last']='👥 گروپ بنایا گیا';up[p+'ts']=ts;up[p+'unread']=x===me?0:1});
+  try{await update(ref(db),up);gmem['g_'+gid]=all;$('grpP').classList.add('hide');toast('✅ گروپ بن گیا');openChat('g_'+gid)}catch(e){toast('خرابی: '+(e.code||''))}};
 </script>
 </body>
 </html>
