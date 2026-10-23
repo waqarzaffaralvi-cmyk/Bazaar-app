@@ -154,7 +154,7 @@ input{font-size:15px}
 .ring.seen{background:#c9d1da}
 .ring.mine{background:#e3e8ee}
 .plus{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#25d366;color:#fff;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff;line-height:1;font-style:normal}
-#mem,#stForm,#locP,#afForm,#grpP{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
+#mem,#stForm,#locP,#afForm,#grpP,#pdet{position:fixed;inset:0;z-index:62;background:var(--bg);display:flex;flex-direction:column}
 #stPrev img{width:100%;max-height:260px;object-fit:cover;border-radius:12px;margin-bottom:10px}
 #stView{position:fixed;inset:0;z-index:93;background:#000;color:#fff;display:flex;flex-direction:column}
 #svBars{display:flex;gap:4px;padding:10px 10px 4px;direction:ltr}
@@ -242,6 +242,15 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
 .pp .rl{display:block;margin:3px auto 0;max-width:64px;overflow:hidden;text-overflow:ellipsis;padding:1px 4px}
 #cRole{margin-inline-start:8px;color:#ffe9a8}
 .gn{font-size:11px;font-weight:700;color:#2e7d32;margin-bottom:2px}
+#feed{display:grid;grid-template-columns:1fr 1fr;gap:10px}#feed .hint,#feed .fbn,#feed .pc{grid-column:1/-1}
+.gc{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;position:relative}
+.gc .gi{aspect-ratio:1/1;background:#eef1f4}.gc img{width:100%;height:100%;object-fit:cover;display:block}
+.gc .gt{padding:6px 8px 9px}.gc .gn2{font-size:12.5px;line-height:1.4;height:35px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gc .gp{color:#e8590c;font-weight:800;font-size:14px;margin-top:3px}.gc .gm{font-size:10.5px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc .gr{position:absolute;top:6px;inset-inline-start:6px;background:#e53935;color:#fff;font-size:10px;padding:2px 6px;border-radius:8px}
+.gc .gcn{position:absolute;top:6px;inset-inline-end:6px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px}
+.dgal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:10px;scrollbar-width:none}.dgal::-webkit-scrollbar{display:none}
+.dgal img{flex:0 0 100%;max-height:360px;object-fit:contain;background:#111;border-radius:14px;scroll-snap-align:center}
 </style>
 </head>
 <body>
@@ -323,7 +332,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
       <button id="instBtn" class="big hide" style="margin-top:10px;background:linear-gradient(135deg,#ff7a18,#ffc107)">📲 ایپ انسٹال کریں</button>
       <div style="color:var(--mu);font-size:11px;margin-top:8px">آئی فون: Safari میں شیئر کا بٹن ← Add to Home Screen</div>
       <button id="pOut" class="big red">🚪 لاگ آؤٹ</button>
-      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.20</div>
+      <div style="color:#aaa;font-size:11px;margin-top:14px">ورژن 3.21</div>
     </div>
   </div>
   <button id="menuBtn" aria-label="مینو">⋮</button>
@@ -337,7 +346,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <button id="mPro">👤 میری پروفائل</button>
     <button id="mInst">📲 ایپ انسٹال کریں</button>
     <button id="mOut" style="color:#c62828">🚪 لاگ آؤٹ</button>
-    <div class="mv">ورژن 3.20</div>
+    <div class="mv">ورژن 3.21</div>
   </div></div>
   <div id="nav">
     <button data-t="chat" class="on"><i>💬</i>چیٹ<span id="nbd" class="hide"></span></button>
@@ -390,6 +399,7 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <label>تصویریں (زیادہ سے زیادہ 10)</label><input type="file" id="fImgs" accept="image/*" multiple class="fld">
     <div id="fPrev"></div>
     <label>🔗 ایفیلی ایٹ / خریداری کا لنک (اختیاری)</label><input id="fLink" class="fld" dir="ltr" style="text-align:left" placeholder="https://..." maxlength="300">
+    <label class="lsw" style="display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f3f5f8;padding:10px 12px;border-radius:12px;margin:0 0 8px;font-size:13px"><span>🔒 ذاتی لنک (صرف میں دیکھوں)<small>خریدار کو لنک نظر نہیں آئے گا، وہ پیغام پر آپ سے ڈیل کرے گا</small></span><input type="checkbox" id="fPriv" style="width:22px;height:22px"></label>
     <button class="sm2" id="fLoc">📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)</button>
     <div class="note">اصل پتا ظاہر نہیں ہوگا، صرف تقریباً فاصلہ (آدھے کلومیٹر کے درجے میں) نظر آئے گا۔</div>
     <button class="big" id="fGo">🚀 پوسٹ کریں</button>
@@ -448,6 +458,10 @@ body.vidtab #menuBtn{background:rgba(0,0,0,.4)}
     <div id="gpList"></div>
     <button class="big" id="gpGo" style="padding:10px;font-size:14px">✅ گروپ بنائیں</button>
   </div>
+</div>
+<div id="pdet" class="hide">
+  <div class="pfh"><button id="pdX">✖</button><b>تفصیل</b></div>
+  <div class="pfb" id="pdB"></div>
 </div>
 <div id="mem" class="hide">
   <div class="pfh"><button id="memX">✖</button><b id="memT">👥 سب ممبرز</b></div>
@@ -597,7 +611,7 @@ function head(){if(isG(cur)){const c=inbox[cur]||{};$('cName').textContent='👥
 function markRead(id){if(inbox[id]&&inbox[id].unread)update(ref(db,`userChats/${me}/${id}`),{unread:0})}
 function addMsg(m,k){if(hs().includes(k))return;const b=h('div','m '+(m.from===me?'me':'ot'));bub[k]={b,m};fill(b,m,k);lp(b,k);if(isG(cur)&&m.from!==me)b.prepend(h('div','gn',(users[m.from]||{}).name||''));const box=$('msgs');box.append(b);box.scrollTop=box.scrollHeight}
 function openChat(id){
-  closeChat();cur=id;head();if(isG(id))gMem(id);$('msgs').replaceChildren();$('chat').classList.remove('hide');
+  hideDet();closeChat();cur=id;head();if(isG(id))gMem(id);$('msgs').replaceChildren();$('chat').classList.remove('hide');
   Object.keys(bub).forEach(k=>delete bub[k]);
   const qq=query(ref(db,mpath(me,id)),limitToLast(100));
   const u1=onChildAdded(qq,s=>{const m=s.val();addMsg(m,s.key);if(cur===id&&m.from!==me)markRead(id)});
@@ -825,7 +839,7 @@ function renderChips(){const b=$('chips');b.replaceChildren();
   CH.forEach(([k,t])=>{const x=h('button','chip'+((k==='near'?sortNear:chip===k)?' on':''),t);
     x.onclick=()=>{if(k==='near'){if(!myLoc){wantNear=true;$('locSw').checked=true;localStorage.setItem('loc_on','1');getLoc();toast('لوکیشن لی جا رہی ہے...');return}sortNear=!sortNear}else chip=k;renderFeed()};b.append(x)})}
 function renderFeed(){
-  renderChips();const box=$('feed');box.replaceChildren();
+  renderChips();const box=$('feed');box.replaceChildren();if(detId)setTimeout(()=>showDet(detId,true),0);
   let arr=Object.entries(posts).map(([id,p])=>Object.assign({id},p));
   if(mFocus()){arr=fp?[Object.assign({id:focusId},fp)]:[];const bn=h('div','fbn');bn.append(h('span','','🔗 شیئر کی ہوئی پوسٹ'));
     const bt=h('button','','سب پوسٹس دیکھیں');bt.onclick=()=>{focusId=null;fp=null;history.replaceState(null,'',location.pathname);renderFeed();renderSports()};bn.append(bt);box.append(bn)}
@@ -836,7 +850,7 @@ function renderFeed(){
   if(sortNear)arr=arr.filter(p=>d(p)!=null&&d(p)<=30);
   arr.sort(sortNear?((a,b)=>(d(a)==null?1e9:d(a))-(d(b)==null?1e9:d(b))):((a,b)=>(b.ts||0)-(a.ts||0)));
   if(!arr.length){box.append(h('div','hint',sortNear?'30 کلومیٹر کے اندر ابھی کوئی پوسٹ نہیں۔':'ابھی اس زمرے میں کوئی پوسٹ نہیں۔ ➕ دبا کر پہلی پوسٹ آپ لگائیں!'));return}
-  arr.forEach(p=>box.append(card(p,d(p))));
+  arr.forEach(p=>box.append(mFocus()?card(p,d(p)):gcard(p,d(p))));
 }
 function card(p,dist){
   const c=h('div','pc'+(p.hot?' hot':'')),u=users[p.uid]||{},mine=p.uid===me;
@@ -853,14 +867,17 @@ function card(p,dist){
     tg.append(h('span','',({general:'🛍️ عام',mobile:'📱 موبائل',property:'🏠 پراپرٹی'})[p.cat]||''))}
   if(dist!=null)tg.append(h('span','dist','📍 '+(dist<=0.5?'0.5 کلومیٹر کے اندر':dist+' کلومیٹر')));
   if(okLink(p.link))tg.append(h('span','aff','🔗 ایفیلی ایٹ لنک'));
+  if(p.priv)tg.append(h('span','aff',mine?'🔒 ذاتی لنک':'🛒 آرڈر کے لیے پیغام کریں'));
   c.append(tg);if(p.desc)c.append(h('div','pd',p.desc));
   const ac=h('div','acts'),lk=likes[p.id]||{},n=Object.keys(lk).length,liked=!!lk[me];
   const b1=h('button','ab'+(liked?' on':''),(liked?'❤️ ':'🤍 ')+n);b1.onclick=()=>set(ref(db,`likes/${p.id}/${me}`),liked?null:true);ac.append(b1);
   const sb=h('button','ab','🔗 شیئر');sb.onclick=()=>sharePost(p);ac.append(sb);
   if(okLink(p.link)){const a=h('a','ab go','🛒 لنک کھولیں');a.href=okLink(p.link);a.target='_blank';a.rel='noopener noreferrer sponsored';ac.append(a)}
+  if(p.priv&&mine){const a=h('a','ab go','🔒 ذاتی لنک کھولیں');a.href='#';a.target='_blank';a.rel='noopener noreferrer';a.onclick=e=>{if(a.href.endsWith('#')){e.preventDefault();toast('لنک لوڈ ہو رہا ہے...')}};ac.append(a);
+    get(ref(db,'postPriv/'+p.id)).then(r=>{const l=okLink((r.val()||{}).link);if(l)a.href=l}).catch(()=>{})}
   if(mine){
     const hb=h('button','ab'+(p.hot?' on':''),p.cat==='sports'?'🔥 نمایاں':'🔥 آفر');hb.onclick=()=>update(ref(db,'posts/'+p.id),{hot:!p.hot});
-    const dl=h('button','ab red2',p.cat==='sports'?'🗑️ مٹائیں':'✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id))}};
+    const dl=h('button','ab red2',p.cat==='sports'?'🗑️ مٹائیں':'✅ فروخت / مٹائیں');dl.onclick=()=>{if(confirm('یہ پوسٹ مٹا دیں؟')){remove(ref(db,'posts/'+p.id));remove(ref(db,'likes/'+p.id));remove(ref(db,'postImgs/'+p.id));remove(ref(db,'postPriv/'+p.id));hideDet()}};
     ac.append(hb,dl);
   }else{
     const mb=h('button','ab go','💬 پیغام');mb.onclick=()=>openChat(p.uid);
@@ -869,7 +886,7 @@ function card(p,dist){
   }
   c.append(ac);return c;
 }
-$('addPost').onclick=()=>{fLoc=null;fImgs=[];$('fPrev').replaceChildren();['fTitle','fPrice','fCity','fDesc','fLink'].forEach(i=>$(i).value='');
+$('addPost').onclick=()=>{fLoc=null;fImgs=[];$('fPrev').replaceChildren();['fTitle','fPrice','fCity','fDesc','fLink'].forEach(i=>$(i).value='');$('fPriv').checked=false;
   $('fLoc').textContent='📍 دکان/جگہ کی لوکیشن لگائیں (اختیاری)';$('pform').classList.remove('hide')};
 $('pfX').onclick=()=>$('pform').classList.add('hide');
 $('fCat').onchange=()=>$('fCondW').classList.toggle('hide',$('fCat').value==='property');
@@ -886,7 +903,7 @@ $('fGo').onclick=async()=>{
   const cat=$('fCat').value,k=push(ref(db,'posts')).key,up={},o={uid:me,title:t,price:$('fPrice').value.trim(),city:$('fCity').value.trim(),desc:$('fDesc').value.trim(),
     cat,cond:cat==='property'?'new':$('fCond').value,n:imgs.length,hot:false,ts:serverTimestamp()};
   if(fLoc){o.lat=fLoc.lat;o.lng=fLoc.lng}
-  if(lk)o.link=lk;
+  if(lk){if($('fPriv').checked){o.priv=true;up['postPriv/'+k]={uid:me,link:lk}}else o.link=lk}
   try{
     if(imgs.length){o.thumb=await shrinkURL(imgs[0],480,.6);up['postImgs/'+k]={uid:me,imgs:imgs}}
     up['posts/'+k]=o;await update(ref(db),up);$('pform').classList.add('hide');toast('✅ پوسٹ لگ گئی')
@@ -1318,6 +1335,25 @@ $('gpGo').onclick=async()=>{const nm=$('gpName').value.trim(),ids=[...document.q
   up['groups/'+gid]={name:nm.slice(0,40),admin:me,members:mem,ts};
   all.forEach(x=>{const p='userChats/'+x+'/g_'+gid+'/';up[p+'name']=nm.slice(0,40);up[p+'g']=1;up[p+'last']='👥 گروپ بنایا گیا';up[p+'ts']=ts;up[p+'unread']=x===me?0:1});
   try{await update(ref(db),up);gmem['g_'+gid]=all;$('grpP').classList.add('hide');toast('✅ گروپ بن گیا');openChat('g_'+gid)}catch(e){toast('خرابی: '+(e.code||''))}};
+
+/* ---------- مارکیٹ: چھوٹے کارڈ اور تفصیل کا صفحہ ---------- */
+let detId=null;const imgC={};
+function gcard(p,dist){const c=h('div','gc'),w=h('div','gi'),legacy=Object.values(p.imgs||{}),th=p.thumb||legacy[0],cnt=p.n||legacy.length;
+  if(th&&String(th).startsWith('data:image/')){const i=h('img');i.src=th;i.loading='lazy';w.append(i)}
+  c.append(w);if(p.hot)c.append(h('span','gr','🔥 آفر'));else if(cnt>1)c.append(h('span','gcn','📷 '+cnt));
+  const t=h('div','gt');t.append(h('div','gn2',p.title||''));if(p.price)t.append(h('div','gp','Rs '+p.price));
+  const m=[];if(p.city)m.push(p.city);if(dist!=null)m.push('📍 '+(dist<=0.5?'0.5 km':dist+' km'));if(m.length)t.append(h('div','gm',m.join(' • ')));
+  c.append(t);c.onclick=()=>showDet(p.id);return c}
+function hideDet(){const e=$('pdet');if(e)e.classList.add('hide');detId=null}
+function showDet(id,keep){const p=posts[id];if(!p){hideDet();return}detId=id;const B=$('pdB'),y=B.scrollTop;B.replaceChildren();
+  const g=h('div','dgal');B.append(g);
+  const put=l=>{g.replaceChildren();l.filter(z=>String(z).startsWith('data:image/')).forEach(z=>{const i=h('img');i.src=z;g.append(i)});g.classList.toggle('hide',!g.firstChild)};
+  const legacy=Object.values(p.imgs||{});put(imgC[id]||(p.thumb?[p.thumb]:legacy));
+  if(!imgC[id]&&((p.n||0)>1||legacy.length)){if(legacy.length)imgC[id]=legacy;else get(ref(db,'postImgs/'+id)).then(r=>{imgC[id]=Object.values((r.val()||{}).imgs||{});if(detId===id)put(imgC[id])}).catch(()=>{})}
+  const d=(myLoc&&p.lat!=null)?km(myLoc.lat,myLoc.lng,p.lat,p.lng):null;
+  B.append(card(Object.assign({id},p,{thumb:null,imgs:null,n:0}),d));
+  $('pdet').classList.remove('hide');if(keep)B.scrollTop=y}
+$('pdX').onclick=hideDet;
 </script>
 </body>
 </html>
